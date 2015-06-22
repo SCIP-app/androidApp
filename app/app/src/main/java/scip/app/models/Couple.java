@@ -7,6 +7,7 @@ package scip.app.models;
  */
 public class Couple {
     long id;
+    long couple_id;
 
     // eventually will contain information about peak fertility
 
@@ -14,8 +15,13 @@ public class Couple {
     public Couple() {
     }
 
-    public Couple(long id) {
+    public Couple(long couple_id) {
+        this.couple_id = couple_id;
+    }
+
+    public Couple(long id, long couple_id) {
         this.id = id;
+        this.couple_id = couple_id;
     }
 
     // Getters and Setters
@@ -27,4 +33,7 @@ public class Couple {
         this.id = id;
     }
 
+    public long getCoupleId() {
+        return couple_id;
+    }
 }

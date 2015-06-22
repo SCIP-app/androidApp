@@ -10,6 +10,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.provider.ContactsContract;
 import android.text.TextUtils;
+import android.util.Log;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.ArrayAdapter;
@@ -20,6 +21,9 @@ import android.widget.EditText;
 
 import java.util.ArrayList;
 import java.util.List;
+
+import scip.app.databasehelper.DatabaseHelper;
+import scip.app.models.Couple;
 
 
 public class LoginActivity extends Activity{
@@ -58,8 +62,6 @@ public class LoginActivity extends Activity{
                 loadCouples();
             }
         });
-
-
     }
 
 

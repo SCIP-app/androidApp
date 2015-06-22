@@ -1,8 +1,16 @@
 package scip.app.databasehelper;
 
+import android.content.ContentValues;
 import android.content.Context;
+import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
+import android.util.Log;
+
+import java.util.ArrayList;
+import java.util.List;
+
+import scip.app.models.Couple;
 
 /**
  * Created by Allie on 6/22/2015.
@@ -48,4 +56,81 @@ public class DatabaseHelper extends SQLiteOpenHelper{
         // Create new tables
         onCreate(db);
     }
+
+    // closing database
+    public void closeDB() {
+        SQLiteDatabase db = this.getReadableDatabase();
+        if (db != null && db.isOpen())
+            db.close();
+    }
+
+    // Couple-specific CRUD Methods
+
+    public boolean createCouple(Couple couple) {
+        SQLiteDatabase db = this.getWritableDatabase();
+
+        ContentValues values = new ContentValues();
+        values.put(KEY_COUPLE_ID, couple.getCoupleId());
+
+        // insert row
+        long id = db.insert(TABLE_COUPLES, null, values);
+        closeDB();
+
+        if(id != -1) {
+            couple.setId(id);
+            return true ;
+        }
+        else {
+            // There was an error in creating the row
+            return false;
+        }
+
+    }
+
+    public Couple getCouple(long couple_id) {
+        SQLiteDatabase db = this.getReadableDatabase();
+
+        String selectQuery = "SELECT  * FROM " + TABLE_COUPLES + " WHERE "
+                + KEY_COUPLE_ID + " = " + couple_id;
+
+        Log.e(LOG, selectQuery);
+
+        Cursor c = db.rawQuery(selectQuery, null);
+
+        if (c != null)
+            c.moveToFirst();
+
+        long id = c.getInt(c.getColumnIndex(KEY_ID));
+        Couple couple = new Couple(id, couple_id);
+
+        closeDB();
+        return couple;
+    }
+
+    public List<Couple> getAllCouples() {
+        List<Couple> couples = new ArrayList<Couple>();
+        String selectQuery = "SELECT  * FROM " + TABLE_COUPLES;
+
+        Log.e(LOG, selectQuery);
+
+        SQLiteDatabase db = this.getReadableDatabase();
+        Cursor c = db.rawQuery(selectQuery, null);
+
+        // looping through all rows and adding to list
+        if (c.moveToFirst()) {
+            do {
+                long id = c.getInt((c.getColumnIndex(KEY_ID)));
+                long couple_id = c.getInt((c.getColumnIndex(KEY_COUPLE_ID)));
+                Couple couple = new Couple(id, couple_id);
+
+                // adding to couple list
+                couples.add(couple);
+            } while (c.moveToNext());
+        }
+
+        closeDB();
+        return couples;
+    }
+
+
 }
