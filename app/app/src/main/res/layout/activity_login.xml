@@ -32,6 +32,14 @@
 
             </LinearLayout>
 
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="89dp"
+                android:textAppearance="?android:attr/textAppearanceSmall"
+                android:text="Welcome!"
+                android:id="@+id/textView2"
+                android:layout_gravity="center_horizontal" />
+
             <LinearLayout android:id="@+id/email_login_form" android:layout_width="match_parent"
                 android:layout_height="wrap_content" android:orientation="vertical">
 
