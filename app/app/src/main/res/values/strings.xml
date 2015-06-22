@@ -4,5 +4,7 @@
     <string name="app_name">app</string>
     <string name="hello_world">Hello world!</string>
     <string name="action_settings">Settings</string>
+    <string name="title_activity_couple_list">CoupleList</string>
+    <string name="title_activity_couple_selection">CoupleSelection</string>
 
 </resources>
