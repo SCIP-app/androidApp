@@ -6,23 +6,24 @@ package scip.app.models;
  * This is the model for the Couple data structure.
  */
 public class Couple {
-    int id;
+    long id;
+
     // eventually will contain information about peak fertility
 
     // Constructors
     public Couple() {
     }
 
-    public Couple(int id) {
+    public Couple(long id) {
         this.id = id;
     }
 
     // Getters and Setters
-    public int getId() {
+    public long getId() {
         return id;
     }
 
-    public void setId(int id) {
+    public void setId(long id) {
         this.id = id;
     }
 
