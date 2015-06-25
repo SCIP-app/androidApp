@@ -10,7 +10,7 @@ import android.util.Log;
 import java.util.ArrayList;
 import java.util.List;
 
-import scip.app.models.Couple;
+import scip.app.models.Participant;
 
 /**
  * Created by Allie on 6/22/2015.
@@ -20,19 +20,19 @@ import scip.app.models.Couple;
 public class DatabaseHelper extends SQLiteOpenHelper{
 
     private static final String LOG = "DatabaseHelper";  // Logcat tag
-    private static final int DATABASE_VERSION = 1;  // This number MUST be incremented whenever a database is created/destroyed or columns are created/removed
+    private static final int DATABASE_VERSION = 2;  // This number MUST be incremented whenever a database is created/destroyed or columns are created/removed
     private static final String DATABASE_NAME = "patientManager";
 
     // Table Names
-    private static final String TABLE_COUPLES = "couples";
+    private static final String TABLE_PARTICIPANTS = "participants";
 
     // Common column names
     private static final String KEY_ID = "id";
-    private static final String KEY_COUPLE_ID = "couple_id";
+    private static final String KEY_PARTICIPANT_ID = "participant_id";
 
     // Create table statements
-    private static final String CREATE_TABLE_COUPLES = "CREATE TABLE "
-            + TABLE_COUPLES + "(" + KEY_ID + " INTEGER PRIMARY KEY," + KEY_COUPLE_ID + " INTEGER" + ")";
+    private static final String CREATE_TABLE_PARTICIPANTS = "CREATE TABLE "
+            + TABLE_PARTICIPANTS + "(" + KEY_ID + " INTEGER PRIMARY KEY," + KEY_PARTICIPANT_ID + " INTEGER" + ")";
 
     // Constructors
     public DatabaseHelper(Context context) {
@@ -43,7 +43,7 @@ public class DatabaseHelper extends SQLiteOpenHelper{
     //Each of these must be modified when tables are created/destroyed
     @Override
     public void onCreate(SQLiteDatabase db) {
-        db.execSQL(CREATE_TABLE_COUPLES);
+        db.execSQL(CREATE_TABLE_PARTICIPANTS);
 
     }
 
@@ -51,7 +51,8 @@ public class DatabaseHelper extends SQLiteOpenHelper{
     // For now, when database version changes, just delete everything and start over. That's going to have to chang for production.
     public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
         // Kill all existing tables/data
-        db.execSQL("DROP TABLE IF EXISTS " + TABLE_COUPLES);
+        db.execSQL("DROP TABLE IF EXISTS " + "couples");
+        db.execSQL("DROP TABLE IF EXISTS " + TABLE_PARTICIPANTS);
 
         // Create new tables
         onCreate(db);
@@ -64,20 +65,20 @@ public class DatabaseHelper extends SQLiteOpenHelper{
             db.close();
     }
 
-    // Couple-specific CRUD Methods
+    // Participant-specific CRUD Methods
 
-    public boolean createCouple(Couple couple) {
+    public boolean createParticipant(Participant participant) {
         SQLiteDatabase db = this.getWritableDatabase();
 
         ContentValues values = new ContentValues();
-        values.put(KEY_COUPLE_ID, couple.getCoupleId());
+        values.put(KEY_PARTICIPANT_ID, participant.getParticipantId());
 
         // insert row
-        long id = db.insert(TABLE_COUPLES, null, values);
+        long id = db.insert(TABLE_PARTICIPANTS, null, values);
         closeDB();
 
         if(id != -1) {
-            couple.setId(id);
+            participant.setId(id);
             return true ;
         }
         else {
@@ -87,11 +88,11 @@ public class DatabaseHelper extends SQLiteOpenHelper{
 
     }
 
-    public Couple getCouple(long couple_id) {
+    public Participant getParticipant(long participant_id) {
         SQLiteDatabase db = this.getReadableDatabase();
 
-        String selectQuery = "SELECT  * FROM " + TABLE_COUPLES + " WHERE "
-                + KEY_COUPLE_ID + " = " + couple_id;
+        String selectQuery = "SELECT  * FROM " + TABLE_PARTICIPANTS + " WHERE "
+                + KEY_PARTICIPANT_ID + " = " + participant_id;
 
         Log.e(LOG, selectQuery);
 
@@ -101,15 +102,15 @@ public class DatabaseHelper extends SQLiteOpenHelper{
             c.moveToFirst();
 
         long id = c.getInt(c.getColumnIndex(KEY_ID));
-        Couple couple = new Couple(id, couple_id);
+        Participant participant = new Participant(id, participant_id);
 
         closeDB();
-        return couple;
+        return participant;
     }
 
-    public List<Couple> getAllCouples() {
-        List<Couple> couples = new ArrayList<Couple>();
-        String selectQuery = "SELECT  * FROM " + TABLE_COUPLES;
+    public List<Participant> getAllParticipants() {
+        List<Participant> participants = new ArrayList<Participant>();
+        String selectQuery = "SELECT  * FROM " + TABLE_PARTICIPANTS;
 
         Log.e(LOG, selectQuery);
 
@@ -120,16 +121,16 @@ public class DatabaseHelper extends SQLiteOpenHelper{
         if (c.moveToFirst()) {
             do {
                 long id = c.getInt((c.getColumnIndex(KEY_ID)));
-                long couple_id = c.getInt((c.getColumnIndex(KEY_COUPLE_ID)));
-                Couple couple = new Couple(id, couple_id);
+                long participant_id = c.getInt((c.getColumnIndex(KEY_PARTICIPANT_ID)));
+                Participant participant = new Participant(id, participant_id);
 
-                // adding to couple list
-                couples.add(couple);
+                // adding to participant list
+                participants.add(participant);
             } while (c.moveToNext());
         }
 
         closeDB();
-        return couples;
+        return participants;
     }
 
 
