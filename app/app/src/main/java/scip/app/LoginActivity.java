@@ -6,11 +6,19 @@ import android.content.Intent;
 
 import android.os.Bundle;
 import android.text.TextUtils;
+import android.util.Log;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.AutoCompleteTextView;
 import android.widget.Button;
 import android.widget.EditText;
+
+import java.util.List;
+
+import scip.app.databasehelper.DatabaseHelper;
+import scip.app.models.Participant;
+import scip.app.models.SurveyResult;
+import scip.app.models.ViralLoad;
 
 
 public class LoginActivity extends Activity{
@@ -41,7 +49,21 @@ public class LoginActivity extends Activity{
 
         mPasswordView = (EditText) findViewById(R.id.password);
 
+        DatabaseHelper db = new DatabaseHelper(getApplicationContext());
+        Participant participant1 = new Participant(987654321);
+        ViralLoad viralLoad1 = new ViralLoad(123456789, 1234, "06/25/2015", 6789);
+        SurveyResult surveyResult1 = new SurveyResult(123456789, "06/25/2015", 98.4, 1, 0, 0, 0, 0);
 
+        db.createParticipant(participant1);
+        //db.createViralLoad(viralLoad1);
+        //db.createSurveyResult(surveyResult1);
+
+        List<Participant> participants= db.getAllParticipants();
+        for(Participant participant : participants) {
+            Log.d("Participant id", String.valueOf(participant.getParticipantId()));
+        }
+
+        db.closeDB();
         Button mEmailSignInButton = (Button) findViewById(R.id.email_sign_in_button);
         mEmailSignInButton.setOnClickListener(new OnClickListener() {
             @Override

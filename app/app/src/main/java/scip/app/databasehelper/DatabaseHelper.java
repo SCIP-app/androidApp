@@ -20,19 +20,39 @@ import scip.app.models.Participant;
 public class DatabaseHelper extends SQLiteOpenHelper{
 
     private static final String LOG = "DatabaseHelper";  // Logcat tag
-    private static final int DATABASE_VERSION = 2;  // This number MUST be incremented whenever a database is created/destroyed or columns are created/removed
+    private static final int DATABASE_VERSION = 3;  // This number MUST be incremented whenever a database is created/destroyed or columns are created/removed
     private static final String DATABASE_NAME = "patientManager";
 
     // Table Names
     private static final String TABLE_PARTICIPANTS = "participants";
+    private static final String TABLE_VIRAL_LOADS = "viralLoads";
+    private static final String TABLE_SURVEY_RESULTS = "surveyResults";
 
     // Common column names
     private static final String KEY_ID = "id";
     private static final String KEY_PARTICIPANT_ID = "participant_id";
+    private static final String KEY_DATE = "date";
+
+    // Viral Load specific columns
+    private static final String KEY_NUMBER = "number";
+    private static final String KEY_VISIT_ID = "visit_id";
+
+    // Survey Result specific columns
+    private static final String KEY_TEMPERATURE = "temperature";
+    private static final String KEY_VAGINA_MUCUS_STICKY = "vaginaMucusSticky";
+    private static final String KEY_HAS_PERIOD = "hasPeriod";
+    private static final String KEY_IS_OVULATING = "isOvulating";
+    private static final String KEY_HAD_SEX = "hadSex";
+    private static final String KEY_USED_CONDOM = "usedCondom";
 
     // Create table statements
     private static final String CREATE_TABLE_PARTICIPANTS = "CREATE TABLE "
             + TABLE_PARTICIPANTS + "(" + KEY_ID + " INTEGER PRIMARY KEY," + KEY_PARTICIPANT_ID + " INTEGER" + ")";
+    private static final String CREATE_TABLE_VIRAL_LOADS = "CREATE TABLE " + TABLE_VIRAL_LOADS + "(" + KEY_ID + " INTEGER PRIMARY KEY,"
+            + KEY_PARTICIPANT_ID + " INTEGER," + KEY_DATE + " TEXT," + KEY_NUMBER + " INTEGER," + KEY_VISIT_ID + " INTEGER)";
+    private static final String CREATE_TABLE_SURVEY_RESULTS = "CREATE TABLE " + TABLE_SURVEY_RESULTS + "(" + KEY_ID + " INTEGER PRIMARY KEY,"
+            + KEY_PARTICIPANT_ID + " INTEGER," + KEY_DATE + " TEXT," + KEY_TEMPERATURE + " INTEGER," + KEY_VAGINA_MUCUS_STICKY + " INTEGER,"
+            + KEY_HAS_PERIOD + " INTEGER," + KEY_IS_OVULATING + " INTEGER," + KEY_HAD_SEX + " INTEGER," + KEY_USED_CONDOM + " INTEGER)";
 
     // Constructors
     public DatabaseHelper(Context context) {
@@ -44,7 +64,8 @@ public class DatabaseHelper extends SQLiteOpenHelper{
     @Override
     public void onCreate(SQLiteDatabase db) {
         db.execSQL(CREATE_TABLE_PARTICIPANTS);
-
+        db.execSQL(CREATE_TABLE_VIRAL_LOADS);
+        db.execSQL(CREATE_TABLE_SURVEY_RESULTS);
     }
 
     @Override
@@ -53,6 +74,8 @@ public class DatabaseHelper extends SQLiteOpenHelper{
         // Kill all existing tables/data
         db.execSQL("DROP TABLE IF EXISTS " + "couples");
         db.execSQL("DROP TABLE IF EXISTS " + TABLE_PARTICIPANTS);
+        db.execSQL("DROP TABLE IF EXISTS " + TABLE_VIRAL_LOADS);
+        db.execSQL("DROP TABLE IF EXISTS " + TABLE_SURVEY_RESULTS);
 
         // Create new tables
         onCreate(db);
@@ -104,7 +127,6 @@ public class DatabaseHelper extends SQLiteOpenHelper{
         long id = c.getInt(c.getColumnIndex(KEY_ID));
         Participant participant = new Participant(id, participant_id);
 
-        closeDB();
         return participant;
     }
 
@@ -129,7 +151,6 @@ public class DatabaseHelper extends SQLiteOpenHelper{
             } while (c.moveToNext());
         }
 
-        closeDB();
         return participants;
     }
 
