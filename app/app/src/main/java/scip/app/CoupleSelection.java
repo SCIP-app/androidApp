@@ -1,12 +1,15 @@
 package scip.app;
 
 import android.app.Activity;
+import android.content.Intent;
+import android.widget.AdapterView;
 import android.os.Bundle;
 import android.view.Menu;
+import android.view.View;
 import android.view.MenuItem;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
-
+import android.view.View.OnClickListener;
 
 /*
     Display list view of couple id's from which the provider can select the coupld they plan to counsel
@@ -27,6 +30,14 @@ public class CoupleSelection extends Activity {
                 new ArrayAdapter<String>(this, android.R.layout.simple_list_item_1, items);
 
         m_listview.setAdapter(adapter);
+
+        m_listview.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> arg0, View arg1, int arg2, long arg3) {
+                Intent dashboard = new Intent(getApplicationContext(),Dashboard.class);
+                startActivity(dashboard);
+            }
+        });
     }
 
     @Override
@@ -47,6 +58,7 @@ public class CoupleSelection extends Activity {
         if (id == R.id.action_settings) {
             return true;
         }
+
 
         return super.onOptionsItemSelected(item);
     }
