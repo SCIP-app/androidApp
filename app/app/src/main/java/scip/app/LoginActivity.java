@@ -17,6 +17,7 @@ import java.util.List;
 
 import scip.app.databasehelper.DatabaseHelper;
 import scip.app.models.Participant;
+import scip.app.models.PeakFertility;
 import scip.app.models.SurveyResult;
 import scip.app.models.ViralLoad;
 
@@ -51,19 +52,44 @@ public class LoginActivity extends Activity{
 
         DatabaseHelper db = new DatabaseHelper(getApplicationContext());
         Participant participant1 = new Participant(987654321);
-        ViralLoad viralLoad1 = new ViralLoad(123456789, 1234, "06/25/2015", 6789);
+        Participant participant2 = new Participant(123456789);
+        ViralLoad viralLoad1 = new ViralLoad(987654321, 1234, "06/25/2015", 6789);
+        ViralLoad viralLoad2 = new ViralLoad(987654321, 5555, "06/25/2015", 6789);
         SurveyResult surveyResult1 = new SurveyResult(123456789, "06/25/2015", 98.4, 1, 0, 0, 0, 0);
+        //PeakFertility peakFertility1 = new PeakFertility(123456789, "24/07/2015", "26/07/2015");
 
-        db.createParticipant(participant1);
-        //db.createViralLoad(viralLoad1);
-        //db.createSurveyResult(surveyResult1);
+        //db.createParticipant(participant1);
+        //db.createParticipant(participant2);
+        //db.createPeakFertility(peakFertility1);
+
+        db.createViralLoad(viralLoad1);
+        db.createViralLoad(viralLoad2);
+        db.createSurveyResult(surveyResult1);
 
         List<Participant> participants= db.getAllParticipants();
         for(Participant participant : participants) {
             Log.d("Participant id", String.valueOf(participant.getParticipantId()));
         }
 
+        List<PeakFertility> pfs = db.getAllPeakFertilityById(participant2.getParticipantId());
+        for(PeakFertility pf : pfs) {
+            Log.d("PF", String.valueOf(pf.getParticipant_id()));
+        }
+
+        List<ViralLoad> vls = db.getAllViralLoadsById(participant1.getParticipantId());
+        for(ViralLoad vl : vls) {
+            Log.d("VL", String.valueOf(vl.getParticipant_id()));
+            Log.d("VL: number", String.valueOf(vl.getNumber()));
+        }
+
+        List<SurveyResult> srs = db.getAllSurveyResultsById(participant2.getParticipantId());
+        for (SurveyResult sr : srs) {
+            Log.d("SR", String.valueOf(sr.getParticipant_id()));
+            Log.d("SR: Temp", String.valueOf(sr.getTemperature()));
+        }
+
         db.closeDB();
+
         Button mEmailSignInButton = (Button) findViewById(R.id.email_sign_in_button);
         mEmailSignInButton.setOnClickListener(new OnClickListener() {
             @Override
