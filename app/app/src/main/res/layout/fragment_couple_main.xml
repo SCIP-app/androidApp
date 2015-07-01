@@ -11,7 +11,13 @@
         android:layout_gravity="center"
         android:layout_marginLeft="4dp"
         android:layout_marginTop="-20dp"
-        android:background="@color/material_blue_500" />
+        android:background="@color/material_blue_500"
+        android:paddingLeft="50dp"
+        android:paddingRight="50dp"
+        android:paddingTop="50dp"
+        android:paddingBottom="50dp"
+        android:scaleType="fitStart"
+        android:src="@drawable/ic_cycle" />
 
     <ImageButton
         android:layout_width="400dp"
@@ -20,7 +26,13 @@
         android:layout_gravity="right|center_vertical"
         android:layout_marginRight="16dp"
         android:layout_marginTop="-20dp"
-        android:background="@color/material_blue_500" />
+        android:paddingLeft="120dp"
+        android:paddingRight="70dp"
+        android:paddingTop="100dp"
+        android:paddingBottom="60dp"
+        android:scaleType="fitStart"
+        android:background="@color/material_blue_500"
+        android:src="@drawable/ic_cap" />
 
     <ImageButton
         android:layout_width="400dp"
@@ -29,7 +41,13 @@
         android:layout_gravity="left|center_vertical"
         android:layout_marginLeft="16dp"
         android:layout_marginTop="-20dp"
-        android:background="@color/material_blue_500" />
+        android:background="@color/material_blue_500"
+        android:paddingLeft="50dp"
+        android:paddingRight="50dp"
+        android:paddingTop="30dp"
+        android:paddingBottom="50dp"
+        android:scaleType="fitStart"
+        android:src="@drawable/ic_calendar" />
 
     <TextView
         android:layout_width="165dp"
