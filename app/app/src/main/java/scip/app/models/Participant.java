@@ -9,8 +9,6 @@ public class Participant {
     long id;
     long participant_id;
 
-    // eventually will contain information about peak fertility
-
     // Constructors
     public Participant() {
     }
@@ -35,5 +33,9 @@ public class Participant {
 
     public long getParticipantId() {
         return participant_id;
+    }
+
+    public long getCoupleId() {
+        return participant_id/100;
     }
 }

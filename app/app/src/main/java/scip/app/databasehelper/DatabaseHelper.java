@@ -11,6 +11,7 @@ import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.LinkedHashSet;
 import java.util.List;
 
 import scip.app.models.Participant;
@@ -112,7 +113,6 @@ public class DatabaseHelper extends SQLiteOpenHelper{
 
         // insert row
         long id = db.insert(TABLE_PARTICIPANTS, null, values);
-        closeDB();
 
         if(id != -1) {
             participant.setId(id);
@@ -168,6 +168,31 @@ public class DatabaseHelper extends SQLiteOpenHelper{
         return participants;
     }
 
+    public List<Long> getAllCoupleIDs() {
+        List<Long> couples = new ArrayList<>();
+        String selectQuery = "SELECT  * FROM " + TABLE_PARTICIPANTS;
+
+        Log.e(LOG, selectQuery);
+
+        SQLiteDatabase db = this.getReadableDatabase();
+        Cursor c = db.rawQuery(selectQuery, null);
+
+        // looping through all rows and adding to list
+        if (c.moveToFirst()) {
+            do {
+                long id = c.getInt((c.getColumnIndex(KEY_ID)));
+                long participant_id = c.getInt((c.getColumnIndex(KEY_PARTICIPANT_ID)));
+                Participant participant = new Participant(id, participant_id);
+
+                // adding to couple list
+                couples.add(participant.getCoupleId());
+            } while (c.moveToNext());
+        }
+
+        couples = new ArrayList<Long>(new LinkedHashSet<Long>(couples));
+        return couples;
+    }
+
     // ViralLoad-specific CRUD Methods
 
     public boolean createViralLoad(ViralLoad viralLoad) {
@@ -181,7 +206,6 @@ public class DatabaseHelper extends SQLiteOpenHelper{
 
         // insert row
         long id = db.insert(TABLE_VIRAL_LOADS, null, values);
-        closeDB();
 
         if(id != -1) {
             viralLoad.setId(id);
@@ -290,7 +314,6 @@ public class DatabaseHelper extends SQLiteOpenHelper{
 
         // insert row
         long id = db.insert(TABLE_SURVEY_RESULTS, null, values);
-        closeDB();
 
         if(id != -1) {
             surveyResult.setId(id);

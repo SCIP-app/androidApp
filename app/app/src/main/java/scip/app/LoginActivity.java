@@ -13,6 +13,7 @@ import android.widget.AutoCompleteTextView;
 import android.widget.Button;
 import android.widget.EditText;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import scip.app.databasehelper.DatabaseHelper;
@@ -50,45 +51,14 @@ public class LoginActivity extends Activity{
 
         mPasswordView = (EditText) findViewById(R.id.password);
 
-        DatabaseHelper db = new DatabaseHelper(getApplicationContext());
-        Participant participant1 = new Participant(987654321);
-        Participant participant2 = new Participant(123456789);
-        ViralLoad viralLoad1 = new ViralLoad(987654321, 1234, "06/25/2015", 6789);
-        ViralLoad viralLoad2 = new ViralLoad(987654321, 5555, "06/25/2015", 6789);
-        SurveyResult surveyResult1 = new SurveyResult(123456789, "06/25/2015", 98.4, 1, 0, 0, 0, 0);
-        //PeakFertility peakFertility1 = new PeakFertility(123456789, "24/07/2015", "26/07/2015");
+        List<Participant> participants = getParticipantList();
+        //populateDatabase(participants);
+        testDatabase(participants);
 
-        //db.createParticipant(participant1);
-        //db.createParticipant(participant2);
-        //db.createPeakFertility(peakFertility1);
-
-        db.createViralLoad(viralLoad1);
-        db.createViralLoad(viralLoad2);
-        db.createSurveyResult(surveyResult1);
-
-        List<Participant> participants= db.getAllParticipants();
-        for(Participant participant : participants) {
-            Log.d("Participant id", String.valueOf(participant.getParticipantId()));
+        for(Participant p : participants) {
+            Log.d("P ID", String.valueOf(p.getParticipantId()));
+            Log.d("C ID", String.valueOf(p.getCoupleId()));
         }
-
-        List<PeakFertility> pfs = db.getAllPeakFertilityById(participant2.getParticipantId());
-        for(PeakFertility pf : pfs) {
-            Log.d("PF", String.valueOf(pf.getParticipant_id()));
-        }
-
-        List<ViralLoad> vls = db.getAllViralLoadsById(participant1.getParticipantId());
-        for(ViralLoad vl : vls) {
-            Log.d("VL", String.valueOf(vl.getParticipant_id()));
-            Log.d("VL: number", String.valueOf(vl.getNumber()));
-        }
-
-        List<SurveyResult> srs = db.getAllSurveyResultsById(participant2.getParticipantId());
-        for (SurveyResult sr : srs) {
-            Log.d("SR", String.valueOf(sr.getParticipant_id()));
-            Log.d("SR: Temp", String.valueOf(sr.getTemperature()));
-        }
-
-        db.closeDB();
 
         Button mEmailSignInButton = (Button) findViewById(R.id.email_sign_in_button);
         mEmailSignInButton.setOnClickListener(new OnClickListener() {
@@ -157,9 +127,86 @@ public class LoginActivity extends Activity{
         return password.length() > 4;
     }
 
+    private List<Participant> getParticipantList() {
+        List<Participant> participants = new ArrayList<>();
 
+        Participant participant1 = new Participant(987654321); // Male
+        Participant participant2 = new Participant(123456789); // Female in partner
+        Participant participant3 = new Participant(123456766); // Male in partner
 
+        participants.add(participant1);
+        participants.add(participant2);
+        participants.add(participant3);
 
+        return participants;
+    }
+    private void populateDatabase(List<Participant> participants) {
+        DatabaseHelper db = new DatabaseHelper(getApplicationContext());
+
+        ViralLoad viralLoad1 = new ViralLoad(participants.get(0).getParticipantId(), 1234, "25/06/2015", 6789);
+        ViralLoad viralLoad2 = new ViralLoad(participants.get(0).getParticipantId(), 5555, "25/08/2015", 1245);
+        ViralLoad viralLoad3 = new ViralLoad(participants.get(2).getParticipantId(), 3333, "21/06/2015", 5894);
+
+        SurveyResult surveyResult1 = new SurveyResult(participants.get(1).getParticipantId(), "25/06/2015", 98.4, 1, 0, 0, 0, 0);
+        SurveyResult surveyResult2 = new SurveyResult(participants.get(1).getParticipantId(), "26/06/2015", 98.1, 1, 0, 0, 0, 0);
+        SurveyResult surveyResult3 = new SurveyResult(participants.get(1).getParticipantId(), "27/06/2015", 98.5, 0, 1, 0, 0, 0);
+
+        PeakFertility peakFertility1 = new PeakFertility(participants.get(1).getParticipantId(), "24/07/2015", "26/07/2015");
+
+        db.createParticipant(participants.get(0));
+        db.createParticipant(participants.get(1));
+        db.createParticipant(participants.get(2));
+
+        db.createViralLoad(viralLoad1);
+        db.createViralLoad(viralLoad2);
+        db.createViralLoad(viralLoad3);
+
+        db.createSurveyResult(surveyResult1);
+        db.createSurveyResult(surveyResult2);
+        db.createSurveyResult(surveyResult3);
+
+        db.createPeakFertility(peakFertility1);
+
+        db.closeDB();
+    }
+
+    private void testDatabase(List<Participant> participantList) {
+        DatabaseHelper db = new DatabaseHelper(getApplicationContext());
+        List<Participant> participants= db.getAllParticipants();
+        for(Participant participant : participants) {
+            Log.d("Participant id", String.valueOf(participant.getParticipantId()));
+        }
+
+        List<PeakFertility> pfs = db.getAllPeakFertilityById(participantList.get(1).getParticipantId());
+        for(PeakFertility pf : pfs) {
+            Log.d("PF", String.valueOf(pf.getParticipant_id()));
+        }
+
+        List<ViralLoad> vls = db.getAllViralLoadsById(participantList.get(0).getParticipantId());
+        for(ViralLoad vl : vls) {
+            Log.d("VL", String.valueOf(vl.getParticipant_id()));
+            Log.d("VL: number", String.valueOf(vl.getNumber()));
+        }
+
+        vls = db.getAllViralLoadsById(participantList.get(2).getParticipantId());
+        for(ViralLoad vl : vls) {
+            Log.d("VL", String.valueOf(vl.getParticipant_id()));
+            Log.d("VL: number", String.valueOf(vl.getNumber()));
+        }
+
+        List<SurveyResult> srs = db.getAllSurveyResultsById(participantList.get(1).getParticipantId());
+        for (SurveyResult sr : srs) {
+            Log.d("SR", String.valueOf(sr.getParticipant_id()));
+            Log.d("SR: Temp", String.valueOf(sr.getTemperature()));
+        }
+
+        List<Long> cids = db.getAllCoupleIDs();
+        for(Long cid : cids) {
+            Log.d("Couple ID", String.valueOf(cid));
+        }
+
+        db.closeDB();
+    }
 
     /**
      * Represents an asynchronous login/registration task used to authenticate
