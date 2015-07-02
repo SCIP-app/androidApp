@@ -210,6 +210,10 @@ public class LoginActivity extends Activity{
             Log.d("P in C", String.valueOf(p.getParticipantId()));
         }
 
+        Participant partner = participantList.get(1).getPartner();
+        Log.d("Participant", String.valueOf(participantList.get(1).getParticipantId()));
+        Log.d("Partner is", String.valueOf(partner.getParticipantId()));
+
         db.closeDB();
     }
 
