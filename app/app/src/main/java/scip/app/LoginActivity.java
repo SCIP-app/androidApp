@@ -130,9 +130,9 @@ public class LoginActivity extends Activity{
     private List<Participant> getParticipantList() {
         List<Participant> participants = new ArrayList<>();
 
-        Participant participant1 = new Participant(987654321); // Male
-        Participant participant2 = new Participant(123456789); // Female in partner
-        Participant participant3 = new Participant(123456766); // Male in partner
+        Participant participant1 = new Participant(getApplicationContext(), 987654321); // Male
+        Participant participant2 = new Participant(getApplicationContext(), 123456789); // Female in partner
+        Participant participant3 = new Participant(getApplicationContext(), 123456766); // Male in partner
 
         participants.add(participant1);
         participants.add(participant2);
@@ -203,6 +203,11 @@ public class LoginActivity extends Activity{
         List<Long> cids = db.getAllCoupleIDs();
         for(Long cid : cids) {
             Log.d("Couple ID", String.valueOf(cid));
+        }
+
+        List<Participant> couple = db.getCoupleFromID(participantList.get(1).getCoupleId());
+        for(Participant p : couple) {
+            Log.d("P in C", String.valueOf(p.getParticipantId()));
         }
 
         db.closeDB();

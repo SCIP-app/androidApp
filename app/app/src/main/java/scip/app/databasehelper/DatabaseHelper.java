@@ -25,6 +25,7 @@ import scip.app.models.ViralLoad;
  * This class is designed to make performing database operations easier. It will contain methods for all direct database access actions.
  */
 public class DatabaseHelper extends SQLiteOpenHelper{
+    Context context;
 
     private static final String LOG = "DatabaseHelper";  // Logcat tag
     private static final int DATABASE_VERSION = 4;  // This number MUST be incremented whenever a database is created/destroyed or columns are created/removed
@@ -71,6 +72,7 @@ public class DatabaseHelper extends SQLiteOpenHelper{
     // Constructors
     public DatabaseHelper(Context context) {
         super(context, DATABASE_NAME, null, DATABASE_VERSION);
+        this.context = context;
     }
 
     //Global Methods
@@ -139,7 +141,7 @@ public class DatabaseHelper extends SQLiteOpenHelper{
             c.moveToFirst();
 
         long id = c.getInt(c.getColumnIndex(KEY_ID));
-        Participant participant = new Participant(id, participant_id);
+        Participant participant = new Participant(context, id, participant_id);
 
         return participant;
     }
@@ -158,7 +160,7 @@ public class DatabaseHelper extends SQLiteOpenHelper{
             do {
                 long id = c.getInt((c.getColumnIndex(KEY_ID)));
                 long participant_id = c.getInt((c.getColumnIndex(KEY_PARTICIPANT_ID)));
-                Participant participant = new Participant(id, participant_id);
+                Participant participant = new Participant(context, id, participant_id);
 
                 // adding to participant list
                 participants.add(participant);
@@ -182,7 +184,7 @@ public class DatabaseHelper extends SQLiteOpenHelper{
             do {
                 long id = c.getInt((c.getColumnIndex(KEY_ID)));
                 long participant_id = c.getInt((c.getColumnIndex(KEY_PARTICIPANT_ID)));
-                Participant participant = new Participant(id, participant_id);
+                Participant participant = new Participant(context, id, participant_id);
 
                 // adding to couple list
                 couples.add(participant.getCoupleId());
@@ -191,6 +193,32 @@ public class DatabaseHelper extends SQLiteOpenHelper{
 
         couples = new ArrayList<Long>(new LinkedHashSet<Long>(couples));
         return couples;
+    }
+
+    public List<Participant> getCoupleFromID(Long coupleId) {
+        List<Participant> couple = new ArrayList<>();
+        String selectQuery = "SELECT  * FROM " + TABLE_PARTICIPANTS;
+
+        Log.e(LOG, selectQuery);
+
+        SQLiteDatabase db = this.getReadableDatabase();
+        Cursor c = db.rawQuery(selectQuery, null);
+
+        // looping through all rows and adding to list
+        if (c.moveToFirst()) {
+            do {
+                long id = c.getInt((c.getColumnIndex(KEY_ID)));
+                long participant_id = c.getInt((c.getColumnIndex(KEY_PARTICIPANT_ID)));
+                Participant participant = new Participant(context, id, participant_id);
+
+                if(coupleId == participant.getCoupleId()) {
+                    couple.add(participant);
+                }
+
+            } while (c.moveToNext());
+        }
+
+        return couple;
     }
 
     // ViralLoad-specific CRUD Methods
