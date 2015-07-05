@@ -14,6 +14,7 @@ import java.util.Date;
 import java.util.LinkedHashSet;
 import java.util.List;
 
+import scip.app.models.MemsCap;
 import scip.app.models.Participant;
 import scip.app.models.PeakFertility;
 import scip.app.models.SurveyResult;
@@ -36,6 +37,7 @@ public class DatabaseHelper extends SQLiteOpenHelper{
     private static final String TABLE_VIRAL_LOADS = "viralLoads";
     private static final String TABLE_SURVEY_RESULTS = "surveyResults";
     private static final String TABLE_PEAK_FERTILITY = "peakFertility";
+    private static final String TABLE_MEMS_CAP = "memsCap";
 
     // Common column names
     private static final String KEY_ID = "id";
@@ -58,6 +60,9 @@ public class DatabaseHelper extends SQLiteOpenHelper{
     private static final String KEY_START = "start";
     private static final String KEY_END = "end";
 
+    // MEMSCap specific column
+    private static final String KEY_MEMS = "memsDates";
+
     // Create table statements
     private static final String CREATE_TABLE_PARTICIPANTS = "CREATE TABLE "
             + TABLE_PARTICIPANTS + "(" + KEY_ID + " INTEGER PRIMARY KEY," + KEY_PARTICIPANT_ID + " INTEGER" + ")";
@@ -68,6 +73,8 @@ public class DatabaseHelper extends SQLiteOpenHelper{
             + KEY_HAS_PERIOD + " INTEGER," + KEY_IS_OVULATING + " INTEGER," + KEY_HAD_SEX + " INTEGER," + KEY_USED_CONDOM + " INTEGER)";
     private static final String CREATE_TABLE_PEAK_FERTILITY = "CREATE TABLE " + TABLE_PEAK_FERTILITY + "(" + KEY_ID + " INTEGER PRIMARY KEY,"
             + KEY_PARTICIPANT_ID + " INTEGER," + KEY_START + " TEXT," + KEY_END + " TEXT)";
+    private static final String CREATE_TABLE_MEMS_CAP = "CREATE TABLE " + TABLE_MEMS_CAP + "(" + KEY_ID + " INTEGER PRIMARY KEY,"
+            + KEY_PARTICIPANT_ID + " INTEGER," + KEY_MEMS + " TEXT" + KEY_DATE + " TEXT)";
 
     // Constructors
     public DatabaseHelper(Context context) {
@@ -83,6 +90,7 @@ public class DatabaseHelper extends SQLiteOpenHelper{
         db.execSQL(CREATE_TABLE_VIRAL_LOADS);
         db.execSQL(CREATE_TABLE_SURVEY_RESULTS);
         db.execSQL(CREATE_TABLE_PEAK_FERTILITY);
+        db.execSQL(CREATE_TABLE_MEMS_CAP);
     }
 
     @Override
@@ -93,6 +101,7 @@ public class DatabaseHelper extends SQLiteOpenHelper{
         db.execSQL("DROP TABLE IF EXISTS " + TABLE_VIRAL_LOADS);
         db.execSQL("DROP TABLE IF EXISTS " + TABLE_SURVEY_RESULTS);
         db.execSQL("DROP TABLE IF EXISTS " + TABLE_PEAK_FERTILITY);
+        db.execSQL("DROP TABLE IF EXISTS " + TABLE_MEMS_CAP);
 
         // Create new tables
         onCreate(db);
@@ -385,7 +394,56 @@ public class DatabaseHelper extends SQLiteOpenHelper{
 
         return surveyResults;
     }
+    // MEMSCap-specific CRUD Methods
 
+    public boolean createMemsCap(MemsCap memsCap) {
+        SQLiteDatabase db = this.getWritableDatabase();
+
+        ContentValues values = new ContentValues();
+        values.put(KEY_PARTICIPANT_ID, memsCap.getParticipant_id());
+        values.put(KEY_DATE, getStringFromDate(memsCap.getDate()));
+        values.put(KEY_MEMS, getStringFromDate(memsCap.getMems()));
+
+        // insert row
+        long id = db.insert(TABLE_MEMS_CAP, null, values);
+
+        if(id != -1) {
+            memsCap.setId(id);
+            return true ;
+        }
+        else {
+            // There was an error in creating the row
+            return false;
+        }
+
+    }
+
+    public List<MemsCap> getAllMemsCapById(long participant_id) {
+        List<MemsCap> prepAdherence = new ArrayList<MemsCap>();
+        String selectQuery = "SELECT  * FROM " + TABLE_MEMS_CAP + " WHERE "
+                + KEY_PARTICIPANT_ID + " = " + participant_id;
+
+        Log.e(LOG, selectQuery);
+
+        SQLiteDatabase db = this.getReadableDatabase();
+        Cursor c = db.rawQuery(selectQuery, null);
+
+        // looping through all rows and adding to list
+        if (c.moveToFirst()) {
+            do {
+                long id = c.getInt((c.getColumnIndex(KEY_ID)));
+                String date = c.getString((c.getColumnIndex(KEY_DATE)));
+                String mems = c.getString((c.getColumnIndex(KEY_MEMS)));
+                MemsCap mc = new MemsCap(participant_id, date, mems);
+                mc.setId(id);
+
+                // adding to participant list
+                prepAdherence.add(mc);
+            } while (c.moveToNext());
+        }
+
+        return prepAdherence;
+    }
 
     // Utility Methods
     private String getStringFromDate(Date date){
