@@ -13,9 +13,11 @@ import android.widget.AutoCompleteTextView;
 import android.widget.Button;
 import android.widget.EditText;
 
+import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.List;
 
+import scip.app.databasehelper.CSVImporter;
 import scip.app.databasehelper.DatabaseHelper;
 import scip.app.models.Participant;
 import scip.app.models.PeakFertility;
@@ -53,12 +55,15 @@ public class LoginActivity extends Activity{
 
         List<Participant> participants = getParticipantList();
         //populateDatabase(participants);
-        testDatabase(participants);
+        //testDatabase(participants);
 
-        for(Participant p : participants) {
-            Log.d("P ID", String.valueOf(p.getParticipantId()));
-            Log.d("C ID", String.valueOf(p.getCoupleId()));
-        }
+//        for(Participant p : participants) {
+//            Log.d("P ID", String.valueOf(p.getParticipantId()));
+//            Log.d("C ID", String.valueOf(p.getCoupleId()));
+//        }
+
+        CSVImporter csvImporter = new CSVImporter(getApplicationContext());
+        csvImporter.readMemsCapData(getResources().openRawResource(R.raw.memscap_test));
 
         Button mEmailSignInButton = (Button) findViewById(R.id.email_sign_in_button);
         mEmailSignInButton.setOnClickListener(new OnClickListener() {
