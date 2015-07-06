@@ -18,7 +18,7 @@ public class Participant {
     boolean isFemale;
     List<SurveyResult> surveyResults;
     List<ViralLoad> viralLoads;
-    //List<MemsCap> memscaps;
+    List<MemsCap> memscaps;
     List<PeakFertility> peakFertilities;
 
     // Constructors
@@ -101,7 +101,7 @@ public class Participant {
             this.viralLoads = db.getAllViralLoadsById(participant_id);
         }
         else {
-            //this.memscaps = db.getAllMemsCapById(participant_id);
+            this.memscaps = db.getAllMemsCapById(participant_id);
         }
         db.closeDB();
     }
