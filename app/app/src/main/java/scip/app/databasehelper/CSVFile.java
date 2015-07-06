@@ -20,8 +20,10 @@ public class CSVFile {
     public List read(){
         List resultList = new ArrayList();
         BufferedReader reader = new BufferedReader(new InputStreamReader(inputStream));
+
         try {
             String csvLine;
+            reader.readLine(); // read the first line and throw it out because it's the description
             while ((csvLine = reader.readLine()) != null) {
                 String[] row = csvLine.split(";");
                 resultList.add(row);

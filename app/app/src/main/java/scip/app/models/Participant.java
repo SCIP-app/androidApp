@@ -22,7 +22,10 @@ public class Participant {
     List<PeakFertility> peakFertilities;
 
     // Constructors
-    public Participant() {
+
+    // this constructor only to be used for creating database entries
+    public Participant(long participant_id) {
+        this.participant_id = participant_id;
     }
 
     public Participant(Context context, long participant_id) {

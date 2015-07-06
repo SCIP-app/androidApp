@@ -19,6 +19,7 @@ import java.util.List;
 
 import scip.app.databasehelper.CSVImporter;
 import scip.app.databasehelper.DatabaseHelper;
+import scip.app.models.MemsCap;
 import scip.app.models.Participant;
 import scip.app.models.PeakFertility;
 import scip.app.models.SurveyResult;
@@ -53,7 +54,7 @@ public class LoginActivity extends Activity{
 
         mPasswordView = (EditText) findViewById(R.id.password);
 
-        List<Participant> participants = getParticipantList();
+        //List<Participant> participants = getParticipantList();
         //populateDatabase(participants);
         //testDatabase(participants);
 
@@ -62,8 +63,7 @@ public class LoginActivity extends Activity{
 //            Log.d("C ID", String.valueOf(p.getCoupleId()));
 //        }
 
-        CSVImporter csvImporter = new CSVImporter(getApplicationContext());
-        csvImporter.readMemsCapData(getResources().openRawResource(R.raw.memscap_test));
+        testCSVImport();
 
         Button mEmailSignInButton = (Button) findViewById(R.id.email_sign_in_button);
         mEmailSignInButton.setOnClickListener(new OnClickListener() {
@@ -72,6 +72,25 @@ public class LoginActivity extends Activity{
                 loadCouples();
             }
         });
+    }
+
+    private void testCSVImport() {
+        CSVImporter csvImporter = new CSVImporter(getApplicationContext());
+        csvImporter.readMemsCapData(getResources().openRawResource(R.raw.memscap_test));
+
+        DatabaseHelper db = new DatabaseHelper(getApplicationContext());
+        List<Participant> participantList = db.getAllParticipants();
+
+        for(Participant p : participantList) {
+            List<MemsCap> memsCapList = db.getAllMemsCapById(p.getParticipantId());
+            Log.d("Participant id", String.valueOf(p.getParticipantId()));
+            for(MemsCap m : memsCapList) {
+                Log.d("memsid", String.valueOf(m.getMems_id()));
+                Log.d("date", String .valueOf(m.getDate()));
+            }
+
+        }
+        db.closeDB();
     }
 
 

@@ -29,7 +29,7 @@ public class DatabaseHelper extends SQLiteOpenHelper{
     Context context;
 
     private static final String LOG = "DatabaseHelper";  // Logcat tag
-    private static final int DATABASE_VERSION = 5;  // This number MUST be incremented whenever a database is created/destroyed or columns are created/removed
+    private static final int DATABASE_VERSION = 6;  // This number MUST be incremented whenever a database is created/destroyed or columns are created/removed
     private static final String DATABASE_NAME = "patientManager";
 
     // Table Names
@@ -74,7 +74,7 @@ public class DatabaseHelper extends SQLiteOpenHelper{
     private static final String CREATE_TABLE_PEAK_FERTILITY = "CREATE TABLE " + TABLE_PEAK_FERTILITY + "(" + KEY_ID + " INTEGER PRIMARY KEY,"
             + KEY_PARTICIPANT_ID + " INTEGER," + KEY_START + " TEXT," + KEY_END + " TEXT)";
     private static final String CREATE_TABLE_MEMS_CAP = "CREATE TABLE " + TABLE_MEMS_CAP + "(" + KEY_ID + " INTEGER PRIMARY KEY,"
-            + KEY_PARTICIPANT_ID + " INTEGER," + KEY_MEMS_ID + " INTEGER" + KEY_DATE + " TEXT)";
+            + KEY_PARTICIPANT_ID + " INTEGER," + KEY_MEMS_ID + " INTEGER," + KEY_DATE + " TEXT)";
 
     // Constructors
     public DatabaseHelper(Context context) {
@@ -146,8 +146,8 @@ public class DatabaseHelper extends SQLiteOpenHelper{
 
         Cursor c = db.rawQuery(selectQuery, null);
 
-        if (c != null)
-            c.moveToFirst();
+        if (c == null || !c.moveToFirst())
+            return null;
 
         long id = c.getInt(c.getColumnIndex(KEY_ID));
         Participant participant = new Participant(context, id, participant_id);
