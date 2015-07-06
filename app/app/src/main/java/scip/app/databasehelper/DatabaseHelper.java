@@ -29,7 +29,7 @@ public class DatabaseHelper extends SQLiteOpenHelper{
     Context context;
 
     private static final String LOG = "DatabaseHelper";  // Logcat tag
-    private static final int DATABASE_VERSION = 4;  // This number MUST be incremented whenever a database is created/destroyed or columns are created/removed
+    private static final int DATABASE_VERSION = 5;  // This number MUST be incremented whenever a database is created/destroyed or columns are created/removed
     private static final String DATABASE_NAME = "patientManager";
 
     // Table Names
@@ -61,7 +61,7 @@ public class DatabaseHelper extends SQLiteOpenHelper{
     private static final String KEY_END = "end";
 
     // MEMSCap specific column
-    private static final String KEY_MEMS = "memsDates";
+    private static final String KEY_MEMS_ID = "memsDates";
 
     // Create table statements
     private static final String CREATE_TABLE_PARTICIPANTS = "CREATE TABLE "
@@ -74,7 +74,7 @@ public class DatabaseHelper extends SQLiteOpenHelper{
     private static final String CREATE_TABLE_PEAK_FERTILITY = "CREATE TABLE " + TABLE_PEAK_FERTILITY + "(" + KEY_ID + " INTEGER PRIMARY KEY,"
             + KEY_PARTICIPANT_ID + " INTEGER," + KEY_START + " TEXT," + KEY_END + " TEXT)";
     private static final String CREATE_TABLE_MEMS_CAP = "CREATE TABLE " + TABLE_MEMS_CAP + "(" + KEY_ID + " INTEGER PRIMARY KEY,"
-            + KEY_PARTICIPANT_ID + " INTEGER," + KEY_MEMS + " TEXT" + KEY_DATE + " TEXT)";
+            + KEY_PARTICIPANT_ID + " INTEGER," + KEY_MEMS_ID + " INTEGER" + KEY_DATE + " TEXT)";
 
     // Constructors
     public DatabaseHelper(Context context) {
@@ -402,7 +402,7 @@ public class DatabaseHelper extends SQLiteOpenHelper{
         ContentValues values = new ContentValues();
         values.put(KEY_PARTICIPANT_ID, memsCap.getParticipant_id());
         values.put(KEY_DATE, getStringFromDate(memsCap.getDate()));
-        values.put(KEY_MEMS, getStringFromDate(memsCap.getMems()));
+        values.put(KEY_MEMS_ID, memsCap.getMems_id());
 
         // insert row
         long id = db.insert(TABLE_MEMS_CAP, null, values);
@@ -433,7 +433,7 @@ public class DatabaseHelper extends SQLiteOpenHelper{
             do {
                 long id = c.getInt((c.getColumnIndex(KEY_ID)));
                 String date = c.getString((c.getColumnIndex(KEY_DATE)));
-                String mems = c.getString((c.getColumnIndex(KEY_MEMS)));
+                long mems = c.getInt((c.getColumnIndex(KEY_MEMS_ID)));
                 MemsCap mc = new MemsCap(participant_id, date, mems);
                 mc.setId(id);
 

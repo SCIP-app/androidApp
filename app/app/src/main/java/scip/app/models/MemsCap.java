@@ -1,15 +1,8 @@
 package scip.app.models;
 
-import android.content.ContentValues;
-import android.database.Cursor;
-import android.database.sqlite.SQLiteDatabase;
-import android.util.Log;
-
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
 import java.util.Date;
-import java.util.List;
 
 /**
  * Created by Kristin Dew on 6/30/2015.
@@ -18,18 +11,18 @@ public class MemsCap {
         long id;
         long participant_id;
         Date date;
-        Date mems;
+        long mems_id;
 
-        public MemsCap(long participant_id, Date date, Date mems) {
+        public MemsCap(long participant_id, Date date, long mems_id) {
             this.participant_id = participant_id;
             this.date = date;
-            this.mems = mems;
+            this.mems_id = mems_id;
         }
 
-        public MemsCap(long participant_id, String date, String mems) {
+        public MemsCap(long participant_id, String date, long mems_id) {
             this.participant_id = participant_id;
             this.date = getDateFromString(date);
-            this.mems = getDateFromString(mems);
+            this.mems_id = mems_id;
         }
 
         private Date getDateFromString(String date) {
@@ -57,8 +50,8 @@ public class MemsCap {
             return date;
         }
 
-        public Date getMems() {
-            return mems;
+        public long getMems_id() {
+            return mems_id;
         }
 
     }
