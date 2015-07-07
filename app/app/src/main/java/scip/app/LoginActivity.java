@@ -17,6 +17,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import scip.app.databasehelper.DatabaseHelper;
+import scip.app.models.MemsCap;
 import scip.app.models.Participant;
 import scip.app.models.PeakFertility;
 import scip.app.models.SurveyResult;
@@ -153,6 +154,8 @@ public class LoginActivity extends Activity{
 
         PeakFertility peakFertility1 = new PeakFertility(participants.get(1).getParticipantId(), "24/07/2015", "26/07/2015");
 
+        MemsCap memsCap1 = new MemsCap (participants.get(1).getParticipantId(), "24/07/2015", "26/07/2015");
+
         db.createParticipant(participants.get(0));
         db.createParticipant(participants.get(1));
         db.createParticipant(participants.get(2));
@@ -166,6 +169,8 @@ public class LoginActivity extends Activity{
         db.createSurveyResult(surveyResult3);
 
         db.createPeakFertility(peakFertility1);
+
+        db.createMemsCap(memsCap1);
 
         db.closeDB();
     }
@@ -182,6 +187,10 @@ public class LoginActivity extends Activity{
             Log.d("PF", String.valueOf(pf.getParticipant_id()));
         }
 
+        List<MemsCap> mcs = db.getAllMemsCapById(participantList.get(0).getParticipantId());
+        for(MemsCap mc : mcs) {
+            Log.d("MC", String.valueOf(mc.getParticipant_id()));
+        }
         List<ViralLoad> vls = db.getAllViralLoadsById(participantList.get(0).getParticipantId());
         for(ViralLoad vl : vls) {
             Log.d("VL", String.valueOf(vl.getParticipant_id()));
