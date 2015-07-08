@@ -63,7 +63,7 @@ public class LoginActivity extends Activity{
 //            Log.d("C ID", String.valueOf(p.getCoupleId()));
 //        }
 
-        testCSVImport();
+        //testCSVImport();
 
         Button mEmailSignInButton = (Button) findViewById(R.id.email_sign_in_button);
         mEmailSignInButton.setOnClickListener(new OnClickListener() {

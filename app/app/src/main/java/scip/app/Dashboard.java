@@ -7,6 +7,7 @@ import android.support.v7.app.ActionBar;
 import android.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -16,6 +17,11 @@ import android.view.ViewGroup;
 import android.support.v4.widget.DrawerLayout;
 import android.widget.ArrayAdapter;
 import android.widget.TextView;
+
+import java.util.List;
+
+import scip.app.databasehelper.DatabaseHelper;
+import scip.app.models.Participant;
 
 
 public class Dashboard extends ActionBarActivity
@@ -30,6 +36,7 @@ public class Dashboard extends ActionBarActivity
      * Used to store the last screen title. For use in {@link #restoreActionBar()}.
      */
     private CharSequence mTitle;
+    List<Participant> couple;
 
     FragmentTransaction fragmentTransaction = null;
 
@@ -38,6 +45,14 @@ public class Dashboard extends ActionBarActivity
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_dashboard);
+        long couple_id = getIntent().getLongExtra("couple_id", 0);
+        DatabaseHelper db = new DatabaseHelper(getApplicationContext());
+        couple = db.getCoupleFromID(couple_id);
+        db.closeDB();
+
+        for(Participant p : couple) {
+            Log.d("Participant id in couple", String.valueOf(p.getParticipantId()));
+        }
 
         mNavigationDrawerFragment = (NavigationDrawerFragment)
                 getSupportFragmentManager().findFragmentById(R.id.navigation_drawer);
