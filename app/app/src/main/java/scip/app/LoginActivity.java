@@ -54,16 +54,10 @@ public class LoginActivity extends Activity{
 
         mPasswordView = (EditText) findViewById(R.id.password);
 
-        //List<Participant> participants = getParticipantList();
-        //populateDatabase(participants);
-        //testDatabase(participants);
-
-//        for(Participant p : participants) {
-//            Log.d("P ID", String.valueOf(p.getParticipantId()));
-//            Log.d("C ID", String.valueOf(p.getCoupleId()));
-//        }
-
-        //testCSVImport();
+//        testCSVImport();
+//        DatabaseHelper db = new DatabaseHelper(getApplicationContext());
+//        List<Participant> allParticipants = db.getAllParticipants();
+//        db.closeDB();
 
         Button mEmailSignInButton = (Button) findViewById(R.id.email_sign_in_button);
         mEmailSignInButton.setOnClickListener(new OnClickListener() {
@@ -76,21 +70,7 @@ public class LoginActivity extends Activity{
 
     private void testCSVImport() {
         CSVImporter csvImporter = new CSVImporter(getApplicationContext());
-        csvImporter.readMemsCapData(getResources().openRawResource(R.raw.memscap_test));
-
-        DatabaseHelper db = new DatabaseHelper(getApplicationContext());
-        List<Participant> participantList = db.getAllParticipants();
-
-        for(Participant p : participantList) {
-            List<MemsCap> memsCapList = db.getAllMemsCapById(p.getParticipantId());
-            Log.d("Participant id", String.valueOf(p.getParticipantId()));
-            for(MemsCap m : memsCapList) {
-                Log.d("memsid", String.valueOf(m.getMems_id()));
-                Log.d("date", String .valueOf(m.getDate()));
-            }
-
-        }
-        db.closeDB();
+        csvImporter.openExternalFiles();
     }
 
 
@@ -196,47 +176,33 @@ public class LoginActivity extends Activity{
 
     private void testDatabase(List<Participant> participantList) {
         DatabaseHelper db = new DatabaseHelper(getApplicationContext());
-        List<Participant> participants= db.getAllParticipants();
-        for(Participant participant : participants) {
-            Log.d("Participant id", String.valueOf(participant.getParticipantId()));
-        }
+        for(Participant p : participantList) {
+            Log.d("Participant id", String.valueOf(p.getParticipantId()));
+            if(p.isFemale()) {
+                for(PeakFertility pf : p.getPeakFertilities()) {
+                    Log.d("PF", String.valueOf(pf.getParticipant_id()));
+                }
+                for (SurveyResult sr : p.getSurveyResults()) {
+                    Log.d("SR: Temp", String.valueOf(sr.getTemperature()));
+                }
+            }
 
-        List<PeakFertility> pfs = db.getAllPeakFertilityById(participantList.get(1).getParticipantId());
-        for(PeakFertility pf : pfs) {
-            Log.d("PF", String.valueOf(pf.getParticipant_id()));
-        }
-
-        List<ViralLoad> vls = db.getAllViralLoadsById(participantList.get(0).getParticipantId());
-        for(ViralLoad vl : vls) {
-            Log.d("VL", String.valueOf(vl.getParticipant_id()));
-            Log.d("VL: number", String.valueOf(vl.getNumber()));
-        }
-
-        vls = db.getAllViralLoadsById(participantList.get(2).getParticipantId());
-        for(ViralLoad vl : vls) {
-            Log.d("VL", String.valueOf(vl.getParticipant_id()));
-            Log.d("VL: number", String.valueOf(vl.getNumber()));
-        }
-
-        List<SurveyResult> srs = db.getAllSurveyResultsById(participantList.get(1).getParticipantId());
-        for (SurveyResult sr : srs) {
-            Log.d("SR", String.valueOf(sr.getParticipant_id()));
-            Log.d("SR: Temp", String.valueOf(sr.getTemperature()));
+            if(p.isIndex()) {
+                for(ViralLoad vl : p.getViralLoads()) {
+                    Log.d("VL: number", String.valueOf(vl.getNumber()));
+                }
+            }
+            else {
+                for(MemsCap mc : p.getMemscaps()) {
+                    Log.d("MC: date", String.valueOf(mc.getDate()));
+                }
+            }
         }
 
         List<Long> cids = db.getAllCoupleIDs();
         for(Long cid : cids) {
             Log.d("Couple ID", String.valueOf(cid));
         }
-
-        List<Participant> couple = db.getCoupleFromID(participantList.get(1).getCoupleId());
-        for(Participant p : couple) {
-            Log.d("P in C", String.valueOf(p.getParticipantId()));
-        }
-
-        Participant partner = participantList.get(1).getPartner();
-        Log.d("Participant", String.valueOf(participantList.get(1).getParticipantId()));
-        Log.d("Partner is", String.valueOf(partner.getParticipantId()));
 
         db.closeDB();
     }

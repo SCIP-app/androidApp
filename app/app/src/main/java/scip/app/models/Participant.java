@@ -76,11 +76,21 @@ public class Participant {
         return null;
     }
 
+    public List<MemsCap> getMemscaps() {
+        if (!isIndex())
+            return memscaps;
+        return null;
+    }
+
     public boolean isIndex() {
         long tmp = (participant_id/10) % 2;
         if(tmp == 0)
             return true;
         return false;
+    }
+
+    public boolean isFemale() {
+        return isFemale;
     }
 
     public Participant getPartner() {
