@@ -157,6 +157,8 @@ public class LoginActivity extends Activity{
 
         PeakFertility peakFertility1 = new PeakFertility(participants.get(1).getParticipantId(), "24/07/2015", "26/07/2015");
 
+        MemsCap memsCap1 = new MemsCap (participants.get(1).getParticipantId(), "24/07/2015", 7654789);
+
         db.createParticipant(participants.get(0));
         db.createParticipant(participants.get(1));
         db.createParticipant(participants.get(2));
@@ -171,11 +173,14 @@ public class LoginActivity extends Activity{
 
         db.createPeakFertility(peakFertility1);
 
+        db.createMemsCap(memsCap1);
+
         db.closeDB();
     }
 
     private void testDatabase(List<Participant> participantList) {
         DatabaseHelper db = new DatabaseHelper(getApplicationContext());
+
         for(Participant p : participantList) {
             Log.d("Participant id", String.valueOf(p.getParticipantId()));
             if(p.isFemale()) {

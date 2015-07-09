@@ -7,7 +7,9 @@ import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-
+import android.widget.ImageButton;
+import android.view.View.OnClickListener;
+import android.content.Intent;
 
 
 public class CoupleMain extends Fragment {
@@ -24,7 +26,21 @@ public class CoupleMain extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        return inflater.inflate(R.layout.fragment_couple_main, container, false);
+        View view = inflater.inflate(R.layout.fragment_couple_main,
+                container, false);
+        ImageButton calendarButton = (ImageButton) view.findViewById(R.id.calendarButton);
+        calendarButton.setOnClickListener(new OnClickListener()
+        {
+            @Override
+            public void onClick(View v)
+            {
+                Intent calendarIntent = new Intent(getActivity(),CalendarActivity.class);
+                startActivity(calendarIntent);
+
+
+            }
+        });
+        return view;
     }
 
     // TODO: Rename method, update argument and hook method into UI event
