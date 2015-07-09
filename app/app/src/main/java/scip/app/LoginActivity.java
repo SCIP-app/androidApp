@@ -54,12 +54,12 @@ public class LoginActivity extends Activity{
 
         List<Participant> participants = getParticipantList();
         //populateDatabase(participants);
-        testDatabase(participants);
+        //testDatabase(participants);
 
-        for(Participant p : participants) {
-            Log.d("P ID", String.valueOf(p.getParticipantId()));
-            Log.d("C ID", String.valueOf(p.getCoupleId()));
-        }
+//        for(Participant p : participants) {
+//            Log.d("P ID", String.valueOf(p.getParticipantId()));
+//            Log.d("C ID", String.valueOf(p.getCoupleId()));
+//        }
 
         Button mEmailSignInButton = (Button) findViewById(R.id.email_sign_in_button);
         mEmailSignInButton.setOnClickListener(new OnClickListener() {
@@ -154,7 +154,7 @@ public class LoginActivity extends Activity{
 
         PeakFertility peakFertility1 = new PeakFertility(participants.get(1).getParticipantId(), "24/07/2015", "26/07/2015");
 
-        MemsCap memsCap1 = new MemsCap (participants.get(1).getParticipantId(), "24/07/2015", "26/07/2015");
+        MemsCap memsCap1 = new MemsCap (participants.get(1).getParticipantId(), "24/07/2015", 7654789);
 
         db.createParticipant(participants.get(0));
         db.createParticipant(participants.get(1));
