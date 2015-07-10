@@ -99,7 +99,7 @@ public class Dashboard extends ActionBarActivity
     public void onSectionAttached(int number) {
         switch (number) {
             case 1:
-                mTitle = getString(R.string.title_section1) + String.valueOf(couple.get(0).getCoupleId());
+                mTitle = getString(R.string.title_section1);
                 break;
             case 2:
                 mTitle = getString(R.string.title_section2);
