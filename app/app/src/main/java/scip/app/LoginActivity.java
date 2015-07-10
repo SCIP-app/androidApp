@@ -54,10 +54,20 @@ public class LoginActivity extends Activity{
 
         mPasswordView = (EditText) findViewById(R.id.password);
 
-//        testCSVImport();
-//        DatabaseHelper db = new DatabaseHelper(getApplicationContext());
-//        List<Participant> allParticipants = db.getAllParticipants();
-//        db.closeDB();
+        Button mTestFileImportButton = (Button) findViewById(R.id.testFileImportBtn);
+        mTestFileImportButton.setOnClickListener(new OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                DatabaseHelper db = new DatabaseHelper(getApplicationContext());
+                db.deleteAllData();
+                db.closeDB();
+                testCSVImport();
+                db = new DatabaseHelper(getApplicationContext());
+                List<Participant> allParticipants = db.getAllParticipants();
+                db.closeDB();
+                testDatabase(allParticipants);
+            }
+        });
 
         Button mEmailSignInButton = (Button) findViewById(R.id.email_sign_in_button);
         mEmailSignInButton.setOnClickListener(new OnClickListener() {

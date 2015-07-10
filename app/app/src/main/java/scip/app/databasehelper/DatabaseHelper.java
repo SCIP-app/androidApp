@@ -445,6 +445,22 @@ public class DatabaseHelper extends SQLiteOpenHelper{
         return prepAdherence;
     }
 
+    public void deleteAllData() {
+        SQLiteDatabase db = this.getWritableDatabase();
+        db.execSQL("DROP TABLE IF EXISTS " + TABLE_PARTICIPANTS);
+        db.execSQL("DROP TABLE IF EXISTS " + TABLE_VIRAL_LOADS);
+        db.execSQL("DROP TABLE IF EXISTS " + TABLE_SURVEY_RESULTS);
+        db.execSQL("DROP TABLE IF EXISTS " + TABLE_PEAK_FERTILITY);
+        db.execSQL("DROP TABLE IF EXISTS " + TABLE_MEMS_CAP);
+
+        db.execSQL(CREATE_TABLE_PARTICIPANTS);
+        db.execSQL(CREATE_TABLE_VIRAL_LOADS);
+        db.execSQL(CREATE_TABLE_SURVEY_RESULTS);
+        db.execSQL(CREATE_TABLE_PEAK_FERTILITY);
+        db.execSQL(CREATE_TABLE_MEMS_CAP);
+
+    }
+
     // Utility Methods
     private String getStringFromDate(Date date){
         DateFormat df = new SimpleDateFormat("dd/MM/yyyy");
