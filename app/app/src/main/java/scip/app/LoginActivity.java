@@ -154,7 +154,7 @@ public class LoginActivity extends Activity{
 
         PeakFertility peakFertility1 = new PeakFertility(participants.get(1).getParticipantId(), "24/07/2015", "26/07/2015");
 
-        MemsCap memsCap1 = new MemsCap (participants.get(1).getParticipantId(), "24/07/2015", "26/07/2015");
+        MemsCap memsCap1 = new MemsCap (participants.get(1).getParticipantId(), "24/07/2015", 123456789);
 
         db.createParticipant(participants.get(0));
         db.createParticipant(participants.get(1));
