@@ -53,13 +53,15 @@ public class LoginActivity extends Activity{
         mPasswordView = (EditText) findViewById(R.id.password);
 
         List<Participant> participants = getParticipantList();
+
         //populateDatabase(participants);
         //testDatabase(participants);
 
 //        for(Participant p : participants) {
 //            Log.d("P ID", String.valueOf(p.getParticipantId()));
 //            Log.d("C ID", String.valueOf(p.getCoupleId()));
-//        }
+//        }\
+
 
         Button mEmailSignInButton = (Button) findViewById(R.id.email_sign_in_button);
         mEmailSignInButton.setOnClickListener(new OnClickListener() {
@@ -112,7 +114,7 @@ public class LoginActivity extends Activity{
             // form field with an error.
             focusView.requestFocus();
         } else {
-            Intent intent = new Intent(this,CoupleSelection.class);
+            Intent intent = new Intent(this,SessionSelectionActivity.class);
             startActivity(intent);
 
         }

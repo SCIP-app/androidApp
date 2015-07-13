@@ -12,9 +12,9 @@ import android.view.View.OnClickListener;
 import android.content.Intent;
 
 
-public class CoupleMain extends Fragment {
+public class LandingFragment extends Fragment {
 
-    public CoupleMain() {
+    public LandingFragment() {
         // Required empty public constructor
     }
 
@@ -26,7 +26,7 @@ public class CoupleMain extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        View view = inflater.inflate(R.layout.fragment_couple_main,
+        View view = inflater.inflate(R.layout.fragment_landing_main,
                 container, false);
         ImageButton calendarButton = (ImageButton) view.findViewById(R.id.calendarButton);
         calendarButton.setOnClickListener(new OnClickListener()
@@ -34,7 +34,7 @@ public class CoupleMain extends Fragment {
             @Override
             public void onClick(View v)
             {
-                Intent calendarIntent = new Intent(getActivity(),CalendarActivity.class);
+                Intent calendarIntent = new Intent(getActivity(),CalendarViewActivity.class);
                 startActivity(calendarIntent);
 
 
