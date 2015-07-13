@@ -128,7 +128,7 @@ public class LoginActivity extends Activity{
             // form field with an error.
             focusView.requestFocus();
         } else {
-            Intent intent = new Intent(this,CoupleSelection.class);
+            Intent intent = new Intent(this,SessionSelectionActivity.class);
             startActivity(intent);
 
         }

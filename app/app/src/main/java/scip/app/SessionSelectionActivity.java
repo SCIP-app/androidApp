@@ -17,17 +17,16 @@ import java.util.List;
 import scip.app.databasehelper.DatabaseHelper;
 
 /*
-    Display list view of couple id's from which the provider can select the coupld they plan to counsel
-    TODO: Fetch data from DB
+    Display list view of couple id's from which the provider can select the couple_id they plan to counsel
  */
 
-public class CoupleSelection extends Activity {
+public class SessionSelectionActivity extends Activity {
     private ListView m_listview;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_couple_selection);
+        setContentView(R.layout.activity_session_selection);
         m_listview = (ListView) findViewById(R.id.listView);
 
         DatabaseHelper db = new DatabaseHelper(getApplicationContext());
@@ -46,8 +45,9 @@ public class CoupleSelection extends Activity {
                 Long couple_id = (Long) parent.getItemAtPosition(position);
                 Log.d("Couple id selected", String.valueOf(couple_id));
 
-                Intent dashboard = new Intent(getApplicationContext(),Dashboard.class);
+                Intent dashboard = new Intent(getApplicationContext(),DashboardActivity.class);
                 dashboard.putExtra("couple_id", couple_id);
+
                 startActivity(dashboard);
             }
         });
