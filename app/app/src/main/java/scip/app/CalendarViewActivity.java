@@ -20,14 +20,20 @@ import com.roomorama.caldroid.CaldroidListener;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.List;
 
 import android.content.Context;
 import android.view.Gravity;
+
+import scip.app.databasehelper.DatabaseHelper;
+import scip.app.models.Participant;
 
 public class CalendarViewActivity extends ActionBarActivity {
     private boolean undo = false;
     private CaldroidFragment caldroidFragment;
     private CaldroidFragment dialogCaldroidFragment;
+    private List<Participant> couple;
+    private long couple_id;
 
     private void setCustomResourceForDates() {
         Calendar cal = Calendar.getInstance();
@@ -55,6 +61,11 @@ public class CalendarViewActivity extends ActionBarActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_calendar_view);
+
+        couple_id = getIntent().getLongExtra("couple_id", 0);
+        DatabaseHelper db = new DatabaseHelper(getApplicationContext());
+        couple = db.getCoupleFromID(couple_id);
+        db.closeDB();
 
         final SimpleDateFormat formatter = new SimpleDateFormat("dd MMM yyyy");
 

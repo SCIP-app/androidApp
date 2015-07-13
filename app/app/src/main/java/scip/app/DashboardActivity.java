@@ -37,6 +37,7 @@ public class DashboardActivity extends ActionBarActivity
      */
     private CharSequence mTitle;
     List<Participant> couple;
+    long couple_id;
 
     FragmentTransaction fragmentTransaction = null;
 
@@ -45,7 +46,7 @@ public class DashboardActivity extends ActionBarActivity
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_dashboard);
-        long couple_id = getIntent().getLongExtra("couple_id", 0);
+        couple_id = getIntent().getLongExtra("couple_id", 0);
         DatabaseHelper db = new DatabaseHelper(getApplicationContext());
         couple = db.getCoupleFromID(couple_id);
         db.closeDB();
@@ -66,6 +67,13 @@ public class DashboardActivity extends ActionBarActivity
 
     }
 
+    public List<Participant> getCouple() {
+        return couple;
+    }
+
+    public long getCouple_id() {
+        return couple_id;
+    }
 
     @Override
     public void onNavigationDrawerItemSelected(int position) {

@@ -59,20 +59,21 @@ public class CustomizedCalendarCellAdapter extends CaldroidGridAdapter {
         boolean shouldResetSelectedView = false;
 
 
-            if (dateTime.equals(getToday())) {
-                cellView.setBackgroundColor(R.color.material_blue_500);
-                ImageView unprotectedSex = (ImageView) cellView.findViewById(R.id.sex);
-                unprotectedSex.setVisibility(View.VISIBLE);
-                ImageView sfluid = (ImageView) cellView.findViewById(R.id.sfluid);
-                sfluid.setVisibility(View.VISIBLE);
-                ImageView htemp = (ImageView) cellView.findViewById(R.id.htemp);
-                htemp.setVisibility(View.VISIBLE);
-                ImageView opk = (ImageView) cellView.findViewById(R.id.opk);
-                opk.setVisibility(View.VISIBLE);
-                ImageView prep = (ImageView) cellView.findViewById(R.id.prep);
-                prep.setVisibility(View.VISIBLE);
-
+        if (dateTime.equals(getToday())) {
+            cellView.setBackgroundColor(R.color.material_blue_500);
         }
+
+        // Just show them all for now. Will parse through data soon
+        ImageView unprotectedSex = (ImageView) cellView.findViewById(R.id.sex);
+        unprotectedSex.setVisibility(View.VISIBLE);
+        ImageView sfluid = (ImageView) cellView.findViewById(R.id.sfluid);
+        sfluid.setVisibility(View.VISIBLE);
+        ImageView htemp = (ImageView) cellView.findViewById(R.id.htemp);
+        htemp.setVisibility(View.VISIBLE);
+        ImageView opk = (ImageView) cellView.findViewById(R.id.opk);
+        opk.setVisibility(View.VISIBLE);
+        ImageView prep = (ImageView) cellView.findViewById(R.id.prep);
+        prep.setVisibility(View.VISIBLE);
 
         // Customize for selected dates
         if (selectedDates != null && selectedDates.indexOf(dateTime) != -1) {
@@ -84,11 +85,11 @@ public class CustomizedCalendarCellAdapter extends CaldroidGridAdapter {
         }
 
 
-            if (dateTime.equals(getToday())) {
-                cellView.setBackgroundResource(com.caldroid.R.drawable.red_border);
-            } else {
-                cellView.setBackgroundResource(com.caldroid.R.drawable.cell_bg);
-            }
+        if (dateTime.equals(getToday())) {
+            cellView.setBackgroundResource(com.caldroid.R.drawable.red_border);
+        } else {
+            cellView.setBackgroundResource(com.caldroid.R.drawable.cell_bg);
+        }
 
 
         tv1.setText("" + dateTime.getDay());

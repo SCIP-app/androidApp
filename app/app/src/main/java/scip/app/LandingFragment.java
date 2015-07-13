@@ -35,9 +35,8 @@ public class LandingFragment extends Fragment {
             public void onClick(View v)
             {
                 Intent calendarIntent = new Intent(getActivity(),CalendarViewActivity.class);
+                calendarIntent.putExtra("couple_id", ((DashboardActivity)getActivity()).getCouple_id());
                 startActivity(calendarIntent);
-
-
             }
         });
         return view;
