@@ -52,8 +52,8 @@ public class LoginActivity extends Activity{
         mPasswordView = (EditText) findViewById(R.id.password);
 
         List<Participant> participants = getParticipantList();
-        //populateDatabase(participants);
-        //testDatabase(participants);
+        populateDatabase(participants);
+        testDatabase(participants);
 
 
         for(Participant p : participants) {
