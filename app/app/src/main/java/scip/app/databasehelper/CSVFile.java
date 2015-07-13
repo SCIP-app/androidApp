@@ -14,16 +14,29 @@ import java.util.List;
  */
 public class CSVFile {
     File inputFile;
+    InputStream inputStream;
+    boolean useLocal = false;
 
     public CSVFile(File inputFile){
         this.inputFile = inputFile;
     }
 
+    public CSVFile(InputStream inputStream){
+        this.inputStream = inputStream;
+        this.useLocal = true;
+    }
+
     public List read(){
         List resultList = new ArrayList();
-
+        BufferedReader reader;
         try {
-            BufferedReader reader = new BufferedReader(new FileReader(inputFile));
+            if(useLocal) {
+                reader = new BufferedReader(new InputStreamReader(inputStream));
+            }
+            else {
+
+                reader = new BufferedReader(new FileReader(inputFile));
+            }
             String csvLine;
             reader.readLine(); // read the first line and throw it out because it's the description
             while ((csvLine = reader.readLine()) != null) {
@@ -36,4 +49,7 @@ public class CSVFile {
         }
         return resultList;
     }
+
+
+
 }

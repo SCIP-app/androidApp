@@ -61,7 +61,7 @@ public class LoginActivity extends Activity{
                 DatabaseHelper db = new DatabaseHelper(getApplicationContext());
                 db.deleteAllData();
                 db.closeDB();
-                testCSVImport();
+                testCSVImport(true);
                 db = new DatabaseHelper(getApplicationContext());
                 List<Participant> allParticipants = db.getAllParticipants();
                 db.closeDB();
@@ -78,9 +78,12 @@ public class LoginActivity extends Activity{
         });
     }
 
-    private void testCSVImport() {
+    private void testCSVImport(boolean useLocal) {
         CSVImporter csvImporter = new CSVImporter(getApplicationContext());
-        csvImporter.openExternalFiles();
+        if(useLocal)
+            csvImporter.openLocalFiles();
+        else
+            csvImporter.openExternalFiles();
     }
 
 

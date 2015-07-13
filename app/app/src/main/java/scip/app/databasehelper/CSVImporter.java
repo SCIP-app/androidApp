@@ -5,8 +5,10 @@ import android.os.Environment;
 import android.util.Log;
 
 import java.io.File;
+import java.io.InputStream;
 import java.util.List;
 
+import scip.app.R;
 import scip.app.models.MemsCap;
 import scip.app.models.Participant;
 import scip.app.models.ViralLoad;
@@ -21,10 +23,7 @@ public class CSVImporter {
         this.context = context;
     }
 
-    public void readMemsCapData(File input) {
-        CSVFile csvFile = new CSVFile(input);
-        List<String[]> memsList = csvFile.read();
-
+    public void readMemsCapData(List<String[]> memsList) {
         DatabaseHelper db = new DatabaseHelper(context);
         for(String[] entry : memsList) {
             Log.d("Participant Id", entry[0]);
@@ -45,9 +44,7 @@ public class CSVImporter {
         db.closeDB();
     }
 
-    public void readViralLoadData(File input) {
-        CSVFile csvFile = new CSVFile(input);
-        List<String[]> viralLoadList = csvFile.read();
+    public void readViralLoadData(List<String[]> viralLoadList) {
         DatabaseHelper db = new DatabaseHelper(context);
         for(String[] entry : viralLoadList) {
             Log.d("Participant Id", entry[0]);
@@ -84,12 +81,25 @@ public class CSVImporter {
             for(File f : externalDirs[0].listFiles()) {
                 Log.d("File ", f.getName());
                 if(f.getName().contains("memscap")) {
-                    readMemsCapData(f);
+                    CSVFile csvFile = new CSVFile(f);
+                    List<String[]> memsList = csvFile.read();
+                    readMemsCapData(memsList);
                 }
                 else if (f.getName().contains("viralload")){
-                    readViralLoadData(f);
+                    CSVFile csvFile = new CSVFile(f);
+                    List<String[]> viralLoadList = csvFile.read();
+                    readViralLoadData(viralLoadList);
                 }
             }
         }
     }
+
+    public void openLocalFiles() {
+        CSVFile vl = new CSVFile(context.getResources().openRawResource(R.raw.viralload_test));
+        CSVFile mc = new CSVFile(context.getResources().openRawResource(R.raw.memscap_test));
+        readViralLoadData(vl.read());
+        readMemsCapData(mc.read());
+
+    }
+
 }
