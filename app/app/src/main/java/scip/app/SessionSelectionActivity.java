@@ -16,13 +16,13 @@ import android.view.View.OnClickListener;
     TODO: Fetch data from DB
  */
 
-public class CoupleSelection extends Activity {
+public class SessionSelectionActivity extends Activity {
     private ListView m_listview;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_couple_selection);
+        setContentView(R.layout.activity_session_selection);
         m_listview = (ListView) findViewById(R.id.listView);
 
         String[] items = new String[] {"Item 1", "Item 2", "Item 3"};
@@ -34,7 +34,7 @@ public class CoupleSelection extends Activity {
         m_listview.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> arg0, View arg1, int arg2, long arg3) {
-                Intent dashboard = new Intent(getApplicationContext(),Dashboard.class);
+                Intent dashboard = new Intent(getApplicationContext(),DashboardActivity.class);
                 startActivity(dashboard);
             }
         });

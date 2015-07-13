@@ -19,15 +19,15 @@
             </intent-filter>
         </activity>
         <activity
-            android:name=".CoupleSelection"
+            android:name=".SessionSelectionActivity"
             android:label="@string/title_activity_couple_selection" >
         </activity>
         <activity
-            android:name=".Dashboard"
+            android:name=".DashboardActivity"
             android:label="@string/title_activity_dashboard" >
         </activity>
         <activity
-            android:name=".CalendarActivity"
+            android:name=".CalendarViewActivity"
             android:label="@string/title_activity_calendar" >
         </activity>
     </application>

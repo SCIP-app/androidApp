@@ -24,7 +24,7 @@ import java.util.Date;
 import android.content.Context;
 import android.view.Gravity;
 
-public class CalendarActivity extends ActionBarActivity {
+public class CalendarViewActivity extends ActionBarActivity {
     private boolean undo = false;
     private CaldroidFragment caldroidFragment;
     private CaldroidFragment dialogCaldroidFragment;
@@ -54,7 +54,7 @@ public class CalendarActivity extends ActionBarActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_calendar);
+        setContentView(R.layout.activity_calendar_view);
 
         final SimpleDateFormat formatter = new SimpleDateFormat("dd MMM yyyy");
 
@@ -65,7 +65,7 @@ public class CalendarActivity extends ActionBarActivity {
         // //////////////////////////////////////////////////////////////////////
         // **** This is to show customized fragment. If you want customized
         // version, uncomment below line ****
-		 caldroidFragment = new CaldroidSampleCustomFragment();
+		 caldroidFragment = new CalendarCustomAdapterFragment();
 
         // Setup arguments
 

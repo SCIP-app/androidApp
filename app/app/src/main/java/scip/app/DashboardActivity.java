@@ -18,7 +18,7 @@ import android.widget.ArrayAdapter;
 import android.widget.TextView;
 
 
-public class Dashboard extends ActionBarActivity
+public class DashboardActivity extends ActionBarActivity
         implements NavigationDrawerFragment.NavigationDrawerCallbacks {
 
     /**
@@ -61,13 +61,13 @@ public class Dashboard extends ActionBarActivity
 
         switch (position) {
             case 0:
-                CoupleMain coupleFragment = new CoupleMain();
+                LandingFragment coupleFragment = new LandingFragment();
                 mTitle  = "Couples Main";
                 fragmentTransaction.replace(R.id.content_frame, coupleFragment);
                 fragmentTransaction.commit();
                 break;
             case 1:
-                CoupleMain couplesFragment = new CoupleMain();
+                LandingFragment couplesFragment = new LandingFragment();
                 mTitle  = "Couples Main";
                 fragmentTransaction.replace(R.id.content_frame, couplesFragment);
                 fragmentTransaction.commit();
@@ -166,7 +166,7 @@ public class Dashboard extends ActionBarActivity
         @Override
         public void onAttach(Activity activity) {
             super.onAttach(activity);
-            ((Dashboard) activity).onSectionAttached(
+            ((DashboardActivity) activity).onSectionAttached(
                     getArguments().getInt(ARG_SECTION_NUMBER));
         }
     }

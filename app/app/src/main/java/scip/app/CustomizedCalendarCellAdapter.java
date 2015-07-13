@@ -16,9 +16,9 @@ import java.util.HashMap;
 
 import hirondelle.date4j.DateTime;
 
-public class CaldroidSampleCustomAdapter extends CaldroidGridAdapter {
+public class CustomizedCalendarCellAdapter extends CaldroidGridAdapter {
 
-    public CaldroidSampleCustomAdapter(Context context, int month, int year,
+    public CustomizedCalendarCellAdapter(Context context, int month, int year,
                                        HashMap<String, Object> caldroidData,
                                        HashMap<String, Object> extraData) {
         super(context, month, year, caldroidData, extraData);
@@ -32,7 +32,7 @@ public class CaldroidSampleCustomAdapter extends CaldroidGridAdapter {
 
         // For reuse
         if (convertView == null) {
-            cellView = inflater.inflate(R.layout.custom_cell, null);
+            cellView = inflater.inflate(R.layout.custom_calendar_cell, null);
         }
 
         int topPadding = cellView.getPaddingTop();
