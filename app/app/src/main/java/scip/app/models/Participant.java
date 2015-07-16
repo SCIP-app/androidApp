@@ -13,7 +13,7 @@ import scip.app.databasehelper.DatabaseHelper;
  * Class variables:
  *  id
  *  Type: long
- *  Description: Used by Database Helper to add rows; this is NOT the same as the participant id. Has getter & setter.
+ *  Description: Unique identifier for db rows; this is NOT the same as the participant id.
  *
  * participant_id
  *  Type: long
@@ -25,7 +25,7 @@ import scip.app.databasehelper.DatabaseHelper;
  *
  * isFemale
  *  Type: boolean
- *  Description: Contains whether or not the participant is female
+ *  Description: Contains whether or not the participant is female.
  *
  * surveyResults
  *  Type: ArrayList
@@ -43,22 +43,27 @@ import scip.app.databasehelper.DatabaseHelper;
  *  Type: ArrayList
  *  Description: Contains the participant's peak fertility data as a list if available
  *
- * Functions (public/private?):
+ * Functions:
  *
- * Participant (Context, long) - Two public  classes?
- *  Description: Creates a Participant object from given parameters
+ * Participant (Context, long, long)
+ *  Description: Constructor; creates a Participant object from given parameters
  *  Input parameters:
  *      Context: sets app state
+ *      long: sets id
  *      long: sets participant id
- *  Output parameters: Constructs participant object with all data loaded.
+ *  Output parameters: Null
  *
- * getPartner - NEED HELP WITH THIS ONE
+ * getPartner ()
+ *  Description: Gets a couple based on the couple id; if no partner found, returns Participant p
+ *  Input parameters: Null
+ *  Output parameters: Null
  *
  * loadData ()
- *  Description: Pulls up all the data for a participant according to HIV status and whether or not isFemale.
- *  Input parameters:
- *      None?
- *  Output parameters: Gets data from DatabaseHelper object and passes it to Participant object.
+ *  Description: Pulls up all the data for a participant according to HIV status and whether or not isFemale
+ *  Input parameters: Null
+ *  Output parameters: Null
+ *
+ *  Getters & setters
  */
 
 public class Participant {

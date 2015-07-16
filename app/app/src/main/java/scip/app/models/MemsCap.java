@@ -7,11 +7,11 @@ import java.util.Date;
 /**
  * Created by Kristin Dew on 6/30/2015.
  * MemsCap
- * Description: This class sets up data (parsed from a CSV?) for use in the DatabaseHelper object
+ * Description: This class sets up data parsed from a CSV for use elsewhere
  * Class variables:
  * id
  *  Type: long
- *  Description: Used by Database Helper to add rows; this is NOT the same as the participant id. Has getter & setter.
+ *  Description: Unique identifier for db rows; this is NOT the same as the participant id. Has getter & setter.
  *
  * participant_id
  *  Type: long
@@ -27,18 +27,15 @@ import java.util.Date;
  *
  * Functions (public/private?):
  *
- * MemsCap (long, Date, long) - Why are there two public MemsCap classes again? Is it related to the date?
- *  Description: Creates a MemsCap object from given parameters
+ * MemsCap (long, Date, long)
+ *  Description: Constructor; Creates a MemsCap object from given parameters
  *  Input parameters:
- *      long: participant's id number (from CSV? or was this a global variable?)
- *      date: date of Memscap data from CSV
- *      long: mems_id as parsed from CSV
- *  Output parameters: Are there any for this one?
+ *      long: participant's id number
+ *      date: date of Memscap data
+ *      long: mems_id as parsed
+ *  Output parameters: Null
  *
- * Date (String)
- *  Description: Turns the raw string date into a formatted date (dd/mm/yy).
- *  Input parameters:
- *      String: Takes the string date and turns it into a formatted date using object SimpleDateFormat.
+ * Getters & setters.
  */
 public class MemsCap {
         long id;

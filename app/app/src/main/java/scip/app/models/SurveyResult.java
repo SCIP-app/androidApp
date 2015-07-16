@@ -7,27 +7,27 @@ import java.util.Date;
 /**
  * Created by Allie on 6/25/2015.
  * SurveyResult
- * Description: This class sets up survey result data (from mSurvey's API?) for use in the DatabaseHelper object
+ * Description: This class sets up survey result data for use elsewhere
  * Class variables:
  *  id
  *  Type: long
- *  Description: Used by Database Helper to add rows; this is NOT the same as the participant id. Has getter & setter.
+ *  Description: Unique identifier for db rows; this is NOT the same as the participant id.
  *
  * participant_id
  *  Type: long
- *  Description: Contains the participant id.
+ *  Description: Contains the participant id
  *
  * date
- *  Type: Date (private class)
- *  Description: Contains the date reformatted as dd/mm/yyyy.
+ *  Type: Date
+ *  Description: Contains the date reformatted as dd/mm/yyyy
  *
  * temperature
  *  Type: double
- *  Description: Contains the temperature pulled from mSurvey as a double
+ *  Description: Contains the temperature
  *
  * vaginaMucusSticky
  *  Type: boolean
- *  Description: Contains whether or not vaginal mucus is sticky that day (from mSurvey)
+ *  Description: Contains whether or not vaginal mucus is sticky that day
  *
  * onPeriod
  *  Type: boolean
@@ -45,12 +45,12 @@ import java.util.Date;
  *  Type: boolean
  *  Description: Contains whether or not the participant used a condom if they had sex (should I add something about how it depends on the previous value? Or it doesn't matter b/c it will just return null if not)
  *
- * Functions (public/private?):
+ * Functions:
  *
- * SurveyResult (long, String, double, int, int, int, int, int) - Two public classes?
- *  Description: Creates a SurveyResult object from given parameters
+ * SurveyResult (long, String, double, int, int, int, int, int)
+ *  Description: Constructor; Creates a SurveyResult object from given parameters
  *  Input parameters:
- *      long: participant's id number (from CSV? or was this a global variable?)
+ *      long: participant's id number
  *      String: gets the date in String format
  *      double: gets the temperature as a double
  *      int: converts vaginaMucusSticky int into a boolean
@@ -58,19 +58,17 @@ import java.util.Date;
  *      int: converts isOvulating int into a boolean
  *      int: converts hadSex int into a boolean
  *      int: converts usedCondom int into a boolean
- *  Output parameters: Are there any for this one?
+ *  Output parameters: Null
  *
  * booleanFromInt (int)
  *  Description: Converts integers to booleans
  *  Input parameters:
- *      int: takes integer toBool and sets it to a boolean value of 1 (what about 0?)
+ *      int: takes integer toBool and sets it to a boolean value of true if == 1
+ *   Output parameters: Null
  *
- * Date (String)
- *  Description: Turns the raw string date into a formatted date (dd/mm/yy).
- *  Input parameters:
- *      String: Takes the string date and turns it into a formatted date using object SimpleDateFormat.
- *
+ * Getters & setters
  */
+
 public class SurveyResult {
     long id;
     long participant_id;

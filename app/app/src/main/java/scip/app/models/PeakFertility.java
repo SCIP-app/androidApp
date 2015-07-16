@@ -7,38 +7,35 @@ import java.util.Date;
 /**
  * Created by Allie on 6/29/2015.
  * PeakFertility
- * Description: This class sets up fertility data (from mSurvey's API?) for use in the DatabaseHelper object
+ * Description: This class sets up fertility data for use elsewhere
  * Class variables:
  *  id
  *  Type: long
- *  Description: Used by Database Helper to add rows; this is NOT the same as the participant id. Has getter & setter.
+ *  Description: Unique identifier for db rows; this is NOT the same as the participant id
  *
  * participant_id
  *  Type: long
- *  Description: Contains the participant id.
+ *  Description: Contains the participant id
  *
  * start
  *  Type: Date (private class)
- *  Description: Contains the date reformatted as dd/mm/yyyy
+ *  Description: Contains the menses start date
  *
  * end
  *  Type: date
- *  Description: Contains the date
+ *  Description: Contains the menses end date
  *
- * Functions (public/private?):
+ * Functions:
  *
- * PeakFertility (long, Date, Date) - Two public  classes?
- *  Description: Creates a PeakFertility object from given parameters
+ * PeakFertility (long, Date, Date)
+ *  Description: Constructor; creates a PeakFertility object from given parameters
  *  Input parameters:
  *      long: participant's id number (from CSV? or was this a global variable?)
  *      Date: start of peak fertility period as calculated by algorithm
  *      Date: end of peak fertility period as calculated by algorithm
- *  Output parameters: Are there any for this one?
+ *  Output parameters: Null
  *
- * Date (String)
- *  Description: Turns the raw string date into a formatted date (dd/mm/yy).
- *  Input parameters:
- *      String: Takes the string date and turns it into a formatted date using object SimpleDateFormat.
+ * Getters & setters for id (long), participant id (long), start & end (Date).
  **/
 
 public class PeakFertility {
