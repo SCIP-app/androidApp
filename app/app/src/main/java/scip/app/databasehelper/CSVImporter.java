@@ -3,6 +3,7 @@ package scip.app.databasehelper;
 import android.content.Context;
 import android.os.Environment;
 import android.util.Log;
+import android.widget.Toast;
 
 import java.io.File;
 import java.io.InputStream;
@@ -76,19 +77,35 @@ public class CSVImporter {
     public void openExternalFiles() {
         if(isExternalStorageWritable()) {
             File[] externalDirs = context.getExternalFilesDirs(null);
+            Toast.makeText(context, String.valueOf(externalDirs.length), Toast.LENGTH_LONG).show();
             Log.d("External Dirs length", String.valueOf(externalDirs.length));
             Log.d("Path", externalDirs[0].getAbsolutePath());
-            for(File f : externalDirs[0].listFiles()) {
+//            for(File f : externalDirs[0].listFiles()) {
+//                Log.d("File ", f.getName());
+//                if(f.getName().contains("memscap")) {
+//                    CSVFile csvFile = new CSVFile(f);
+//                    List<String[]> memsList = csvFile.read();
+//                    readMemsCapData(memsList);
+//                }
+//                else if (f.getName().contains("viralload")){
+//                    CSVFile csvFile = new CSVFile(f);
+//                    List<String[]> viralLoadList = csvFile.read();
+//                    readViralLoadData(viralLoadList);
+//                }
+//            }
+            for(File f : externalDirs[1].listFiles()) {
                 Log.d("File ", f.getName());
                 if(f.getName().contains("memscap")) {
                     CSVFile csvFile = new CSVFile(f);
                     List<String[]> memsList = csvFile.read();
                     readMemsCapData(memsList);
+                    Toast.makeText(context, "Done with MEMS Cap", Toast.LENGTH_LONG).show();
                 }
                 else if (f.getName().contains("viralload")){
                     CSVFile csvFile = new CSVFile(f);
                     List<String[]> viralLoadList = csvFile.read();
                     readViralLoadData(viralLoadList);
+                    Toast.makeText(context, "Done with Viral Load", Toast.LENGTH_LONG).show();
                 }
             }
         }
