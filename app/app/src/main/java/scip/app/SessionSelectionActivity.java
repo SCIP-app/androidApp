@@ -2,6 +2,7 @@ package scip.app;
 
 import android.app.Activity;
 import android.content.Intent;
+import android.util.Log;
 import android.widget.AdapterView;
 import android.os.Bundle;
 import android.view.Menu;
@@ -11,9 +12,12 @@ import android.widget.ArrayAdapter;
 import android.widget.ListView;
 import android.view.View.OnClickListener;
 
+import java.util.List;
+
+import scip.app.databasehelper.DatabaseHelper;
+
 /*
-    Display list view of couple id's from which the provider can select the coupld they plan to counsel
-    TODO: Fetch data from DB
+    Display list view of couple id's from which the provider can select the couple_id they plan to counsel
  */
 
 public class SessionSelectionActivity extends Activity {
@@ -25,16 +29,25 @@ public class SessionSelectionActivity extends Activity {
         setContentView(R.layout.activity_session_selection);
         m_listview = (ListView) findViewById(R.id.listView);
 
+        DatabaseHelper db = new DatabaseHelper(getApplicationContext());
+        List<Long> couple_ids = db.getAllCoupleIDs();
+        db.closeDB();
+
         String[] items = new String[] {"Item 1", "Item 2", "Item 3"};
-        ArrayAdapter<String> adapter =
-                new ArrayAdapter<String>(this, android.R.layout.simple_list_item_1, items);
+        ArrayAdapter<Long> adapter =
+                new ArrayAdapter<Long>(this, android.R.layout.simple_list_item_1, couple_ids);
 
         m_listview.setAdapter(adapter);
 
         m_listview.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
-            public void onItemClick(AdapterView<?> arg0, View arg1, int arg2, long arg3) {
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                Long couple_id = (Long) parent.getItemAtPosition(position);
+                Log.d("Couple id selected", String.valueOf(couple_id));
+
                 Intent dashboard = new Intent(getApplicationContext(),DashboardActivity.class);
+                dashboard.putExtra("couple_id", couple_id);
+
                 startActivity(dashboard);
             }
         });

@@ -22,7 +22,10 @@ public class Participant {
     List<PeakFertility> peakFertilities;
 
     // Constructors
-    public Participant() {
+
+    // this constructor only to be used for creating database entries
+    public Participant(long participant_id) {
+        this.participant_id = participant_id;
     }
 
     public Participant(Context context, long participant_id) {
@@ -73,11 +76,21 @@ public class Participant {
         return null;
     }
 
+    public List<MemsCap> getMemscaps() {
+        if (!isIndex())
+            return memscaps;
+        return null;
+    }
+
     public boolean isIndex() {
         long tmp = (participant_id/10) % 2;
         if(tmp == 0)
             return true;
         return false;
+    }
+
+    public boolean isFemale() {
+        return isFemale;
     }
 
     public Participant getPartner() {
