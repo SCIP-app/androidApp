@@ -1,6 +1,7 @@
 package scip.app.models;
 
 import android.content.Context;
+import android.util.Log;
 
 import java.util.List;
 
@@ -24,8 +25,9 @@ public class Participant {
     // Constructors
 
     // this constructor only to be used for creating database entries
-    public Participant(long participant_id) {
+    public Participant(long participant_id, boolean isFemale) {
         this.participant_id = participant_id;
+        this.isFemale = isFemale;
     }
 
     public Participant(Context context, long participant_id) {
@@ -34,10 +36,16 @@ public class Participant {
         loadData();
     }
 
-    public Participant(Context context, long id, long participant_id) {
+    public Participant(Context context, long id, long participant_id, int isFemale) {
         this.context = context;
         this.id = id;
         this.participant_id = participant_id;
+        if(isFemale == 1) {
+            this.isFemale = true;
+            Log.d("PC", "Is Female");
+        }
+        else
+            this.isFemale = false;
         loadData();
     }
 

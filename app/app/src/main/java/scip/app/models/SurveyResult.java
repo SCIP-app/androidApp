@@ -29,9 +29,9 @@ public class SurveyResult {
         this.usedCondom = booleanFromInt(usedCondom);
     }
 
-    public SurveyResult(long participant_id, Date date, double temperature, boolean vaginaMucusSticky, boolean onPeriod, boolean isOvulating, boolean hadSex, boolean usedCondom) {
+    public SurveyResult(long participant_id, String date, double temperature, boolean vaginaMucusSticky, boolean onPeriod, boolean isOvulating, boolean hadSex, boolean usedCondom) {
         this.participant_id = participant_id;
-        this.date = date;
+        this.date = getDateFromString(date);
         this.temperature = temperature;
         this.vaginaMucusSticky = vaginaMucusSticky;
         this.onPeriod = onPeriod;

@@ -61,11 +61,11 @@ public class LoginActivity extends Activity{
                 DatabaseHelper db = new DatabaseHelper(getApplicationContext());
                 db.deleteAllData();
                 db.closeDB();
-                testCSVImport(false);
-                db = new DatabaseHelper(getApplicationContext());
-                List<Participant> allParticipants = db.getAllParticipants();
-                db.closeDB();
-                testDatabase(allParticipants);
+                testCSVImport(true);
+//                db = new DatabaseHelper(getApplicationContext());
+//                List<Participant> allParticipants = db.getAllParticipants();
+//                db.closeDB();
+//                testDatabase(allParticipants);
             }
         });
 
