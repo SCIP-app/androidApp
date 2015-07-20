@@ -32,6 +32,7 @@ public class CalendarViewActivity extends ActionBarActivity {
     private boolean undo = false;
     private CaldroidFragment caldroidFragment;
     private CaldroidFragment dialogCaldroidFragment;
+
     private List<Participant> couple;
     private long couple_id;
 
@@ -308,5 +309,9 @@ public class CalendarViewActivity extends ActionBarActivity {
             dialogCaldroidFragment.saveStatesToKey(outState,
                     "DIALOG_CALDROID_SAVED_STATE");
         }
+    }
+
+    public List<Participant> getCouple() {
+        return couple;
     }
 }

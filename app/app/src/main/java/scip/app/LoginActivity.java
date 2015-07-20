@@ -4,6 +4,7 @@ package scip.app;
 import android.app.Activity;
 import android.content.Intent;
 
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.text.TextUtils;
 import android.util.Log;
@@ -13,7 +14,21 @@ import android.widget.AutoCompleteTextView;
 import android.widget.Button;
 import android.widget.EditText;
 
+import org.apache.http.client.ClientProtocolException;
+import org.apache.http.client.HttpClient;
+import org.apache.http.client.ResponseHandler;
+import org.apache.http.client.methods.HttpGet;
+import org.apache.http.impl.client.BasicResponseHandler;
+import org.apache.http.impl.client.DefaultHttpClient;
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
+
+import java.io.BufferedReader;
+import java.io.IOException;
 import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -76,6 +91,8 @@ public class LoginActivity extends Activity{
                 loadCouples();
             }
         });
+
+        testHTTPRequest();
     }
 
     private void testCSVImport(boolean useLocal) {
@@ -86,6 +103,57 @@ public class LoginActivity extends Activity{
             csvImporter.openExternalFiles();
     }
 
+    class RetrieveMSurveyData extends AsyncTask<Void, Void, String> {
+
+        private Exception exception;
+
+        protected String doInBackground(Void... params) {
+            try {
+                String result = "BLANK";
+                HttpClient httpclient = new DefaultHttpClient();
+                BufferedReader r = new BufferedReader(new InputStreamReader(getResources().openRawResource(R.raw.msurvey_key)));
+                String key = r.readLine();
+                r.close();
+                HttpGet request = new HttpGet("https://apps.msurvey.co.ke/surveyapi/scip/data/?format=json");
+                request.addHeader("TOKEN", key);
+                ResponseHandler<String> handler = new BasicResponseHandler();
+                try {
+                    result = httpclient.execute(request, handler);
+                } catch (ClientProtocolException e) {
+                    e.printStackTrace();
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+                httpclient.getConnectionManager().shutdown();
+                return result;
+            } catch (Exception e) {
+                this.exception = e;
+                return null;
+            }
+        }
+
+        protected void onPostExecute(String result) {
+            Log.i("response", result);
+
+            JSONObject obj = null;
+            try {
+                obj = new JSONObject(result);
+                JSONArray data = obj.getJSONArray("data");
+                int n = data.length();
+                Log.i("Participant count", String.valueOf(n));
+                for (int i = 0; i < n; ++i) {
+                    JSONObject entry = data.getJSONObject(i);
+                    Log.i("Participant ID", entry.getString("participant"));
+                }
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
+        }
+    }
+
+    public void testHTTPRequest() {
+        AsyncTask<Void, Void, String> ms = new RetrieveMSurveyData().execute();
+    }
 
     /**
      * Attempts to sign in or register the account specified by the login form.
@@ -224,6 +292,8 @@ public class LoginActivity extends Activity{
 
         db.closeDB();
     }
+
+
 
     /**
      * Represents an asynchronous login/registration task used to authenticate

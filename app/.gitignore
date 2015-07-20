@@ -5,3 +5,4 @@
 .DS_Store
 /build
 /.idea/encodings.xml
+/app/src/main/res/raw/msurvey_key
