@@ -50,10 +50,6 @@ public class LoginActivity extends Activity{
     private static final String[] DUMMY_CREDENTIALS = new String[]{
             "foo@example.com:hello", "bar@example.com:world"
     };
-    /**
-     * Keep track of the login task to ensure we can cancel it if requested.
-     */
-
 
     // UI references.
     private AutoCompleteTextView mEmailView;
@@ -69,21 +65,6 @@ public class LoginActivity extends Activity{
 
         mPasswordView = (EditText) findViewById(R.id.password);
 
-        Button mTestFileImportButton = (Button) findViewById(R.id.testFileImportBtn);
-        mTestFileImportButton.setOnClickListener(new OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                DatabaseHelper db = new DatabaseHelper(getApplicationContext());
-                db.deleteAllData();
-                db.closeDB();
-                testCSVImport(true);
-//                db = new DatabaseHelper(getApplicationContext());
-//                List<Participant> allParticipants = db.getAllParticipants();
-//                db.closeDB();
-//                testDatabase(allParticipants);
-            }
-        });
-
         Button mEmailSignInButton = (Button) findViewById(R.id.email_sign_in_button);
         mEmailSignInButton.setOnClickListener(new OnClickListener() {
             @Override
@@ -92,67 +73,15 @@ public class LoginActivity extends Activity{
             }
         });
 
-        testHTTPRequest();
-    }
-
-    private void testCSVImport(boolean useLocal) {
-        CSVImporter csvImporter = new CSVImporter(getApplicationContext());
-        if(useLocal)
-            csvImporter.openLocalFiles();
-        else
-            csvImporter.openExternalFiles();
-    }
-
-    class RetrieveMSurveyData extends AsyncTask<Void, Void, String> {
-
-        private Exception exception;
-
-        protected String doInBackground(Void... params) {
-            try {
-                String result = "BLANK";
-                HttpClient httpclient = new DefaultHttpClient();
-                BufferedReader r = new BufferedReader(new InputStreamReader(getResources().openRawResource(R.raw.msurvey_key)));
-                String key = r.readLine();
-                r.close();
-                HttpGet request = new HttpGet("https://apps.msurvey.co.ke/surveyapi/scip/data/?format=json");
-                request.addHeader("TOKEN", key);
-                ResponseHandler<String> handler = new BasicResponseHandler();
-                try {
-                    result = httpclient.execute(request, handler);
-                } catch (ClientProtocolException e) {
-                    e.printStackTrace();
-                } catch (IOException e) {
-                    e.printStackTrace();
-                }
-                httpclient.getConnectionManager().shutdown();
-                return result;
-            } catch (Exception e) {
-                this.exception = e;
-                return null;
+        Button button = (Button) findViewById(R.id.dataImportBtn);
+        button.setOnClickListener(new OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent dataImport = new Intent(getApplicationContext(), DataImportActivity.class);
+                startActivity(dataImport);
             }
-        }
+        });
 
-        protected void onPostExecute(String result) {
-            Log.i("response", result);
-
-            JSONObject obj = null;
-            try {
-                obj = new JSONObject(result);
-                JSONArray data = obj.getJSONArray("data");
-                int n = data.length();
-                Log.i("Participant count", String.valueOf(n));
-                for (int i = 0; i < n; ++i) {
-                    JSONObject entry = data.getJSONObject(i);
-                    Log.i("Participant ID", entry.getString("participant"));
-                }
-            } catch (JSONException e) {
-                e.printStackTrace();
-            }
-        }
-    }
-
-    public void testHTTPRequest() {
-        AsyncTask<Void, Void, String> ms = new RetrieveMSurveyData().execute();
     }
 
     /**
@@ -160,8 +89,6 @@ public class LoginActivity extends Activity{
      * Does not take into account if the user account already exists
      */
     public void loadCouples() {
-
-
         // Reset errors.
         mEmailView.setError(null);
         mPasswordView.setError(null);
@@ -211,89 +138,6 @@ public class LoginActivity extends Activity{
         //TODO: Replace this with your own logic
         return password.length() > 4;
     }
-
-    private List<Participant> getParticipantList() {
-        List<Participant> participants = new ArrayList<>();
-
-        Participant participant1 = new Participant(getApplicationContext(), 987654321); // Male
-        Participant participant2 = new Participant(getApplicationContext(), 123456789); // Female in partner
-        Participant participant3 = new Participant(getApplicationContext(), 123456766); // Male in partner
-
-        participants.add(participant1);
-        participants.add(participant2);
-        participants.add(participant3);
-
-        return participants;
-    }
-    private void populateDatabase(List<Participant> participants) {
-        DatabaseHelper db = new DatabaseHelper(getApplicationContext());
-
-        ViralLoad viralLoad1 = new ViralLoad(participants.get(0).getParticipantId(), 1234, "25/06/2015", 6789);
-        ViralLoad viralLoad2 = new ViralLoad(participants.get(0).getParticipantId(), 5555, "25/08/2015", 1245);
-        ViralLoad viralLoad3 = new ViralLoad(participants.get(2).getParticipantId(), 3333, "21/06/2015", 5894);
-
-        SurveyResult surveyResult1 = new SurveyResult(participants.get(1).getParticipantId(), "25/06/2015", 98.4, 1, 0, 0, 0, 0);
-        SurveyResult surveyResult2 = new SurveyResult(participants.get(1).getParticipantId(), "26/06/2015", 98.1, 1, 0, 0, 0, 0);
-        SurveyResult surveyResult3 = new SurveyResult(participants.get(1).getParticipantId(), "27/06/2015", 98.5, 0, 1, 0, 0, 0);
-
-        PeakFertility peakFertility1 = new PeakFertility(participants.get(1).getParticipantId(), "24/07/2015", "26/07/2015");
-
-        MemsCap memsCap1 = new MemsCap (participants.get(1).getParticipantId(), "24/07/2015", 7654789);
-
-        db.createParticipant(participants.get(0));
-        db.createParticipant(participants.get(1));
-        db.createParticipant(participants.get(2));
-
-        db.createViralLoad(viralLoad1);
-        db.createViralLoad(viralLoad2);
-        db.createViralLoad(viralLoad3);
-
-        db.createSurveyResult(surveyResult1);
-        db.createSurveyResult(surveyResult2);
-        db.createSurveyResult(surveyResult3);
-
-        db.createPeakFertility(peakFertility1);
-
-        db.createMemsCap(memsCap1);
-
-        db.closeDB();
-    }
-
-    private void testDatabase(List<Participant> participantList) {
-        DatabaseHelper db = new DatabaseHelper(getApplicationContext());
-
-        for(Participant p : participantList) {
-            Log.d("Participant id", String.valueOf(p.getParticipantId()));
-            if(p.isFemale()) {
-                for(PeakFertility pf : p.getPeakFertilities()) {
-                    Log.d("PF", String.valueOf(pf.getParticipant_id()));
-                }
-                for (SurveyResult sr : p.getSurveyResults()) {
-                    Log.d("SR: Temp", String.valueOf(sr.getTemperature()));
-                }
-            }
-
-            if(p.isIndex()) {
-                for(ViralLoad vl : p.getViralLoads()) {
-                    Log.d("VL: number", String.valueOf(vl.getNumber()));
-                }
-            }
-            else {
-                for(MemsCap mc : p.getMemscaps()) {
-                    Log.d("MC: date", String.valueOf(mc.getDate()));
-                }
-            }
-        }
-
-        List<Long> cids = db.getAllCoupleIDs();
-        for(Long cid : cids) {
-            Log.d("Couple ID", String.valueOf(cid));
-        }
-
-        db.closeDB();
-    }
-
-
 
     /**
      * Represents an asynchronous login/registration task used to authenticate
