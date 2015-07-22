@@ -11,6 +11,8 @@ import android.widget.ImageButton;
 import android.view.View.OnClickListener;
 import android.content.Intent;
 
+import scip.app.models.ViralLoad;
+
 
 public class LandingFragment extends Fragment {
 
@@ -39,6 +41,20 @@ public class LandingFragment extends Fragment {
                 startActivity(calendarIntent);
             }
         });
+
+        ImageButton artButton = (ImageButton) view.findViewById(R.id.artButton);
+        artButton.setOnClickListener(new OnClickListener()
+        {
+            @Override
+            public void onClick(View v)
+            {
+                Intent artIntent = new Intent(getActivity(),ViralLoadActivity.class);
+                startActivity(artIntent);
+
+
+            }
+        });
+
         return view;
     }
 
