@@ -3,6 +3,7 @@ package scip.app;
 import android.os.AsyncTask;
 import android.support.v7.app.ActionBarActivity;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -16,6 +17,8 @@ import org.apache.http.client.ResponseHandler;
 import org.apache.http.client.methods.HttpGet;
 import org.apache.http.impl.client.BasicResponseHandler;
 import org.apache.http.impl.client.DefaultHttpClient;
+import org.apache.http.params.BasicHttpParams;
+import org.apache.http.params.HttpParams;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -23,7 +26,11 @@ import org.json.JSONObject;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.List;
+import java.util.TimeZone;
 
 import scip.app.databasehelper.CSVImporter;
 import scip.app.databasehelper.DatabaseHelper;
@@ -130,14 +137,23 @@ public class DataImportActivity extends ActionBarActivity {
             progressBar.setVisibility(View.VISIBLE);
         }
 
-        protected String doInBackground(Void... params) {
+        protected String doInBackground(Void... voids) {
             try {
                 String result = "BLANK";
                 HttpClient httpclient = new DefaultHttpClient();
                 BufferedReader r = new BufferedReader(new InputStreamReader(getResources().openRawResource(R.raw.msurvey_key)));
                 String key = r.readLine();
                 r.close();
-                HttpGet request = new HttpGet("https://apps.msurvey.co.ke/surveyapi/scip/data/?format=json");
+                TimeZone tz = TimeZone.getTimeZone("UTC");
+                DateFormat df = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm'Z'");
+                df.setTimeZone(tz);
+                String nowAsISO = df.format(new Date(System.currentTimeMillis()-24*60*60*1000));
+                Log.d("yesterday", nowAsISO);
+                HttpGet request = new HttpGet("https://apps.msurvey.co.ke/surveyapi/scip/data");
+                HttpParams params = new BasicHttpParams();
+                params.setParameter("format", "json");
+                params.setParameter("start", nowAsISO);
+                request.setParams(params);
                 request.addHeader("TOKEN", key);
                 ResponseHandler<String> handler = new BasicResponseHandler();
                 try {
@@ -164,9 +180,37 @@ public class DataImportActivity extends ActionBarActivity {
                 JSONArray data = obj.getJSONArray("data");
                 int n = data.length();
                 statusUpdateArea.append("Participant count " + String.valueOf(n) + "\n");
-                for (int i = 0; i < n; ++i) {
+                for (int i = 0; i < n; i++) {
                     JSONObject entry = data.getJSONObject(i);
-                    //Log.i("Participant ID", entry.getString("participant"));
+                    Long participant = Long.valueOf(entry.getString("participant"));
+
+                    Boolean hadSex;
+                    if (entry.getString("had_sex").equals("No"))
+                        hadSex = false;
+                    else
+                        hadSex = true;
+
+                    Boolean mensesStarted;
+                    if (entry.getString("menses_started").equals("No"))
+                        mensesStarted = false;
+                    else
+                        mensesStarted = true;
+
+                    Boolean surveyComplete = entry.getBoolean("complete");
+
+                    Boolean vaginaMucusStretchy;
+                    if (entry.getString("vaginal_mucus_stretchy").equals("No"))
+                        vaginaMucusStretchy = false;
+                    else
+                        vaginaMucusStretchy = true;
+
+                    Double basalBodyTemp = Double.valueOf(entry.getString("basal_body_temp"));
+
+                    Boolean passwordAccepted = entry.getBoolean("password_accepted");
+                    String usedCondom = entry.getString("used_condom");
+                    String timeStarted = entry.getString("time_started");
+                    String wentToMarket = entry.getString("went_to_market");
+                    String ovulationPrediction = entry.getString("ovulation_prediction");
                 }
             } catch (JSONException e) {
                 e.printStackTrace();
