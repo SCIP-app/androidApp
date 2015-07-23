@@ -48,7 +48,9 @@ public class LandingFragment extends Fragment {
             @Override
             public void onClick(View v)
             {
+
                 Intent artIntent = new Intent(getActivity(),ViralLoadActivity.class);
+                artIntent.putExtra("couple_id", ((DashboardActivity)getActivity()).getCouple_id());
                 startActivity(artIntent);
 
 

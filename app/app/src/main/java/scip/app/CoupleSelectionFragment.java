@@ -9,6 +9,9 @@ import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
+import android.util.Log;
+import java.util.List;
+import scip.app.databasehelper.DatabaseHelper;
 
 
 /**
@@ -22,7 +25,8 @@ import android.widget.ListView;
  */
 public  class CoupleSelectionFragment extends Fragment {
     private ListView m_listview;
-    private int mPage;
+    DatabaseHelper db ;
+    List<Long> couple_ids;
 
     public  static CoupleSelectionFragment newInstance() {
         CoupleSelectionFragment fragment = new CoupleSelectionFragment();
@@ -30,6 +34,7 @@ public  class CoupleSelectionFragment extends Fragment {
     }
 
     public CoupleSelectionFragment() {
+
         // Required empty public constructor
     }
 
@@ -49,16 +54,22 @@ public  class CoupleSelectionFragment extends Fragment {
         View view =  inflater.inflate(R.layout.fragment_couple_selection, container, false);
         m_listview = (ListView)view.findViewById(R.id.listView);
 
-        String[] items = new String[] {"CoupleID 1", "CoupleID 2", "CoupleID 3"};
-        ArrayAdapter<String> adapter =
-                new ArrayAdapter<String>(getActivity(), android.R.layout.simple_list_item_1, items);
+        db = new DatabaseHelper(getActivity().getApplicationContext());
+        couple_ids = db.getAllCoupleIDs();
+        db.closeDB();
+        
+        ArrayAdapter<Long> adapter =
+                new ArrayAdapter<Long>(getActivity(), android.R.layout.simple_list_item_1, couple_ids);
 
         m_listview.setAdapter(adapter);
 
         m_listview.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
-            public void onItemClick(AdapterView<?> arg0, View arg1, int arg2, long arg3) {
-                Intent dashboard = new Intent(getActivity().getApplicationContext(), DashboardActivity.class);
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                Long couple_id = (Long) parent.getItemAtPosition(position);
+                Log.d("Couple id selected", String.valueOf(couple_id));
+                Intent dashboard = new Intent(getActivity().getApplicationContext(),DashboardActivity.class);
+                dashboard.putExtra("couple_id", couple_id);
                 startActivity(dashboard);
             }
         });

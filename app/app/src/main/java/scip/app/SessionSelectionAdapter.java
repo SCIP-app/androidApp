@@ -10,7 +10,7 @@ import android.support.v4.app.FragmentPagerAdapter;
  */
 public class SessionSelectionAdapter extends FragmentPagerAdapter {
     final int PAGE_COUNT = 2;
-    private String tabTitles[] = new String[] { "Couple List", "Participant List"};
+    private String tabTitles[] = new String[] { "Enrolled Couples", "Enrolled Participants"};
     private Context context;
     FragmentManager fragmentManager;
 
