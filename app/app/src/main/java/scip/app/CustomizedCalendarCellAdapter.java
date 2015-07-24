@@ -1,5 +1,6 @@
 package scip.app;
 
+import android.app.Activity;
 import android.content.Context;
 import android.content.res.Resources;
 import android.graphics.Color;
@@ -8,20 +9,35 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.content.Intent;
 
 import com.roomorama.caldroid.CaldroidFragment;
 import com.roomorama.caldroid.CaldroidGridAdapter;
 
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 
 import hirondelle.date4j.DateTime;
+import scip.app.databasehelper.DatabaseHelper;
+import scip.app.models.Participant;
+import scip.app.models.SurveyResult;
+import java.util.Date;
 
 public class CustomizedCalendarCellAdapter extends CaldroidGridAdapter {
 
-    public CustomizedCalendarCellAdapter(Context context, int month, int year,
+    private List<Participant> couple;
+    Intent main_intent;
+    private long couple_id;
+    private Context main_activity;
+
+    public CustomizedCalendarCellAdapter(Activity context,Intent intent,int month, int year,
                                        HashMap<String, Object> caldroidData,
                                        HashMap<String, Object> extraData) {
-        super(context, month, year, caldroidData, extraData);
+
+        super(context.getApplicationContext(),month, year, caldroidData, extraData);
+        main_intent = intent;
+        main_activity = context;
     }
 
     @Override
@@ -29,6 +45,7 @@ public class CustomizedCalendarCellAdapter extends CaldroidGridAdapter {
         LayoutInflater inflater = (LayoutInflater) context
                 .getSystemService(Context.LAYOUT_INFLATER_SERVICE);
         View cellView = convertView;
+
 
         // For reuse
         if (convertView == null) {
@@ -47,6 +64,7 @@ public class CustomizedCalendarCellAdapter extends CaldroidGridAdapter {
 
         // Get dateTime of this cell
         DateTime dateTime = this.datetimeList.get(position);
+        String dates = dateTime.getRawDateString();
         Resources resources = context.getResources();
 
         // Set color of the dates in previous / next month
@@ -64,6 +82,7 @@ public class CustomizedCalendarCellAdapter extends CaldroidGridAdapter {
         }
 
         // Just show them all for now. Will parse through data soon
+        
         ImageView unprotectedSex = (ImageView) cellView.findViewById(R.id.sex);
         unprotectedSex.setVisibility(View.VISIBLE);
         ImageView sfluid = (ImageView) cellView.findViewById(R.id.sfluid);
