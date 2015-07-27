@@ -7,7 +7,7 @@ import java.util.Date;
 /**
  * Created by Allie on 6/25/2015.
  */
-public class SurveyResult {
+public class SurveyResult implements Comparable<SurveyResult>{
     long id;
     long participant_id;
     Date date;
@@ -92,5 +92,10 @@ public class SurveyResult {
 
     public void setId(long id) {
         this.id = id;
+    }
+
+    @Override
+    public int compareTo(SurveyResult o) {
+        return getDate().compareTo(o.getDate());
     }
 }
