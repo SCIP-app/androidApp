@@ -27,13 +27,19 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.text.DateFormat;
+import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Collections;
 import java.util.Date;
 import java.util.List;
 import java.util.TimeZone;
+import java.util.concurrent.TimeUnit;
 
 import scip.app.databasehelper.CSVImporter;
 import scip.app.databasehelper.DatabaseHelper;
+import scip.app.models.DateUtil;
 import scip.app.models.MemsCap;
 import scip.app.models.Participant;
 import scip.app.models.SurveyResult;
@@ -55,6 +61,7 @@ public class DataImportActivity extends ActionBarActivity {
         final Button importMSurveyData = (Button) findViewById(R.id.ImportMSurveyDataButton);
         Button testDatabase = (Button) findViewById(R.id.ListDatabaseButton);
         final Button clearDatabase = (Button) findViewById(R.id.ClearDatabaseButton);
+        final Button peakFertility = (Button) findViewById(R.id.TestFertilityPredictionButton);
         importLocalData.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -79,6 +86,22 @@ public class DataImportActivity extends ActionBarActivity {
                 clearDatabase();
             }
         });
+        peakFertility.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                calculatePeakFertility();
+            }
+        });
+    }
+
+    private void calculatePeakFertility() {
+        DatabaseHelper db = new DatabaseHelper(getApplicationContext());
+        List<Participant> participants= db.getAllParticipants();
+        db.closeDB();
+        Log.i("Num participants", String.valueOf(participants.size()));
+        for(Participant p : participants) {
+            p.reCalculateFertilityData();
+        }
     }
 
     private void importMSurveyData() {
@@ -211,6 +234,7 @@ public class DataImportActivity extends ActionBarActivity {
                     String timeStarted = entry.getString("time_started");
                     String wentToMarket = entry.getString("went_to_market");
                     String ovulationPrediction = entry.getString("ovulation_prediction");
+
                 }
             } catch (JSONException e) {
                 e.printStackTrace();
@@ -293,3 +317,4 @@ public class DataImportActivity extends ActionBarActivity {
         return super.onOptionsItemSelected(item);
     }
 }
+
