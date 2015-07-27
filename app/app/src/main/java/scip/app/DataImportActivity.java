@@ -27,6 +27,7 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.text.DateFormat;
+import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
@@ -180,9 +181,10 @@ public class DataImportActivity extends ActionBarActivity {
                 JSONArray data = obj.getJSONArray("data");
                 int n = data.length();
                 statusUpdateArea.append("Participant count " + String.valueOf(n) + "\n");
+
                 for (int i = 0; i < n; i++) {
                     JSONObject entry = data.getJSONObject(i);
-                    Long participant = Long.valueOf(entry.getString("participant"));
+                    Long participant_id = Long.valueOf(entry.getString("participant"));
 
                     Boolean hadSex;
                     if (entry.getString("had_sex").equals("No"))
@@ -190,35 +192,58 @@ public class DataImportActivity extends ActionBarActivity {
                     else
                         hadSex = true;
 
-                    Boolean mensesStarted;
+                    Boolean onPeriod;
                     if (entry.getString("menses_started").equals("No"))
-                        mensesStarted = false;
+                        onPeriod = false;
                     else
-                        mensesStarted = true;
+                        onPeriod = true;
 
                     Boolean surveyComplete = entry.getBoolean("complete");
 
-                    Boolean vaginaMucusStretchy;
+                    Boolean vaginaMucusSticky;
                     if (entry.getString("vaginal_mucus_stretchy").equals("No"))
-                        vaginaMucusStretchy = false;
+                        vaginaMucusSticky = false;
                     else
-                        vaginaMucusStretchy = true;
+                        vaginaMucusSticky = true;
 
-                    Double basalBodyTemp = Double.valueOf(entry.getString("basal_body_temp"));
+                    Double temperature = Double.valueOf(entry.getString("basal_body_temp"));
 
                     Boolean passwordAccepted = entry.getBoolean("password_accepted");
-                    String usedCondom = entry.getString("used_condom");
+
+                    Boolean usedCondom;
+                    if (entry.getString("used_condom").equals("No"))
+                        usedCondom = false;
+                    else
+                        usedCondom = true;
+
                     String timeStarted = entry.getString("time_started");
                     String wentToMarket = entry.getString("went_to_market");
-                    String ovulationPrediction = entry.getString("ovulation_prediction");
+                    SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ssZ");
+                    timeStarted = timeStarted.replace("Z", "+00:00");
+                    Date date = format.parse(timeStarted);
+
+                    Boolean isOvulating;
+                    if (entry.getString("ovulation_prediction").equals("Negative"))
+                        isOvulating = false;
+                    else
+                        isOvulating = true;
+
+                    SurveyResult sr = new SurveyResult(participant_id, date, temperature, vaginaMucusSticky, onPeriod, isOvulating, hadSex, usedCondom);
+                    DatabaseHelper db = new DatabaseHelper(getApplicationContext());
+                    db.createSurveyResult (sr);
+                    db.closeDB();
                 }
             } catch (JSONException e) {
+                e.printStackTrace();
+            // was getting parse exception error on format.parse(timeStarted) and adding this catch seemed to fix it
+            } catch (ParseException e) {
                 e.printStackTrace();
             }
             statusUpdateArea.append("Parsing complete.\n");
             progressBar.setVisibility(View.INVISIBLE);
         }
     }
+
     class TestDatabase extends AsyncTask<Void, String, Void> {
 
         @Override
@@ -242,6 +267,8 @@ public class DataImportActivity extends ActionBarActivity {
 
             List<Long> cids = db.getAllCoupleIDs();
             publishProgress("Total Number of Couples " + String.valueOf(cids.size()));
+            List<SurveyResult> surveyResultList = db.getAllSurveyResults();
+            publishProgress("Number of survey results " + String.valueOf(surveyResultList.size()));
 
             db.closeDB();
 
@@ -264,7 +291,7 @@ public class DataImportActivity extends ActionBarActivity {
         @Override
         protected void onProgressUpdate(String... values) {
             super.onProgressUpdate(values);
-            statusUpdateArea.append(values[0]+"\n");
+            statusUpdateArea.append(values[0] + "\n");
         }
     }
     private void testDatabase() {
