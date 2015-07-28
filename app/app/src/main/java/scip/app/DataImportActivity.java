@@ -33,6 +33,7 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Collections;
 import java.util.Date;
+import java.util.GregorianCalendar;
 import java.util.List;
 import java.util.TimeZone;
 import java.util.concurrent.TimeUnit;
@@ -95,12 +96,49 @@ public class DataImportActivity extends ActionBarActivity {
     }
 
     private void calculatePeakFertility() {
-        DatabaseHelper db = new DatabaseHelper(getApplicationContext());
-        List<Participant> participants= db.getAllParticipants();
-        db.closeDB();
-        Log.i("Num participants", String.valueOf(participants.size()));
-        for(Participant p : participants) {
-            p.reCalculateFertilityData();
+        AsyncTask<Void, String, Void> pf = new CalculatePeakFertility().execute();
+    }
+
+    class CalculatePeakFertility extends AsyncTask<Void, String, Void> {
+
+        @Override
+        protected Void doInBackground(Void... params) {
+            DatabaseHelper db = new DatabaseHelper(getApplicationContext());
+            List<Participant> participants= db.getAllParticipants();
+            db.closeDB();
+            Log.i("Num participants", String.valueOf(participants.size()));
+            for(Participant p : participants) {
+                if(p.isFemale()) {
+                    List<Date> nextPeakFertilityWindow = p.getPeakFertility().getPeakFertilityWindow();
+                    publishProgress("Participant id " + String.valueOf(p.getParticipantId()));
+                    Calendar dec30 = new GregorianCalendar(2015, 12, 30);
+                    publishProgress("Dec 30 is day " + String.valueOf(p.getPeakFertility().getDayInCycle(new Date(dec30.getTimeInMillis())))+ " in cycle.");
+                    for (Date next : nextPeakFertilityWindow)
+                        publishProgress(next.toString());
+                }
+
+            }
+            return null;
+        }
+
+        @Override
+        protected void onPreExecute() {
+            super.onPreExecute();
+            statusUpdateArea.append("Calculating Peak Fertility for each Participant...\n");
+            progressBar.setVisibility(View.VISIBLE);
+        }
+
+        @Override
+        protected void onPostExecute(Void aVoid) {
+            super.onPostExecute(aVoid);
+            statusUpdateArea.append("Done.\n");
+            progressBar.setVisibility(View.INVISIBLE);
+        }
+
+        @Override
+        protected void onProgressUpdate(String... values) {
+            super.onProgressUpdate(values);
+            statusUpdateArea.append(values[0]+"\n");
         }
     }
 
