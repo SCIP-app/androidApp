@@ -1,12 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
 
-    <string name="app_name">app</string>
+    <string name="app_name">SCIP App</string>
     <string name="hello_world">Hello world!</string>
     <string name="action_settings">Settings</string>
     <string name="action_example">Dashboard</string>
     <string name="title_activity_couple_list">CoupleList</string>
-    <string name="title_activity_couple_selection">CoupleSelection</string>
+    <string name="title_activity_couple_selection">Session Selection List</string>
     <string name="title_activity_dashboard">Dashboard</string>
     <string name="title_section1">Couple #</string>
     <string name="title_section2">Add Couple Notes</string>
@@ -19,10 +19,11 @@
 
     <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>
-    <string name="title_activity_calendar">CalendarActivity</string>
+    <string name="title_activity_data_import">DataImportActivity</string>
+    <string name="title_activity_calendar">Calendar View</string>
     <string name="customize">Customize</string>
     <string name="show_dialog">Show Dialog</string>
     <string name="undo">Undo</string>
-    <string name="title_activity_data_import">DataImportActivity</string>
+    <string name="title_activity_viral_load">Viral Load</string>
 
 </resources>

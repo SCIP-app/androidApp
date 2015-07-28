@@ -6,6 +6,7 @@ import android.content.Intent;
 
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.support.v7.app.ActionBarActivity;
 import android.text.TextUtils;
 import android.util.Log;
 import android.view.View;
@@ -41,7 +42,7 @@ import scip.app.models.SurveyResult;
 import scip.app.models.ViralLoad;
 
 
-public class LoginActivity extends Activity{
+public class LoginActivity extends ActionBarActivity{
 
     /**
      * A dummy authentication store containing known user names and passwords.
