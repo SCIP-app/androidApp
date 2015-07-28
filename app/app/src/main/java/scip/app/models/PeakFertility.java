@@ -65,6 +65,14 @@ public class PeakFertility {
         return new ArrayList<>();
     }
 
+    public double getAverageCycleLength() {
+        if(!dataProcessed)
+            processData();
+        if(resultsValid)
+            return averageCycleLength;
+        return -1; 
+    }
+
     private void processData() {
         if(dataProcessed)
             return;
