@@ -1,3 +1,4 @@
+
 package scip.app.models;
 
 import java.text.DateFormat;

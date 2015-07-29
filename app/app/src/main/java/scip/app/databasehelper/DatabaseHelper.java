@@ -344,6 +344,37 @@ public class DatabaseHelper extends SQLiteOpenHelper{
 
         return surveyResults;
     }
+    public List<SurveyResult> getAllSurveyResults() {
+        List<SurveyResult> surveyResults = new ArrayList<>();
+        String selectQuery = "SELECT  * FROM " + TABLE_SURVEY_RESULTS;
+
+        Log.e(LOG, selectQuery);
+
+        SQLiteDatabase db = this.getReadableDatabase();
+        Cursor c = db.rawQuery(selectQuery, null);
+
+        // looping through all rows and adding to list
+        if (c.moveToFirst()) {
+            do {
+                long id = c.getInt((c.getColumnIndex(KEY_ID)));
+                long participant_id = c.getInt(c.getColumnIndex(KEY_PARTICIPANT_ID));
+                double temp = c.getDouble((c.getColumnIndex(KEY_TEMPERATURE)));
+                String date = c.getString((c.getColumnIndex(KEY_DATE)));
+                int vms = c.getInt((c.getColumnIndex(KEY_VAGINA_MUCUS_STICKY)));
+                int hp = c.getInt((c.getColumnIndex(KEY_HAS_PERIOD)));
+                int io = c.getInt((c.getColumnIndex(KEY_IS_OVULATING)));
+                int hs = c.getInt((c.getColumnIndex(KEY_HAD_SEX)));
+                int uc = c.getInt((c.getColumnIndex(KEY_USED_CONDOM)));
+                SurveyResult sr = new SurveyResult(participant_id, date, temp, vms, hp, io, hs, uc);
+                sr.setId(id);
+
+                // adding to participant list
+                surveyResults.add(sr);
+            } while (c.moveToNext());
+        }
+
+        return surveyResults;
+    }
     // MEMSCap-specific CRUD Methods
 
     public boolean createMemsCap(MemsCap memsCap) {
