@@ -1,5 +1,6 @@
 package scip.app;
 
+import android.app.Activity;
 import android.content.Context;
 import android.content.res.Resources;
 import android.graphics.Color;
@@ -8,14 +9,18 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.content.Intent;
 
 import com.roomorama.caldroid.CaldroidFragment;
 import com.roomorama.caldroid.CaldroidGridAdapter;
+
 
 import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
+
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
@@ -24,14 +29,25 @@ import scip.app.models.MemsCap;
 import scip.app.models.Participant;
 import scip.app.models.SurveyResult;
 
-public class CustomizedCalendarCellAdapter extends CaldroidGridAdapter {
-    List<Participant> couple;
+import scip.app.databasehelper.DatabaseHelper;
+import scip.app.models.Participant;
+import scip.app.models.SurveyResult;
+import java.util.Date;
 
-    public CustomizedCalendarCellAdapter(Context context, int month, int year,
-                                       HashMap<String, Object> caldroidData,
-                                       HashMap<String, Object> extraData, List<Participant>couple) {
+public class CustomizedCalendarCellAdapter extends CaldroidGridAdapter {
+
+    private List<Participant> couple;
+    Intent main_intent;
+    private long couple_id;
+    private Context main_activity;
+
+    public CustomizedCalendarCellAdapter(Activity context,Intent intent,int month, int year,
+                                       HashMap<String, Object> caldroidData, HashMap<String, Object> extraData, List<Participant>couple) {
         super(context, month, year, caldroidData, extraData);
         this.couple = couple;
+        main_intent = intent;
+        main_activity = context;
+
     }
 
     @Override
@@ -39,6 +55,7 @@ public class CustomizedCalendarCellAdapter extends CaldroidGridAdapter {
         LayoutInflater inflater = (LayoutInflater) context
                 .getSystemService(Context.LAYOUT_INFLATER_SERVICE);
         View cellView = convertView;
+
 
         // For reuse
         if (convertView == null) {
@@ -57,6 +74,7 @@ public class CustomizedCalendarCellAdapter extends CaldroidGridAdapter {
 
         // Get dateTime of this cell
         DateTime dateTime = this.datetimeList.get(position);
+        String dates = dateTime.getRawDateString();
         Resources resources = context.getResources();
 
 
@@ -83,6 +101,7 @@ public class CustomizedCalendarCellAdapter extends CaldroidGridAdapter {
         }
 
         // Just show them all for now. Will parse through data soon
+
         Participant female;
         if(couple.get(0).isFemale()) {
             female = couple.get(0);
