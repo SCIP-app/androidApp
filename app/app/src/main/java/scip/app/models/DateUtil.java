@@ -1,5 +1,9 @@
+
 package scip.app.models;
 
+import java.text.DateFormat;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.concurrent.TimeUnit;
@@ -20,5 +24,19 @@ public class DateUtil {
     public static long getDateDiff(Date date1, Date date2, TimeUnit timeUnit) {
         long diffInMillies = date2.getTime() - date1.getTime();
         return timeUnit.convert(diffInMillies,TimeUnit.MILLISECONDS);
+    }
+
+    public static Date getDateFromString(String date) {
+        SimpleDateFormat formatter = new SimpleDateFormat("dd/MM/yyyy");
+        try {
+            return formatter.parse(date);
+        } catch (ParseException e) {
+            return null;
+        }
+    }
+
+    public static String getStringFromDate(Date date){
+        DateFormat df = new SimpleDateFormat("dd/MM/yyyy");
+        return df.format(date);
     }
 }

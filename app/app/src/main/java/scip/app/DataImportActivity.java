@@ -22,7 +22,7 @@ import org.apache.http.params.HttpParams;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
-
+import java.util.GregorianCalendar;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
@@ -32,14 +32,17 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
 import java.util.TimeZone;
-
+import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Collections;
 import scip.app.databasehelper.CSVImporter;
 import scip.app.databasehelper.DatabaseHelper;
 import scip.app.models.MemsCap;
 import scip.app.models.Participant;
 import scip.app.models.SurveyResult;
 import scip.app.models.ViralLoad;
-
+import java.util.concurrent.TimeUnit;
+import scip.app.models.DateUtil;
 
 public class DataImportActivity extends ActionBarActivity {
     EditText statusUpdateArea;
@@ -56,6 +59,7 @@ public class DataImportActivity extends ActionBarActivity {
         final Button importMSurveyData = (Button) findViewById(R.id.ImportMSurveyDataButton);
         Button testDatabase = (Button) findViewById(R.id.ListDatabaseButton);
         final Button clearDatabase = (Button) findViewById(R.id.ClearDatabaseButton);
+         final Button peakFertility = (Button) findViewById(R.id.TestFertilityPredictionButton);
         importLocalData.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -80,6 +84,52 @@ public class DataImportActivity extends ActionBarActivity {
                 clearDatabase();
             }
         });
+        	        peakFertility.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                calculatePeakFertility();
+            }
+        });
+    }
+    private void calculatePeakFertility() {
+        AsyncTask<Void, String, Void> pf = new CalculatePeakFertility().execute();
+    }
+    class CalculatePeakFertility extends AsyncTask<Void, String, Void> {
+        @Override
+        protected Void doInBackground(Void... params) {
+            DatabaseHelper db = new DatabaseHelper(getApplicationContext());
+            List<Participant> participants= db.getAllParticipants();
+            db.closeDB();
+            Log.i("Num participants", String.valueOf(participants.size()));
+            for(Participant p : participants) {
+                if(p.isFemale()) {
+                    List<Date> nextPeakFertilityWindow = p.getPeakFertility().getPeakFertilityWindow();
+                    publishProgress("Participant id " + String.valueOf(p.getParticipantId()));
+                    Calendar dec30 = new GregorianCalendar(2015, 12, 30);
+                    publishProgress("Dec 30 is day " + String.valueOf(p.getPeakFertility().getDayInCycle(new Date(dec30.getTimeInMillis())))+ " in cycle.");
+                    for (Date next : nextPeakFertilityWindow)
+                        publishProgress(next.toString());
+                }
+            }
+            return null;
+        }
+        @Override
+        protected void onPreExecute() {
+            super.onPreExecute();
+            statusUpdateArea.append("Calculating Peak Fertility for each Participant...\n");
+            progressBar.setVisibility(View.VISIBLE);
+        }
+        @Override
+        protected void onPostExecute(Void aVoid) {
+            super.onPostExecute(aVoid);
+            statusUpdateArea.append("Done.\n");
+            progressBar.setVisibility(View.INVISIBLE);
+        }
+        @Override
+        protected void onProgressUpdate(String... values) {
+            super.onProgressUpdate(values);
+            statusUpdateArea.append(values[0]+"\n");
+        }
     }
 
     private void importMSurveyData() {
