@@ -38,7 +38,7 @@ public class CSVFile {
                 reader = new BufferedReader(new FileReader(inputFile));
             }
             String csvLine;
-            reader.readLine(); // read the first line and throw it out because it's the description
+            //reader.readLine(); // read the first line and throw it out because it's the description
             while ((csvLine = reader.readLine()) != null) {
                 String[] row = csvLine.split(";");
                 resultList.add(row);

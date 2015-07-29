@@ -17,7 +17,7 @@ public class ViralLoad {
     public ViralLoad(long participant_id, int number, String date, int visit_id) {
         this.participant_id = participant_id;
         this.number = number;
-        this.date = getDateFromString(date);
+        this.date = DateUtil.getDateFromString(date);
         this.visit_id = visit_id;
 
     }
@@ -46,12 +46,4 @@ public class ViralLoad {
         return visit_id;
     }
 
-    private Date getDateFromString(String date) {
-        SimpleDateFormat formatter = new SimpleDateFormat("dd/MM/yyyy");
-        try {
-            return formatter.parse(date);
-        } catch (ParseException e) {
-            return null;
-        }
-    }
 }

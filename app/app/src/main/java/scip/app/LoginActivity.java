@@ -4,6 +4,7 @@ package scip.app;
 import android.app.Activity;
 import android.content.Intent;
 
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v7.app.ActionBarActivity;
 import android.text.TextUtils;
@@ -14,7 +15,21 @@ import android.widget.AutoCompleteTextView;
 import android.widget.Button;
 import android.widget.EditText;
 
+import org.apache.http.client.ClientProtocolException;
+import org.apache.http.client.HttpClient;
+import org.apache.http.client.ResponseHandler;
+import org.apache.http.client.methods.HttpGet;
+import org.apache.http.impl.client.BasicResponseHandler;
+import org.apache.http.impl.client.DefaultHttpClient;
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
+
+import java.io.BufferedReader;
+import java.io.IOException;
 import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -36,10 +51,6 @@ public class LoginActivity extends ActionBarActivity{
     private static final String[] DUMMY_CREDENTIALS = new String[]{
             "foo@example.com:hello", "bar@example.com:world"
     };
-    /**
-     * Keep track of the login task to ensure we can cancel it if requested.
-     */
-
 
     // UI references.
     private AutoCompleteTextView mEmailView;
@@ -55,21 +66,6 @@ public class LoginActivity extends ActionBarActivity{
 
         mPasswordView = (EditText) findViewById(R.id.password);
 
-        Button mTestFileImportButton = (Button) findViewById(R.id.testFileImportBtn);
-        mTestFileImportButton.setOnClickListener(new OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                DatabaseHelper db = new DatabaseHelper(getApplicationContext());
-                db.deleteAllData();
-                db.closeDB();
-               testCSVImport(true);
-                db = new DatabaseHelper(getApplicationContext());
-                List<Participant> allParticipants = db.getAllParticipants();
-                db.closeDB();
-                testDatabase(allParticipants);
-            }
-        });
-
         Button mEmailSignInButton = (Button) findViewById(R.id.email_sign_in_button);
         mEmailSignInButton.setOnClickListener(new OnClickListener() {
             @Override
@@ -77,24 +73,23 @@ public class LoginActivity extends ActionBarActivity{
                 loadCouples();
             }
         });
-    }
 
-    private void testCSVImport(boolean useLocal) {
-        CSVImporter csvImporter = new CSVImporter(getApplicationContext());
-        if(useLocal)
-            csvImporter.openLocalFiles();
-        else
-            csvImporter.openExternalFiles();
-    }
+        Button button = (Button) findViewById(R.id.dataImportBtn);
+        button.setOnClickListener(new OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent dataImport = new Intent(getApplicationContext(), DataImportActivity.class);
+                startActivity(dataImport);
+            }
+        });
 
+    }
 
     /**
      * Attempts to sign in or register the account specified by the login form.
      * Does not take into account if the user account already exists
      */
     public void loadCouples() {
-
-
         // Reset errors.
         mEmailView.setError(null);
         mPasswordView.setError(null);
@@ -143,87 +138,6 @@ public class LoginActivity extends ActionBarActivity{
     private boolean isPasswordValid(String password) {
         //TODO: Replace this with your own logic
         return password.length() > 4;
-    }
-
-    private List<Participant> getParticipantList() {
-        List<Participant> participants = new ArrayList<>();
-
-        Participant participant1 = new Participant(getApplicationContext(), 987654321); // Male
-        Participant participant2 = new Participant(getApplicationContext(), 123456789); // Female in partner
-        Participant participant3 = new Participant(getApplicationContext(), 123456766); // Male in partner
-
-        participants.add(participant1);
-        participants.add(participant2);
-        participants.add(participant3);
-
-        return participants;
-    }
-    private void populateDatabase(List<Participant> participants) {
-        DatabaseHelper db = new DatabaseHelper(getApplicationContext());
-
-        ViralLoad viralLoad1 = new ViralLoad(participants.get(0).getParticipantId(), 1234, "25/06/2015", 6789);
-        ViralLoad viralLoad2 = new ViralLoad(participants.get(0).getParticipantId(), 5555, "25/08/2015", 1245);
-        ViralLoad viralLoad3 = new ViralLoad(participants.get(2).getParticipantId(), 3333, "21/06/2015", 5894);
-
-        SurveyResult surveyResult1 = new SurveyResult(participants.get(1).getParticipantId(), "25/06/2015", 98.4, 1, 0, 0, 0, 0);
-        SurveyResult surveyResult2 = new SurveyResult(participants.get(1).getParticipantId(), "26/06/2015", 98.1, 1, 0, 0, 0, 0);
-        SurveyResult surveyResult3 = new SurveyResult(participants.get(1).getParticipantId(), "27/06/2015", 98.5, 0, 1, 0, 0, 0);
-
-        PeakFertility peakFertility1 = new PeakFertility(participants.get(1).getParticipantId(), "24/07/2015", "26/07/2015");
-
-        MemsCap memsCap1 = new MemsCap (participants.get(1).getParticipantId(), "24/07/2015", 7654789);
-
-        db.createParticipant(participants.get(0));
-        db.createParticipant(participants.get(1));
-        db.createParticipant(participants.get(2));
-
-        db.createViralLoad(viralLoad1);
-        db.createViralLoad(viralLoad2);
-        db.createViralLoad(viralLoad3);
-
-        db.createSurveyResult(surveyResult1);
-        db.createSurveyResult(surveyResult2);
-        db.createSurveyResult(surveyResult3);
-
-        db.createPeakFertility(peakFertility1);
-
-        db.createMemsCap(memsCap1);
-
-        db.closeDB();
-    }
-
-    private void testDatabase(List<Participant> participantList) {
-        DatabaseHelper db = new DatabaseHelper(getApplicationContext());
-
-        for(Participant p : participantList) {
-            Log.d("Participant id", String.valueOf(p.getParticipantId()));
-            if(p.isFemale()) {
-                for(PeakFertility pf : p.getPeakFertilities()) {
-                    Log.d("PF", String.valueOf(pf.getParticipant_id()));
-                }
-                for (SurveyResult sr : p.getSurveyResults()) {
-                    Log.d("SR: Temp", String.valueOf(sr.getTemperature()));
-                }
-            }
-
-            if(p.isIndex()) {
-                for(ViralLoad vl : p.getViralLoads()) {
-                    Log.d("VL: number", String.valueOf(vl.getNumber()));
-                }
-            }
-            else {
-                for(MemsCap mc : p.getMemscaps()) {
-                    Log.d("MC: date", String.valueOf(mc.getDate()));
-                }
-            }
-        }
-
-        List<Long> cids = db.getAllCoupleIDs();
-        for(Long cid : cids) {
-            Log.d("Couple ID", String.valueOf(cid));
-        }
-
-        db.closeDB();
     }
 
     /**

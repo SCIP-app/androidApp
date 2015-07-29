@@ -14,11 +14,21 @@ import android.content.Intent;
 import com.roomorama.caldroid.CaldroidFragment;
 import com.roomorama.caldroid.CaldroidGridAdapter;
 
+
+import java.text.DateFormat;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.Date;
+
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
 import hirondelle.date4j.DateTime;
+import scip.app.models.MemsCap;
+import scip.app.models.Participant;
+import scip.app.models.SurveyResult;
+
 import scip.app.databasehelper.DatabaseHelper;
 import scip.app.models.Participant;
 import scip.app.models.SurveyResult;
@@ -32,12 +42,12 @@ public class CustomizedCalendarCellAdapter extends CaldroidGridAdapter {
     private Context main_activity;
 
     public CustomizedCalendarCellAdapter(Activity context,Intent intent,int month, int year,
-                                       HashMap<String, Object> caldroidData,
-                                       HashMap<String, Object> extraData) {
-
-        super(context.getApplicationContext(),month, year, caldroidData, extraData);
+                                       HashMap<String, Object> caldroidData, HashMap<String, Object> extraData, List<Participant>couple) {
+        super(context, month, year, caldroidData, extraData);
+        this.couple = couple;
         main_intent = intent;
         main_activity = context;
+
     }
 
     @Override
@@ -67,6 +77,7 @@ public class CustomizedCalendarCellAdapter extends CaldroidGridAdapter {
         String dates = dateTime.getRawDateString();
         Resources resources = context.getResources();
 
+
         // Set color of the dates in previous / next month
         if (dateTime.getMonth() != month) {
             tv1.setTextColor(resources
@@ -81,18 +92,58 @@ public class CustomizedCalendarCellAdapter extends CaldroidGridAdapter {
             cellView.setBackgroundColor(R.color.material_blue_500);
         }
 
+        SimpleDateFormat formatter = new SimpleDateFormat("dd/MM/yyyy");
+        Date today;
+        try {
+            today = formatter.parse(String.valueOf(dateTime.getDay())+"/"+String.valueOf(dateTime.getMonth())+"/"+String.valueOf(dateTime.getYear()));
+        } catch (ParseException e) {
+            today = null;
+        }
+
         // Just show them all for now. Will parse through data soon
-        
-        ImageView unprotectedSex = (ImageView) cellView.findViewById(R.id.sex);
-        unprotectedSex.setVisibility(View.VISIBLE);
-        ImageView sfluid = (ImageView) cellView.findViewById(R.id.sfluid);
-        sfluid.setVisibility(View.VISIBLE);
-        ImageView htemp = (ImageView) cellView.findViewById(R.id.htemp);
-        htemp.setVisibility(View.VISIBLE);
-        ImageView opk = (ImageView) cellView.findViewById(R.id.opk);
-        opk.setVisibility(View.VISIBLE);
-        ImageView prep = (ImageView) cellView.findViewById(R.id.prep);
-        prep.setVisibility(View.VISIBLE);
+
+        Participant female;
+        if(couple.get(0).isFemale()) {
+            female = couple.get(0);
+        }
+        else {
+            female = couple.get(1);
+        }
+        for(SurveyResult sr : female.getSurveyResults()) {
+            if(sr.getDate().compareTo(today) == 0 ) {
+                if(sr.isOvulating()) {
+                    ImageView opk = (ImageView) cellView.findViewById(R.id.opk);
+                    opk.setVisibility(View.VISIBLE);
+                }
+                if (sr.isHadSex()) {
+                    ImageView unprotectedSex = (ImageView) cellView.findViewById(R.id.sex);
+                    unprotectedSex.setVisibility(View.VISIBLE);
+                }
+                if (sr.isVaginaMucusSticky()) {
+                    ImageView sfluid = (ImageView) cellView.findViewById(R.id.sfluid);
+                    sfluid.setVisibility(View.VISIBLE);
+                }
+                if (sr.getTemperature() >= 97.8) {
+                    ImageView htemp = (ImageView) cellView.findViewById(R.id.htemp);
+                    htemp.setVisibility(View.VISIBLE);
+                }
+            }
+        }
+
+        Participant partner;
+        if(!couple.get(0).isIndex()) {
+            partner = couple.get(0);
+        }
+        else {
+            partner = couple.get(1);
+        }
+
+        for(MemsCap m : partner.getMemscaps()) {
+            if(m.getDate().compareTo(today) == 0) {
+                ImageView prep = (ImageView) cellView.findViewById(R.id.prep);
+                prep.setVisibility(View.VISIBLE);
+            }
+        }
 
         // Customize for selected dates
         if (selectedDates != null && selectedDates.indexOf(dateTime) != -1) {

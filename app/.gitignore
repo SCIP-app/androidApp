@@ -5,3 +5,7 @@
 .DS_Store
 /build
 /.idea/encodings.xml
+/.idea/gradle.xml
+/.idea/misc.xml
+/.idea/vcs.xml
+/app/src/main/res/raw/msurvey_key

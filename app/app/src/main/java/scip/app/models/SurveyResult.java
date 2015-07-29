@@ -7,7 +7,7 @@ import java.util.Date;
 /**
  * Created by Allie on 6/25/2015.
  */
-public class SurveyResult {
+public class SurveyResult implements Comparable<SurveyResult>{
     long id;
     long participant_id;
     Date date;
@@ -20,7 +20,7 @@ public class SurveyResult {
 
     public SurveyResult(long participant_id, String date, double temperature, int vaginaMucusSticky, int onPeriod, int isOvulating, int hadSex, int usedCondom) {
         this.participant_id = participant_id;
-        this.date = getDateFromString(date);
+        this.date = DateUtil.getDateFromString(date);
         this.temperature = temperature;
         this.onPeriod = booleanFromInt(onPeriod);
         this.vaginaMucusSticky = booleanFromInt(vaginaMucusSticky);
@@ -29,9 +29,9 @@ public class SurveyResult {
         this.usedCondom = booleanFromInt(usedCondom);
     }
 
-    public SurveyResult(long participant_id, Date date, double temperature, boolean vaginaMucusSticky, boolean onPeriod, boolean isOvulating, boolean hadSex, boolean usedCondom) {
+    public SurveyResult(long participant_id, String date, double temperature, boolean vaginaMucusSticky, boolean onPeriod, boolean isOvulating, boolean hadSex, boolean usedCondom) {
         this.participant_id = participant_id;
-        this.date = date;
+        this.date = DateUtil.getDateFromString(date);
         this.temperature = temperature;
         this.vaginaMucusSticky = vaginaMucusSticky;
         this.onPeriod = onPeriod;
@@ -43,16 +43,6 @@ public class SurveyResult {
     private boolean booleanFromInt(int toBool) {
         return toBool==1;
     }
-
-    private Date getDateFromString(String date) {
-        SimpleDateFormat formatter = new SimpleDateFormat("dd/MM/yyyy");
-        try {
-            return formatter.parse(date);
-        } catch (ParseException e) {
-            return null;
-        }
-    }
-
 
     public long getId() {
         return id;
@@ -92,5 +82,10 @@ public class SurveyResult {
 
     public void setId(long id) {
         this.id = id;
+    }
+
+    @Override
+    public int compareTo(SurveyResult o) {
+        return getDate().compareTo(o.getDate());
     }
 }

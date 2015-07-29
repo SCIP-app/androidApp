@@ -1,0 +1,76 @@
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools" android:layout_width="match_parent"
+    android:layout_height="match_parent" android:paddingLeft="@dimen/activity_horizontal_margin"
+    android:paddingRight="@dimen/activity_horizontal_margin"
+    android:paddingTop="@dimen/activity_vertical_margin"
+    android:paddingBottom="@dimen/activity_vertical_margin"
+    tools:context="scip.app.DataImportActivity">
+
+    <Button
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Import Local Data"
+        android:id="@+id/ImportLocalDataButon"
+        android:layout_alignParentTop="true"
+        android:layout_alignParentStart="true" />
+
+    <Button
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Import mSurvey Data"
+        android:id="@+id/ImportMSurveyDataButton"
+        android:layout_above="@+id/progressBar"
+        android:layout_toEndOf="@+id/ImportLocalDataButon"
+        android:layout_marginStart="85dp" />
+
+    <Button
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="List Database"
+        android:id="@+id/ListDatabaseButton"
+        android:layout_alignParentTop="true"
+        android:layout_centerHorizontal="true" />
+
+    <Button
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Clear Database"
+        android:id="@+id/ClearDatabaseButton"
+        android:singleLine="true"
+        android:layout_alignParentTop="true"
+        android:layout_toEndOf="@+id/ListDatabaseButton"
+        android:layout_marginStart="97dp" />
+
+    <ProgressBar
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/progressBar"
+        android:layout_marginTop="52dp"
+        android:layout_below="@+id/ImportLocalDataButon"
+        android:layout_alignParentStart="true" />
+
+    <EditText
+        android:layout_width="match_parent"
+        android:layout_height="fill_parent"
+        android:inputType="textMultiLine"
+        android:ems="10"
+        android:id="@+id/dataStatusUpdateField"
+        android:layout_below="@+id/progressBar"
+        android:layout_alignParentStart="true"
+        android:layout_marginTop="30dp"
+        android:editable="false"
+        android:gravity="top"
+        android:clickable="false"
+        android:cursorVisible="false"
+        android:focusable="false"
+        android:focusableInTouchMode="false" />
+
+    <Button
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Test Fertility Prediction"
+        android:id="@+id/TestFertilityPredictionButton"
+        android:layout_alignParentTop="true"
+        android:layout_alignParentEnd="true" />
+
+</RelativeLayout>
