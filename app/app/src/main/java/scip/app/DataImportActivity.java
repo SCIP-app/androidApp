@@ -269,7 +269,6 @@ public class DataImportActivity extends ActionBarActivity {
             publishProgress("Total Number of Couples " + String.valueOf(cids.size()));
             List<SurveyResult> surveyResultList = db.getAllSurveyResults();
             publishProgress("Number of survey results " + String.valueOf(surveyResultList.size()));
-
             db.closeDB();
 
             return null;

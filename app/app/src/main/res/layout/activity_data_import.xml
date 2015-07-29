@@ -19,18 +19,17 @@
         android:layout_height="wrap_content"
         android:text="Import mSurvey Data"
         android:id="@+id/ImportMSurveyDataButton"
-        android:layout_alignTop="@+id/ImportLocalDataButon"
+        android:layout_above="@+id/progressBar"
         android:layout_toEndOf="@+id/ImportLocalDataButon"
-        android:layout_marginStart="151dp" />
+        android:layout_marginStart="85dp" />
 
     <Button
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="List Database"
         android:id="@+id/ListDatabaseButton"
-        android:layout_alignTop="@+id/ImportMSurveyDataButton"
-        android:layout_toStartOf="@+id/ClearDatabaseButton"
-        android:layout_marginEnd="154dp" />
+        android:layout_alignParentTop="true"
+        android:layout_centerHorizontal="true" />
 
     <Button
         android:layout_width="wrap_content"
@@ -38,9 +37,9 @@
         android:text="Clear Database"
         android:id="@+id/ClearDatabaseButton"
         android:singleLine="true"
-        android:layout_alignTop="@+id/ListDatabaseButton"
-        android:layout_alignParentEnd="true"
-        android:layout_marginEnd="70dp" />
+        android:layout_alignParentTop="true"
+        android:layout_toEndOf="@+id/ListDatabaseButton"
+        android:layout_marginStart="97dp" />
 
     <ProgressBar
         android:layout_width="match_parent"
@@ -65,5 +64,13 @@
         android:cursorVisible="false"
         android:focusable="false"
         android:focusableInTouchMode="false" />
+
+    <Button
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Test Fertility Prediction"
+        android:id="@+id/TestFertilityPredictionButton"
+        android:layout_alignParentTop="true"
+        android:layout_alignParentEnd="true" />
 
 </RelativeLayout>
