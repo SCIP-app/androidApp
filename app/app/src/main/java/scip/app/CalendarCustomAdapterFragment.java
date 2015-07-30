@@ -16,7 +16,6 @@ public class CalendarCustomAdapterFragment extends CaldroidFragment{
     public CaldroidGridAdapter getNewDatesGridAdapter(int month, int year) {
         // TODO Auto-generated method stub
 
-
         instance = new CustomizedCalendarCellAdapter(getActivity(), month, year,getCaldroidData(), extraData, ((CalendarViewActivity)getActivity()).getCouple());
         return instance;
     }

@@ -14,6 +14,7 @@ import java.util.Date;
 import java.util.LinkedHashSet;
 import java.util.List;
 
+import scip.app.models.DateUtil;
 import scip.app.models.MemsCap;
 import scip.app.models.Participant;
 import scip.app.models.PeakFertility;
@@ -29,14 +30,13 @@ public class DatabaseHelper extends SQLiteOpenHelper{
     Context context;
 
     private static final String LOG = "DatabaseHelper";  // Logcat tag
-    private static final int DATABASE_VERSION = 8;  // This number MUST be incremented whenever a database is created/destroyed or columns are created/removed
+    private static final int DATABASE_VERSION = 9;  // This number MUST be incremented whenever a database is created/destroyed or columns are created/removed
     private static final String DATABASE_NAME = "patientManager";
 
     // Table Names
     private static final String TABLE_PARTICIPANTS = "participants";
     private static final String TABLE_VIRAL_LOADS = "viralLoads";
     private static final String TABLE_SURVEY_RESULTS = "surveyResults";
-    private static final String TABLE_PEAK_FERTILITY = "peakFertility";
     private static final String TABLE_MEMS_CAP = "memsCap";
 
     // Common column names
@@ -59,10 +59,6 @@ public class DatabaseHelper extends SQLiteOpenHelper{
     private static final String KEY_HAD_SEX = "hadSex";
     private static final String KEY_USED_CONDOM = "usedCondom";
 
-    // Peak Fertility specific columns
-    private static final String KEY_START = "start";
-    private static final String KEY_END = "end";
-
     // MEMSCap specific column
     private static final String KEY_MEMS_ID = "memsDates";
 
@@ -74,8 +70,6 @@ public class DatabaseHelper extends SQLiteOpenHelper{
     private static final String CREATE_TABLE_SURVEY_RESULTS = "CREATE TABLE " + TABLE_SURVEY_RESULTS + "(" + KEY_ID + " INTEGER PRIMARY KEY,"
             + KEY_PARTICIPANT_ID + " INTEGER," + KEY_DATE + " TEXT," + KEY_TEMPERATURE + " REAL," + KEY_VAGINA_MUCUS_STICKY + " INTEGER,"
             + KEY_HAS_PERIOD + " INTEGER," + KEY_IS_OVULATING + " INTEGER," + KEY_HAD_SEX + " INTEGER," + KEY_USED_CONDOM + " INTEGER)";
-    private static final String CREATE_TABLE_PEAK_FERTILITY = "CREATE TABLE " + TABLE_PEAK_FERTILITY + "(" + KEY_ID + " INTEGER PRIMARY KEY,"
-            + KEY_PARTICIPANT_ID + " INTEGER," + KEY_START + " TEXT," + KEY_END + " TEXT)";
     private static final String CREATE_TABLE_MEMS_CAP = "CREATE TABLE " + TABLE_MEMS_CAP + "(" + KEY_ID + " INTEGER PRIMARY KEY,"
             + KEY_PARTICIPANT_ID + " INTEGER," + KEY_MEMS_ID + " INTEGER," + KEY_DATE + " TEXT)";
 
@@ -92,7 +86,6 @@ public class DatabaseHelper extends SQLiteOpenHelper{
         db.execSQL(CREATE_TABLE_PARTICIPANTS);
         db.execSQL(CREATE_TABLE_VIRAL_LOADS);
         db.execSQL(CREATE_TABLE_SURVEY_RESULTS);
-        db.execSQL(CREATE_TABLE_PEAK_FERTILITY);
         db.execSQL(CREATE_TABLE_MEMS_CAP);
     }
 
@@ -103,7 +96,7 @@ public class DatabaseHelper extends SQLiteOpenHelper{
         db.execSQL("DROP TABLE IF EXISTS " + TABLE_PARTICIPANTS);
         db.execSQL("DROP TABLE IF EXISTS " + TABLE_VIRAL_LOADS);
         db.execSQL("DROP TABLE IF EXISTS " + TABLE_SURVEY_RESULTS);
-        db.execSQL("DROP TABLE IF EXISTS " + TABLE_PEAK_FERTILITY);
+        db.execSQL("DROP TABLE IF EXISTS " + "peakFertility");
         db.execSQL("DROP TABLE IF EXISTS " + TABLE_MEMS_CAP);
 
         // Create new tables
@@ -246,7 +239,7 @@ public class DatabaseHelper extends SQLiteOpenHelper{
         ContentValues values = new ContentValues();
         values.put(KEY_PARTICIPANT_ID, viralLoad.getParticipant_id());
         values.put(KEY_NUMBER, viralLoad.getNumber());
-        values.put(KEY_DATE, getStringFromDate(viralLoad.getDate()));
+        values.put(KEY_DATE, DateUtil.getStringFromDate(viralLoad.getDate()));
         values.put(KEY_VISIT_ID, viralLoad.getVisit_id());
 
         // insert row
@@ -291,57 +284,6 @@ public class DatabaseHelper extends SQLiteOpenHelper{
         return viralLoads;
     }
 
-    // Peak Fertility-specific CRUD Methods
-
-    public boolean createPeakFertility(PeakFertility peakFertility) {
-        SQLiteDatabase db = this.getWritableDatabase();
-
-        ContentValues values = new ContentValues();
-        values.put(KEY_PARTICIPANT_ID, peakFertility.getParticipant_id());
-        values.put(KEY_START, getStringFromDate(peakFertility.getStart()));
-        values.put(KEY_END, getStringFromDate(peakFertility.getEnd()));
-
-        // insert row
-        long id = db.insert(TABLE_PEAK_FERTILITY, null, values);
-
-        if(id != -1) {
-            peakFertility.setId(id);
-            return true ;
-        }
-        else {
-            // There was an error in creating the row
-            return false;
-        }
-
-    }
-
-    public List<PeakFertility> getAllPeakFertilityById(long participant_id) {
-        List<PeakFertility> peakFertilities = new ArrayList<PeakFertility>();
-        String selectQuery = "SELECT  * FROM " + TABLE_PEAK_FERTILITY + " WHERE "
-                + KEY_PARTICIPANT_ID + " = " + participant_id;
-
-        Log.e(LOG, selectQuery);
-
-        SQLiteDatabase db = this.getReadableDatabase();
-        Cursor c = db.rawQuery(selectQuery, null);
-
-        // looping through all rows and adding to list
-        if (c.moveToFirst()) {
-            do {
-                long id = c.getInt((c.getColumnIndex(KEY_ID)));
-                String start = c.getString((c.getColumnIndex(KEY_START)));
-                String end = c.getString((c.getColumnIndex(KEY_END)));
-                PeakFertility pf = new PeakFertility(participant_id, start, end);
-                pf.setId(id);
-
-                // adding to participant list
-                peakFertilities.add(pf);
-            } while (c.moveToNext());
-        }
-
-        return peakFertilities;
-    }
-
     // Survey Result-specific CRUD Methods
 
     public boolean createSurveyResult(SurveyResult surveyResult) {
@@ -349,7 +291,7 @@ public class DatabaseHelper extends SQLiteOpenHelper{
 
         ContentValues values = new ContentValues();
         values.put(KEY_PARTICIPANT_ID, surveyResult.getParticipant_id());
-        values.put(KEY_DATE, getStringFromDate(surveyResult.getDate()));
+        values.put(KEY_DATE, DateUtil.getStringFromDate(surveyResult.getDate()));
         values.put(KEY_TEMPERATURE, surveyResult.getTemperature());
         values.put(KEY_VAGINA_MUCUS_STICKY, intFromBoolean(surveyResult.isVaginaMucusSticky()));
         values.put(KEY_HAS_PERIOD, intFromBoolean(surveyResult.isOnPeriod()));
@@ -402,6 +344,37 @@ public class DatabaseHelper extends SQLiteOpenHelper{
 
         return surveyResults;
     }
+    public List<SurveyResult> getAllSurveyResults() {
+        List<SurveyResult> surveyResults = new ArrayList<>();
+        String selectQuery = "SELECT  * FROM " + TABLE_SURVEY_RESULTS;
+
+        Log.e(LOG, selectQuery);
+
+        SQLiteDatabase db = this.getReadableDatabase();
+        Cursor c = db.rawQuery(selectQuery, null);
+
+        // looping through all rows and adding to list
+        if (c.moveToFirst()) {
+            do {
+                long id = c.getInt((c.getColumnIndex(KEY_ID)));
+                long participant_id = c.getInt(c.getColumnIndex(KEY_PARTICIPANT_ID));
+                double temp = c.getDouble((c.getColumnIndex(KEY_TEMPERATURE)));
+                String date = c.getString((c.getColumnIndex(KEY_DATE)));
+                int vms = c.getInt((c.getColumnIndex(KEY_VAGINA_MUCUS_STICKY)));
+                int hp = c.getInt((c.getColumnIndex(KEY_HAS_PERIOD)));
+                int io = c.getInt((c.getColumnIndex(KEY_IS_OVULATING)));
+                int hs = c.getInt((c.getColumnIndex(KEY_HAD_SEX)));
+                int uc = c.getInt((c.getColumnIndex(KEY_USED_CONDOM)));
+                SurveyResult sr = new SurveyResult(participant_id, date, temp, vms, hp, io, hs, uc);
+                sr.setId(id);
+
+                // adding to participant list
+                surveyResults.add(sr);
+            } while (c.moveToNext());
+        }
+
+        return surveyResults;
+    }
     // MEMSCap-specific CRUD Methods
 
     public boolean createMemsCap(MemsCap memsCap) {
@@ -409,7 +382,7 @@ public class DatabaseHelper extends SQLiteOpenHelper{
 
         ContentValues values = new ContentValues();
         values.put(KEY_PARTICIPANT_ID, memsCap.getParticipant_id());
-        values.put(KEY_DATE, getStringFromDate(memsCap.getDate()));
+        values.put(KEY_DATE, DateUtil.getStringFromDate(memsCap.getDate()));
         values.put(KEY_MEMS_ID, memsCap.getMems_id());
 
         // insert row
@@ -458,23 +431,17 @@ public class DatabaseHelper extends SQLiteOpenHelper{
         db.execSQL("DROP TABLE IF EXISTS " + TABLE_PARTICIPANTS);
         db.execSQL("DROP TABLE IF EXISTS " + TABLE_VIRAL_LOADS);
         db.execSQL("DROP TABLE IF EXISTS " + TABLE_SURVEY_RESULTS);
-        db.execSQL("DROP TABLE IF EXISTS " + TABLE_PEAK_FERTILITY);
+        db.execSQL("DROP TABLE IF EXISTS " + "peakFertility");
         db.execSQL("DROP TABLE IF EXISTS " + TABLE_MEMS_CAP);
 
         db.execSQL(CREATE_TABLE_PARTICIPANTS);
         db.execSQL(CREATE_TABLE_VIRAL_LOADS);
         db.execSQL(CREATE_TABLE_SURVEY_RESULTS);
-        db.execSQL(CREATE_TABLE_PEAK_FERTILITY);
         db.execSQL(CREATE_TABLE_MEMS_CAP);
 
     }
 
     // Utility Methods
-    private String getStringFromDate(Date date){
-        DateFormat df = new SimpleDateFormat("dd/MM/yyyy");
-        return df.format(date);
-    }
-
     private int intFromBoolean(boolean test) {
         if(test)
             return 1;

@@ -14,17 +14,19 @@ import android.widget.CompoundButton;
 
 import com.roomorama.caldroid.CaldroidGridAdapter;
 
-import android.widget.CompoundButton.OnCheckedChangeListener;
+
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
+
 import java.util.HashMap;
 import java.util.List;
 
 import hirondelle.date4j.DateTime;
 import scip.app.models.Participant;
 import scip.app.models.SurveyResult;
+
 
 public class CustomizedCalendarCellAdapter extends CaldroidGridAdapter {
 
@@ -90,6 +92,7 @@ public class CustomizedCalendarCellAdapter extends CaldroidGridAdapter {
         }
 
         // Just show them all for now. Will parse through data soon
+
         final ImageView unprotectedSex = (ImageView) cellView.findViewById(R.id.sex);
         unprotectedSex.setVisibility(View.INVISIBLE);
         final ImageView sfluid = (ImageView) cellView.findViewById(R.id.sfluid);
@@ -180,7 +183,6 @@ public class CustomizedCalendarCellAdapter extends CaldroidGridAdapter {
             sfluid.setVisibility(View.INVISIBLE);
             opk.setVisibility(View.INVISIBLE);
         }
-
 
 
         // Customize for selected dates
