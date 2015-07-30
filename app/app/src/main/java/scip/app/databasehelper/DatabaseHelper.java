@@ -29,7 +29,7 @@ public class DatabaseHelper extends SQLiteOpenHelper{
     Context context;
 
     private static final String LOG = "DatabaseHelper";  // Logcat tag
-    private static final int DATABASE_VERSION = 6;  // This number MUST be incremented whenever a database is created/destroyed or columns are created/removed
+    private static final int DATABASE_VERSION = 8;  // This number MUST be incremented whenever a database is created/destroyed or columns are created/removed
     private static final String DATABASE_NAME = "patientManager";
 
     // Table Names
@@ -43,6 +43,9 @@ public class DatabaseHelper extends SQLiteOpenHelper{
     private static final String KEY_ID = "id";
     private static final String KEY_PARTICIPANT_ID = "participant_id";
     private static final String KEY_DATE = "date";
+
+    // Participant specific columns
+    private static final String KEY_IS_FEMALE = "isFemale";
 
     // Viral Load specific columns
     private static final String KEY_NUMBER = "number";
@@ -65,7 +68,7 @@ public class DatabaseHelper extends SQLiteOpenHelper{
 
     // Create table statements
     private static final String CREATE_TABLE_PARTICIPANTS = "CREATE TABLE "
-            + TABLE_PARTICIPANTS + "(" + KEY_ID + " INTEGER PRIMARY KEY," + KEY_PARTICIPANT_ID + " INTEGER" + ")";
+            + TABLE_PARTICIPANTS + "(" + KEY_ID + " INTEGER PRIMARY KEY," + KEY_PARTICIPANT_ID + " INTEGER," + KEY_IS_FEMALE + " INTEGER" + ")";
     private static final String CREATE_TABLE_VIRAL_LOADS = "CREATE TABLE " + TABLE_VIRAL_LOADS + "(" + KEY_ID + " INTEGER PRIMARY KEY,"
             + KEY_PARTICIPANT_ID + " INTEGER," + KEY_DATE + " TEXT," + KEY_NUMBER + " INTEGER," + KEY_VISIT_ID + " INTEGER)";
     private static final String CREATE_TABLE_SURVEY_RESULTS = "CREATE TABLE " + TABLE_SURVEY_RESULTS + "(" + KEY_ID + " INTEGER PRIMARY KEY,"
@@ -121,6 +124,7 @@ public class DatabaseHelper extends SQLiteOpenHelper{
 
         ContentValues values = new ContentValues();
         values.put(KEY_PARTICIPANT_ID, participant.getParticipantId());
+        values.put(KEY_IS_FEMALE, intFromBoolean(participant.isFemale()));
 
         // insert row
         long id = db.insert(TABLE_PARTICIPANTS, null, values);
@@ -150,7 +154,8 @@ public class DatabaseHelper extends SQLiteOpenHelper{
             return null;
 
         long id = c.getInt(c.getColumnIndex(KEY_ID));
-        Participant participant = new Participant(context, id, participant_id);
+        int isFemale = c.getInt(c.getColumnIndex(KEY_IS_FEMALE));
+        Participant participant = new Participant(context, id, participant_id, isFemale);
 
         return participant;
     }
@@ -169,7 +174,8 @@ public class DatabaseHelper extends SQLiteOpenHelper{
             do {
                 long id = c.getInt((c.getColumnIndex(KEY_ID)));
                 long participant_id = c.getInt((c.getColumnIndex(KEY_PARTICIPANT_ID)));
-                Participant participant = new Participant(context, id, participant_id);
+                int isFemale = c.getInt(c.getColumnIndex(KEY_IS_FEMALE));
+                Participant participant = new Participant(context, id, participant_id, isFemale);
 
                 // adding to participant list
                 participants.add(participant);
@@ -193,10 +199,11 @@ public class DatabaseHelper extends SQLiteOpenHelper{
             do {
                 long id = c.getInt((c.getColumnIndex(KEY_ID)));
                 long participant_id = c.getInt((c.getColumnIndex(KEY_PARTICIPANT_ID)));
-                Participant participant = new Participant(context, id, participant_id);
+                int isFemale = c.getInt(c.getColumnIndex(KEY_IS_FEMALE));
+                //Participant participant = new Participant(context, id, participant_id, isFemale);
 
                 // adding to couple list
-                couples.add(participant.getCoupleId());
+                couples.add(participant_id/100);
             } while (c.moveToNext());
         }
 
@@ -218,7 +225,8 @@ public class DatabaseHelper extends SQLiteOpenHelper{
             do {
                 long id = c.getInt((c.getColumnIndex(KEY_ID)));
                 long participant_id = c.getInt((c.getColumnIndex(KEY_PARTICIPANT_ID)));
-                Participant participant = new Participant(context, id, participant_id);
+                int isFemale = c.getInt(c.getColumnIndex(KEY_IS_FEMALE));
+                Participant participant = new Participant(context, id, participant_id, isFemale);
 
                 if(coupleId == participant.getCoupleId()) {
                     couple.add(participant);

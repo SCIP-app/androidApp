@@ -3,52 +3,6 @@
     android:layout_height="match_parent" tools:context="scip.app.CouplesMain"
     android:id="@+id/Couple_Main_Screen">
 
-    <ImageButton
-        android:layout_width="400dp"
-        android:layout_height="450dp"
-        android:layout_x="16dp"
-        android:id="@+id/cycleButton"
-        android:layout_gravity="center"
-        android:layout_marginLeft="4dp"
-        android:layout_marginTop="-20dp"
-        android:background="@color/material_blue_500"
-        android:paddingLeft="50dp"
-        android:paddingRight="50dp"
-        android:paddingTop="50dp"
-        android:paddingBottom="50dp"
-        android:scaleType="fitStart"
-        android:src="@drawable/ic_cycle" />
-
-    <ImageButton
-        android:layout_width="400dp"
-        android:layout_height="450dp"
-        android:id="@+id/artButton"
-        android:layout_gravity="right|center_vertical"
-        android:layout_marginRight="16dp"
-        android:layout_marginTop="-20dp"
-        android:paddingLeft="120dp"
-        android:paddingRight="70dp"
-        android:paddingTop="100dp"
-        android:paddingBottom="60dp"
-        android:scaleType="fitStart"
-        android:background="@color/material_blue_500"
-        android:src="@drawable/ic_cap" />
-
-    <ImageButton
-        android:layout_width="400dp"
-        android:layout_height="450dp"
-        android:id="@+id/calendarButton"
-        android:layout_gravity="left|center_vertical"
-        android:layout_marginLeft="16dp"
-        android:layout_marginTop="-20dp"
-        android:background="@color/material_blue_500"
-        android:paddingLeft="50dp"
-        android:paddingRight="50dp"
-        android:paddingTop="30dp"
-        android:paddingBottom="50dp"
-        android:scaleType="fitStart"
-        android:src="@drawable/ic_calendar" />
-
     <TextView
         android:layout_width="165dp"
         android:layout_height="32dp"
@@ -56,53 +10,18 @@
         android:text="Next Peak Fertility : "
         android:id="@+id/PeriodCycleLabel"
         android:layout_gravity="bottom|left|top"
-        android:layout_marginLeft="20dp"
+        android:layout_marginLeft="440dp"
         android:layout_marginTop="560dp" />
 
     <TextView
-        android:layout_width="wrap_content"
+        android:layout_width="160dp"
         android:layout_height="wrap_content"
         android:textAppearance="?android:attr/textAppearanceMedium"
         android:text="Next Cycle : "
         android:id="@+id/NextCycleLabel"
         android:layout_gravity="bottom|left|top"
-        android:layout_marginLeft="20dp"
+        android:layout_marginLeft="440dp"
         android:layout_marginTop="590dp" />
-
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:textAppearance="?android:attr/textAppearanceLarge"
-        android:text="Calendar View"
-        android:id="@+id/textView3"
-        android:layout_gravity="bottom|left|top"
-        android:layout_marginLeft="140dp"
-        android:textSize="@dimen/abc_text_size_headline_material"
-        android:layout_marginTop="480dp"
-        android:textColor="#ffffffff" />
-
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:textAppearance="?android:attr/textAppearanceLarge"
-        android:text="Cycle View"
-        android:id="@+id/textView4"
-        android:layout_gravity="center_horizontal|bottom|top"
-        android:layout_marginTop="480dp"
-        android:textSize="@dimen/abc_text_size_headline_material"
-        android:textColor="#ffffff" />
-
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:textAppearance="?android:attr/textAppearanceLarge"
-        android:text="ART View"
-        android:id="@+id/textView5"
-        android:layout_gravity="bottom|right|top"
-        android:layout_marginRight="140dp"
-        android:layout_marginTop="480dp"
-        android:textColor="#ffffff"
-        android:textSize="@dimen/abc_text_size_headline_material" />
 
     <TextView
         android:layout_width="wrap_content"
@@ -121,6 +40,57 @@
         android:layout_gravity="left|top"
         android:layout_marginTop="590dp"
         android:layout_marginLeft="120dp" />
+
+    <ImageButton
+        android:layout_width="450dp"
+        android:layout_height="450dp"
+        android:id="@+id/calendarButton"
+        android:layout_marginLeft="160dp"
+        android:layout_marginTop="64dp"
+        android:background="@color/material_blue_500"
+        android:paddingLeft="50dp"
+        android:paddingRight="50dp"
+        android:paddingTop="50dp"
+        android:paddingBottom="100dp"
+        android:scaleType="fitCenter"
+        android:src="@drawable/ic_calendar" />
+
+    <ImageButton
+        android:layout_width="450dp"
+        android:layout_height="450dp"
+        android:id="@+id/artButton"
+        android:layout_marginRight="16dp"
+        android:layout_marginTop="64dp"
+        android:paddingLeft="130dp"
+        android:paddingRight="100dp"
+        android:paddingTop="50dp"
+        android:paddingBottom="50dp"
+        android:scaleType="fitCenter"
+        android:background="@color/material_blue_500"
+        android:src="@drawable/ic_cap"
+        android:layout_marginLeft="650dp" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textAppearance="?android:attr/textAppearanceLarge"
+        android:text="Calendar View"
+        android:id="@+id/textView3"
+        android:layout_marginLeft="280dp"
+        android:textSize="32dp"
+        android:layout_marginTop="460dp"
+        android:textColor="#ffffffff" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textAppearance="?android:attr/textAppearanceLarge"
+        android:text="ART View"
+        android:id="@+id/textView5"
+        android:layout_marginTop="460dp"
+        android:textColor="#ffffff"
+        android:textSize="32dp"
+        android:layout_marginLeft="820dp" />
 
 </FrameLayout>
 

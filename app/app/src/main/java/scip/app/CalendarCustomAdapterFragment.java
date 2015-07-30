@@ -8,14 +8,22 @@ import java.util.List;
 
 import scip.app.models.Participant;
 
-public class CalendarCustomAdapterFragment extends CaldroidFragment {
+public class CalendarCustomAdapterFragment extends CaldroidFragment{
 
+    public CustomizedCalendarCellAdapter instance;
 
     @Override
     public CaldroidGridAdapter getNewDatesGridAdapter(int month, int year) {
         // TODO Auto-generated method stub
-        return new CustomizedCalendarCellAdapter(getActivity(),getActivity().getIntent(),month, year,
-                getCaldroidData(), extraData);
+
+
+        instance = new CustomizedCalendarCellAdapter(getActivity(), month, year,getCaldroidData(), extraData, ((CalendarViewActivity)getActivity()).getCouple());
+        return instance;
     }
+
+    public CustomizedCalendarCellAdapter getInstance() {
+        return instance;
+    }
+
 
 }

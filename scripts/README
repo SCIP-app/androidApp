@@ -1,0 +1,11 @@
+Scripts in this directory: 
+
+generate-data.py 
+Usage: python generate-data.py [number of couples to generate]
+Description: This python scripts generates 4 files of data that all use the same couple set of participant ids and contain all the information needed to input into the system. Once the files are generated, you can place them in the res/raw folder in the Android project for them to be used. If data is not being imported, make sure the testCSVImport function called in the onCreate of the LoginActivity is taking 'true' as a parameter. 
+Dependencies: Python 2.7+ (I haven't tested with with Python 3.2+). For more information on installing Python, please see https://www.python.org/downloads/ and download the latest Python 2 release.  
+
+get-msurvey-data.py
+Usage: python get-msurvey-data.py
+Description: used to see what is currently on the mSurvey API quickly. You need to copy and paste the token, sent to you through email, in order to access the API. Try to remember to not accidentally commit that code, since this is a public repository. Just copy and paste it between the quotations where it says PUT TOKEN HERE
+Dependencies: Python 2.7+ (I haven't tested with with Python 3.2+). For more information on installing Python, please see https://www.python.org/downloads/ and download the latest Python 2 release. It also depends on a Python library called requests, which can be installed using 'pip install requests'. If you need to install pip, please see these instructions (https://pip.pypa.io/en/latest/installing.html)

@@ -5,11 +5,13 @@ import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
 
 import android.support.v4.app.FragmentTransaction;
+import android.support.v7.app.AppCompatActivity;
 import android.view.LayoutInflater;
 import android.view.View;
-import android.support.v7.app.ActionBarActivity;
 import android.view.ViewGroup;
-import android.support.v7.widget.PopupMenu;
+import android.widget.CompoundButton;
+import android.widget.CheckBox;
+import android.view.View.OnClickListener;
 import android.widget.PopupWindow;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -20,6 +22,7 @@ import com.roomorama.caldroid.CaldroidListener;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
 
 import android.content.Context;
@@ -28,12 +31,13 @@ import android.view.Gravity;
 import scip.app.databasehelper.DatabaseHelper;
 import scip.app.models.Participant;
 
-public class CalendarViewActivity extends ActionBarActivity {
-    private boolean undo = false;
+public class CalendarViewActivity extends AppCompatActivity {
     private CaldroidFragment caldroidFragment;
-    private CaldroidFragment dialogCaldroidFragment;
     private List<Participant> couple;
     private long couple_id;
+
+    HashMap<Integer,String> monthMap = new HashMap<>();
+
 
     private void setCustomResourceForDates() {
         Calendar cal = Calendar.getInstance();
@@ -61,6 +65,18 @@ public class CalendarViewActivity extends ActionBarActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_calendar_view);
+        monthMap.put(1,"Jan");
+        monthMap.put(2,"Feb");
+        monthMap.put(3,"Mar");
+        monthMap.put(4,"Apr");
+        monthMap.put(5,"May");
+        monthMap.put(6,"Jun");
+        monthMap.put(7,"Jul");
+        monthMap.put(8,"Aug");
+        monthMap.put(9,"Sep");
+        monthMap.put(10,"Oct");
+        monthMap.put(11,"Nov");
+        monthMap.put(12,"Dec");
 
         couple_id = getIntent().getLongExtra("couple_id", 0);
         DatabaseHelper db = new DatabaseHelper(getApplicationContext());
@@ -69,7 +85,7 @@ public class CalendarViewActivity extends ActionBarActivity {
 
         final SimpleDateFormat formatter = new SimpleDateFormat("dd MMM yyyy");
 
-		 caldroidFragment = new CalendarCustomAdapterFragment();
+        caldroidFragment = new CalendarCustomAdapterFragment();
 
         // Setup arguments
 
@@ -90,12 +106,70 @@ public class CalendarViewActivity extends ActionBarActivity {
             caldroidFragment.setArguments(args);
         }
 
-        setCustomResourceForDates();
-
-        // Attach to the activity
-        FragmentTransaction t = getSupportFragmentManager().beginTransaction();
+        final FragmentTransaction t = getSupportFragmentManager().beginTransaction();
         t.replace(R.id.calendar1, caldroidFragment);
         t.commit();
+
+
+       CheckBox sexCheckBox = (CheckBox)findViewById(R.id.SexCheck);
+        sexCheckBox.setOnClickListener(new OnClickListener() {
+                                           @Override
+                                           public void onClick(View v) {
+                                               CalendarCustomAdapterFragment calView = (CalendarCustomAdapterFragment) caldroidFragment;
+                                               calView.getInstance().refresh();
+                                           }
+                                       }
+        );
+
+
+
+
+        CheckBox prepCheck = (CheckBox)findViewById(R.id.PrepCheck);
+        prepCheck.setOnClickListener(new OnClickListener() {
+                                           @Override
+                                           public void onClick(View v) {
+                                               CalendarCustomAdapterFragment calView = (CalendarCustomAdapterFragment)caldroidFragment;
+                                               calView.getInstance().refresh();
+                                           }
+                                       }
+        );
+
+
+
+        CheckBox sfluidCheck = (CheckBox)findViewById(R.id.CervicalCheck);
+        sfluidCheck.setOnClickListener(new OnClickListener() {
+                                         @Override
+                                         public void onClick(View v) {
+                                             CalendarCustomAdapterFragment calView = (CalendarCustomAdapterFragment)caldroidFragment;
+                                             calView.getInstance().refresh();
+                                         }
+                                     }
+        );
+
+
+        CheckBox opkCheck = (CheckBox)findViewById(R.id.OPKCheck);
+        opkCheck.setOnClickListener(new OnClickListener() {
+                                           @Override
+                                           public void onClick(View v) {
+                                               CalendarCustomAdapterFragment calView = (CalendarCustomAdapterFragment)caldroidFragment;
+                                               calView.getInstance().refresh();
+                                           }
+                                       }
+        );
+
+        CheckBox htempCheck = (CheckBox)findViewById(R.id.TempCheck);
+        htempCheck.setOnClickListener(new OnClickListener() {
+                                           @Override
+                                           public void onClick(View v) {
+                                               CalendarCustomAdapterFragment calView = (CalendarCustomAdapterFragment)caldroidFragment;
+                                               calView.getInstance().refresh();
+                                           }
+                                       }
+        );
+
+
+        // Attach to the activity
+
 
         // Setup listener
         final CaldroidListener listener = new CaldroidListener() {
@@ -113,35 +187,25 @@ public class CalendarViewActivity extends ActionBarActivity {
                 dateText.setText(formatter.format(date));
                 pw.dismiss();
                 pw.showAtLocation(layout, Gravity.CENTER, 0, 0);
-
-
-
-
-                //Toast.makeText(getApplicationContext(), formatter.format(date),
-                  //      Toast.LENGTH_SHORT).show();
-
             }
 
             @Override
             public void onChangeMonth(int month, int year) {
-                String text = "month: " + month + " year: " + year;
-                Toast.makeText(getApplicationContext(), text,
-                        Toast.LENGTH_SHORT).show();
+                String text = monthMap.get(month) + " " + year;
+                TextView monthText = (TextView) findViewById(R.id.monthLabel);
+                monthText.setText(text);
             }
 
             @Override
             public void onLongClickDate(Date date, View view) {
-                Toast.makeText(getApplicationContext(),
-                        "Long click " + formatter.format(date),
-                        Toast.LENGTH_SHORT).show();
+               // Toast.makeText(getApplicationContext(),
+                 //       "Long click " + formatter.format(date),
+                    //    Toast.LENGTH_SHORT).show();
             }
 
             @Override
             public void onCaldroidViewCreated() {
-                if (caldroidFragment.getLeftArrowButton() != null) {
-                    Toast.makeText(getApplicationContext(),
-                            "Caldroid view is created", Toast.LENGTH_SHORT)
-                            .show();
+                if (caldroidFragment.getLeftArrowButton() != null && caldroidFragment.getRightArrowButton()!=null) {
                 }
             }
 
@@ -150,129 +214,6 @@ public class CalendarViewActivity extends ActionBarActivity {
         // Setup Caldroid
         caldroidFragment.setCaldroidListener(listener);
 
-       // final TextView textView = (TextView) findViewById(R.id.textview);
-
-        //final Button customizeButton = (Button) findViewById(R.id.customize_button);
-
-        /**
-        // Customize the calendar
-        customizeButton.setOnClickListener(new OnClickListener() {
-
-            @Override
-            public void onClick(View v) {
-                if (undo) {
-                    customizeButton.setText(getString(R.string.customize));
-                    textView.setText("");
-
-                    // Reset calendar
-                    caldroidFragment.clearDisableDates();
-                    caldroidFragment.clearSelectedDates();
-                    caldroidFragment.setMinDate(null);
-                    caldroidFragment.setMaxDate(null);
-                    caldroidFragment.setShowNavigationArrows(true);
-                    caldroidFragment.setEnableSwipe(true);
-                    caldroidFragment.refreshView();
-                    undo = false;
-                    return;
-                }
-
-                // Else
-                undo = true;
-                customizeButton.setText(getString(R.string.undo));
-                Calendar cal = Calendar.getInstance();
-
-                // Min date is last 7 days
-                cal.add(Calendar.DATE, -7);
-                Date minDate = cal.getTime();
-
-                // Max date is next 7 days
-                cal = Calendar.getInstance();
-                cal.add(Calendar.DATE, 14);
-                Date maxDate = cal.getTime();
-
-                // Set selected dates
-                // From Date
-                cal = Calendar.getInstance();
-                cal.add(Calendar.DATE, 2);
-                Date fromDate = cal.getTime();
-
-                // To Date
-                cal = Calendar.getInstance();
-                cal.add(Calendar.DATE, 3);
-                Date toDate = cal.getTime();
-
-                // Set disabled dates
-                ArrayList<Date> disabledDates = new ArrayList<Date>();
-                for (int i = 5; i < 8; i++) {
-                    cal = Calendar.getInstance();
-                    cal.add(Calendar.DATE, i);
-                    disabledDates.add(cal.getTime());
-                }
-
-                // Customize
-                caldroidFragment.setMinDate(minDate);
-                caldroidFragment.setMaxDate(maxDate);
-                caldroidFragment.setDisableDates(disabledDates);
-                caldroidFragment.setSelectedDates(fromDate, toDate);
-                caldroidFragment.setShowNavigationArrows(false);
-                caldroidFragment.setEnableSwipe(false);
-
-                caldroidFragment.refreshView();
-
-                // Move to date
-                // cal = Calendar.getInstance();
-                // cal.add(Calendar.MONTH, 12);
-                // caldroidFragment.moveToDate(cal.getTime());
-
-                String text = "Today: " + formatter.format(new Date()) + "\n";
-                text += "Min Date: " + formatter.format(minDate) + "\n";
-                text += "Max Date: " + formatter.format(maxDate) + "\n";
-                text += "Select From Date: " + formatter.format(fromDate)
-                        + "\n";
-                text += "Select To Date: " + formatter.format(toDate) + "\n";
-                for (Date date : disabledDates) {
-                    text += "Disabled Date: " + formatter.format(date) + "\n";
-                }
-
-                textView.setText(text);
-            }
-        });*/
-
-        /*
-        Button showDialogButton = (Button) findViewById(R.id.show_dialog_button);
-
-        final Bundle state = savedInstanceState;
-        showDialogButton.setOnClickListener(new OnClickListener() {
-
-            @Override
-            public void onClick(View v) {
-                // Setup caldroid to use as dialog
-                dialogCaldroidFragment = new CaldroidFragment();
-                dialogCaldroidFragment.setCaldroidListener(listener);
-
-                // If activity is recovered from rotation
-                final String dialogTag = "CALDROID_DIALOG_FRAGMENT";
-                if (state != null) {
-                    dialogCaldroidFragment.restoreDialogStatesFromKey(
-                            getSupportFragmentManager(), state,
-                            "DIALOG_CALDROID_SAVED_STATE", dialogTag);
-                    Bundle args = dialogCaldroidFragment.getArguments();
-                    if (args == null) {
-                        args = new Bundle();
-                        dialogCaldroidFragment.setArguments(args);
-                    }
-                } else {
-                    // Setup arguments
-                    Bundle bundle = new Bundle();
-                    // Setup dialogTitle
-                    dialogCaldroidFragment.setArguments(bundle);
-                }
-
-                dialogCaldroidFragment.show(getSupportFragmentManager(),
-                        dialogTag);
-            }
-        });
-        */
     }
 
     /**
@@ -287,9 +228,9 @@ public class CalendarViewActivity extends ActionBarActivity {
             caldroidFragment.saveStatesToKey(outState, "CALDROID_SAVED_STATE");
         }
 
-        if (dialogCaldroidFragment != null) {
-            dialogCaldroidFragment.saveStatesToKey(outState,
-                    "DIALOG_CALDROID_SAVED_STATE");
-        }
+    }
+
+    public List<Participant> getCouple() {
+        return couple;
     }
 }

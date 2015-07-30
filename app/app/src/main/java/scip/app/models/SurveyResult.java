@@ -7,7 +7,7 @@ import java.util.Date;
 /**
  * Created by Allie on 6/25/2015.
  */
-public class SurveyResult {
+public class SurveyResult implements Comparable<SurveyResult>{
     long id;
     long participant_id;
     Date date;
@@ -29,9 +29,9 @@ public class SurveyResult {
         this.usedCondom = booleanFromInt(usedCondom);
     }
 
-    public SurveyResult(long participant_id, Date date, double temperature, boolean vaginaMucusSticky, boolean onPeriod, boolean isOvulating, boolean hadSex, boolean usedCondom) {
+    public SurveyResult(long participant_id, String date, double temperature, boolean vaginaMucusSticky, boolean onPeriod, boolean isOvulating, boolean hadSex, boolean usedCondom) {
         this.participant_id = participant_id;
-        this.date = date;
+        this.date = getDateFromString(date);
         this.temperature = temperature;
         this.vaginaMucusSticky = vaginaMucusSticky;
         this.onPeriod = onPeriod;
@@ -92,5 +92,10 @@ public class SurveyResult {
 
     public void setId(long id) {
         this.id = id;
+    }
+
+    @Override
+    public int compareTo(SurveyResult o) {
+        return getDate().compareTo(o.getDate());
     }
 }

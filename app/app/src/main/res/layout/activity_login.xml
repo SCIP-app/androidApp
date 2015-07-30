@@ -64,13 +64,13 @@
                     android:textStyle="bold"
                     android:layout_gravity="center_horizontal" />
 
+
                 <Button
+                    android:text="Import Data"
                     android:layout_width="383dp"
                     android:layout_height="wrap_content"
-                    android:text="Test File Import"
-                    android:id="@+id/testFileImportBtn"
-                    android:layout_gravity="center_horizontal|top"
-                    android:layout_marginTop="10dp" />
+                    android:id="@+id/dataImportBtn"
+                    android:layout_gravity="center_horizontal" />
 
             </LinearLayout>
         </LinearLayout>

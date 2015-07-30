@@ -53,6 +53,19 @@ public class DashboardActivity extends ActionBarActivity
 
         for(Participant p : couple) {
             Log.d("Participant id in couple", String.valueOf(p.getParticipantId()));
+            if(p.isFemale()) {
+                int length = p.getSurveyResults().size();
+                Log.d("# of SurveyResults", String.valueOf(length));
+            }
+
+            if(p.isIndex()) {
+                int length = p.getViralLoads().size();
+                Log.d("# of ViralLoads", String.valueOf(length));
+            }
+            else {
+                int length = p.getMemscaps().size();
+                Log.d("# of MemsCaps", String.valueOf(length));
+            }
         }
 
         mNavigationDrawerFragment = (NavigationDrawerFragment)
