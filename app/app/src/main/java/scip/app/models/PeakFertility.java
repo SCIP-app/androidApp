@@ -45,8 +45,10 @@ public class PeakFertility {
                 if(dateDiff >=  0 && dateDiff < 40)
                     return dateDiff + 1;
             }
-            // it's in the future
-            return (long) (DateUtil.getDateDiff(nextMensesStart, today, TimeUnit.DAYS) % averageCycleLength + 1);
+            // it's in the future or the past where we don't have data. Only return if it's in the future
+            long dateDifference = (long) (DateUtil.getDateDiff(nextMensesStart, today, TimeUnit.DAYS) % averageCycleLength + 1);
+            if (dateDifference > 0)
+                return dateDifference;
         }
         // return -1 is any errors occur
         return -1;
@@ -71,6 +73,18 @@ public class PeakFertility {
         if(resultsValid)
             return averageCycleLength;
         return -1; 
+    }
+
+    public List<Date> getNextCycleDates() {
+        if(!dataProcessed)
+            processData();
+        if(resultsValid) {
+            List<Date> dates = new ArrayList<>();
+            dates.add(nextMensesStart);
+            dates.add(DateUtil.addDays(nextMensesStart, (int)averageCycleLength));
+            return dates;
+        }
+        return new ArrayList<>();
     }
 
     private void processData() {
