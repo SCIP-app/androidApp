@@ -33,14 +33,17 @@
             android:name=".CalendarViewActivity"
             android:label="@string/title_activity_calendar" >
         </activity>
-        <activity
-            android:name=".DataImportActivity"
-            android:label="@string/title_activity_data_import" >
-        </activity>
+
         <activity
             android:name=".ViralLoadActivity"
             android:label="@string/title_activity_viral_load" >
         </activity>
+
+        <activity
+            android:name=".DataImportActivity"
+            android:label="@string/title_activity_data_import" >
+        </activity>
+
     </application>
 
 </manifest>

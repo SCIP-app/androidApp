@@ -1,6 +1,7 @@
 package scip.app;
 
 import android.app.Activity;
+import android.widget.CheckBox;
 import android.content.Context;
 import android.content.res.Resources;
 import android.graphics.Color;
@@ -9,18 +10,16 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
-import android.content.Intent;
+import android.widget.CompoundButton;
 
-import com.roomorama.caldroid.CaldroidFragment;
 import com.roomorama.caldroid.CaldroidGridAdapter;
 
 
-import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.util.Calendar;
 import java.util.Date;
 
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
@@ -29,24 +28,19 @@ import scip.app.models.MemsCap;
 import scip.app.models.Participant;
 import scip.app.models.SurveyResult;
 
-import scip.app.databasehelper.DatabaseHelper;
-import scip.app.models.Participant;
-import scip.app.models.SurveyResult;
-import java.util.Date;
 
 public class CustomizedCalendarCellAdapter extends CaldroidGridAdapter {
 
     private List<Participant> couple;
-    Intent main_intent;
-    private long couple_id;
-    private Context main_activity;
+    Activity activity;
+    public View calendarCellView;
 
-    public CustomizedCalendarCellAdapter(Activity context,Intent intent,int month, int year,
-                                       HashMap<String, Object> caldroidData, HashMap<String, Object> extraData, List<Participant>couple) {
+    public CustomizedCalendarCellAdapter(Context context, int month, int year,
+                                         HashMap<String, Object> caldroidData,
+                                         HashMap<String, Object> extraData,List<Participant> couple) {
         super(context, month, year, caldroidData, extraData);
+        activity = (Activity) context;
         this.couple = couple;
-        main_intent = intent;
-        main_activity = context;
 
     }
 
@@ -84,8 +78,6 @@ public class CustomizedCalendarCellAdapter extends CaldroidGridAdapter {
                     .getColor(com.caldroid.R.color.caldroid_darker_gray));
         }
 
-        boolean shouldResetDiabledView = false;
-        boolean shouldResetSelectedView = false;
 
 
         if (dateTime.equals(getToday())) {
@@ -102,48 +94,103 @@ public class CustomizedCalendarCellAdapter extends CaldroidGridAdapter {
 
         // Just show them all for now. Will parse through data soon
 
+        final ImageView unprotectedSex = (ImageView) cellView.findViewById(R.id.sex);
+        unprotectedSex.setVisibility(View.INVISIBLE);
+        final ImageView sfluid = (ImageView) cellView.findViewById(R.id.sfluid);
+        sfluid.setVisibility(View.INVISIBLE);
+        final ImageView htemp = (ImageView) cellView.findViewById(R.id.htemp);
+        htemp.setVisibility(View.INVISIBLE);
+        final ImageView opk = (ImageView) cellView.findViewById(R.id.opk);
+        opk.setVisibility(View.INVISIBLE);
+        final ImageView prep = (ImageView) cellView.findViewById(R.id.prep);
+        prep.setVisibility(View.INVISIBLE);
+
         Participant female;
-        if(couple.get(0).isFemale()) {
-            female = couple.get(0);
-        }
-        else {
-            female = couple.get(1);
-        }
-        for(SurveyResult sr : female.getSurveyResults()) {
-            if(sr.getDate().compareTo(today) == 0 ) {
-                if(sr.isOvulating()) {
-                    ImageView opk = (ImageView) cellView.findViewById(R.id.opk);
-                    opk.setVisibility(View.VISIBLE);
+
+        for (Participant participant: couple) {
+            Calendar calendar = Calendar.getInstance();
+            if(!participant.isIndex() && participant.getMemscaps()!=null) {
+                List<MemsCap> memsCaps = participant.getMemscaps();
+                for(MemsCap memsCap:memsCaps) {
+                    Date memsCapDate = memsCap.getDate();
+                    calendar.setTime(memsCapDate);
+
+                    if((calendar.get(Calendar.MONTH) == (dateTime.getMonth()-1)) && (calendar.get(Calendar.YEAR) == dateTime.getYear()) && (calendar.get(Calendar.DAY_OF_MONTH) == dateTime.getDay())){
+                        prep.setVisibility(View.VISIBLE);
+                    }
                 }
-                if (sr.isHadSex()) {
-                    ImageView unprotectedSex = (ImageView) cellView.findViewById(R.id.sex);
-                    unprotectedSex.setVisibility(View.VISIBLE);
-                }
-                if (sr.isVaginaMucusSticky()) {
-                    ImageView sfluid = (ImageView) cellView.findViewById(R.id.sfluid);
-                    sfluid.setVisibility(View.VISIBLE);
-                }
-                if (sr.getTemperature() >= 97.8) {
-                    ImageView htemp = (ImageView) cellView.findViewById(R.id.htemp);
-                    htemp.setVisibility(View.VISIBLE);
+            }
+
+            if(participant.isFemale()) {
+                List<SurveyResult> surveyResults = participant.getSurveyResults();
+                for(SurveyResult surveyResult:surveyResults) {
+                    Date date = surveyResult.getDate();
+                    calendar.setTime(date);
+                    if((calendar.get(Calendar.MONTH) == dateTime.getMonth()-1) && (calendar.get(Calendar.YEAR) == dateTime.getYear()) && (calendar.get(Calendar.DAY_OF_MONTH) == dateTime.getDay())){
+                        int month = calendar.get(Calendar.MONTH);
+                        if(surveyResult!=null) {
+                           if (surveyResult.isOvulating()) {
+                               opk.setVisibility(View.VISIBLE);
+                           }
+                           if(surveyResult.isHadSex() && !surveyResult.isUsedCondom()) {
+                               unprotectedSex.setVisibility(View.VISIBLE);
+                           }
+                           if(surveyResult.getTemperature()>=97.8) {
+                              htemp.setVisibility(View.VISIBLE);
+                           }
+                           if(surveyResult.isVaginaMucusSticky()) {
+                               sfluid.setVisibility(View.VISIBLE);
+                           }
+                       }
+                    }
                 }
             }
         }
 
-        Participant partner;
-        if(!couple.get(0).isIndex()) {
-            partner = couple.get(0);
-        }
-        else {
-            partner = couple.get(1);
+        /*
+        CheckBox sexCheckBox = (CheckBox) activity.findViewById(R.id.SexCheck);
+        if(sexCheckBox.isChecked()) {
+            sfluid.setVisibility(View.INVISIBLE);
+            opk.setVisibility(View.INVISIBLE);
+            prep.setVisibility(View.INVISIBLE);
+            htemp.setVisibility(View.INVISIBLE);
         }
 
-        for(MemsCap m : partner.getMemscaps()) {
-            if(m.getDate().compareTo(today) == 0) {
-                ImageView prep = (ImageView) cellView.findViewById(R.id.prep);
-                prep.setVisibility(View.VISIBLE);
-            }
+
+        CheckBox prepCheckBox = (CheckBox) activity.findViewById(R.id.PrepCheck);
+        if(prepCheckBox.isChecked()) {
+            unprotectedSex.setVisibility(View.INVISIBLE);
+            opk.setVisibility(View.INVISIBLE);
+            sfluid.setVisibility(View.INVISIBLE);
+            htemp.setVisibility(View.INVISIBLE);
         }
+
+
+
+        CheckBox opkCheckBox = (CheckBox) activity.findViewById(R.id.OPKCheck);
+        if(opkCheckBox.isChecked()) {
+            unprotectedSex.setVisibility(View.INVISIBLE);
+            htemp.setVisibility(View.INVISIBLE);
+            prep.setVisibility(View.INVISIBLE);
+            sfluid.setVisibility(View.INVISIBLE);
+        }
+
+        CheckBox sFluidCheckBox = (CheckBox) activity.findViewById(R.id.CervicalCheck);
+        if(sFluidCheckBox.isChecked()) {
+            unprotectedSex.setVisibility(View.INVISIBLE);
+            htemp.setVisibility(View.INVISIBLE);
+            prep.setVisibility(View.INVISIBLE);
+            opk.setVisibility(View.INVISIBLE);
+        }
+
+        CheckBox htempCheck = (CheckBox) activity.findViewById(R.id.TempCheck);
+        if(htempCheck.isChecked()) {
+            unprotectedSex.setVisibility(View.INVISIBLE);
+            prep.setVisibility(View.INVISIBLE);
+            sfluid.setVisibility(View.INVISIBLE);
+            opk.setVisibility(View.INVISIBLE);
+        }
+        */
 
         // Customize for selected dates
         if (selectedDates != null && selectedDates.indexOf(dateTime) != -1) {
@@ -173,6 +220,14 @@ public class CustomizedCalendarCellAdapter extends CaldroidGridAdapter {
         // Set custom color if required
         setCustomResources(dateTime, cellView, tv1);
 
+        calendarCellView = cellView;
         return cellView;
     }
+
+
+    public void refresh() {
+        calendarCellView.invalidate();
+    }
+
+
 }
