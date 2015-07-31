@@ -75,6 +75,18 @@ public class PeakFertility {
         return -1; 
     }
 
+    public List<Date> getNextCycleDates() {
+        if(!dataProcessed)
+            processData();
+        if(resultsValid) {
+            List<Date> dates = new ArrayList<>();
+            dates.add(nextMensesStart);
+            dates.add(DateUtil.addDays(nextMensesStart, (int)averageCycleLength));
+            return dates;
+        }
+        return new ArrayList<>();
+    }
+
     private void processData() {
         if(dataProcessed)
             return;
