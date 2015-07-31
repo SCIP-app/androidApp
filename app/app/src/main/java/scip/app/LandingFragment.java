@@ -66,6 +66,7 @@ public class LandingFragment extends Fragment {
         final SimpleDateFormat formatter = new SimpleDateFormat("dd MMM yyyy");
 
         TextView peakFertilityText = (TextView) view.findViewById(R.id.Peak_Fertility);
+        TextView nextCycleText = (TextView) view.findViewById(R.id.Next_Cycle);
         long coupleId = ((DashboardActivity)getActivity()).getCouple_id();
         DatabaseHelper db = new DatabaseHelper(getActivity().getApplicationContext());
         List<Participant> couple = db.getCoupleFromID(coupleId);
@@ -75,10 +76,17 @@ public class LandingFragment extends Fragment {
             if(participant.isFemale()) {
                 if(participant.getPeakFertility()!=null) {
                     List<Date> nextPeakFertilityValues = participant.getPeakFertility().getPeakFertilityWindow();
+                    List<Date> nextCycleDates = participant.getPeakFertility().getNextCycleDates();
+
                     if(nextPeakFertilityValues!=null) {
                         String fertilityRange = formatter.format(nextPeakFertilityValues.get(0)) + " - " + formatter.format(nextPeakFertilityValues.get(nextPeakFertilityValues.size() - 1));
                         peakFertilityText.setText(fertilityRange);
 
+                    }
+
+                    if(nextCycleDates!=null) {
+                        String nextFertilityRange = formatter.format(nextCycleDates.get(0)) + " - " +formatter.format(nextCycleDates.get(nextCycleDates.size()-1));
+                        nextCycleText.setText(nextFertilityRange);
                     }
 
                 }

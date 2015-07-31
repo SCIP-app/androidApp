@@ -40,7 +40,7 @@
         android:id="@+id/Next_Cycle"
         android:layout_gravity="left|top"
         android:layout_marginTop="590dp"
-        android:layout_marginLeft="605dp"
+        android:layout_marginLeft="610dp"
         android:text="11" />
 
     <ImageButton

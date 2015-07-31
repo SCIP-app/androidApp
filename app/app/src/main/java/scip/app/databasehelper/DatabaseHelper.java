@@ -178,6 +178,28 @@ public class DatabaseHelper extends SQLiteOpenHelper{
         return participants;
     }
 
+    public List<Long> getAllParticipantIds() {
+        List<Long> participants = new ArrayList<>();
+        String selectQuery = "SELECT  * FROM " + TABLE_PARTICIPANTS;
+
+        Log.e(LOG, selectQuery);
+
+        SQLiteDatabase db = this.getReadableDatabase();
+        Cursor c = db.rawQuery(selectQuery, null);
+
+        // looping through all rows and adding to list
+        if (c.moveToFirst()) {
+            do {
+                long participant_id = c.getInt((c.getColumnIndex(KEY_PARTICIPANT_ID)));
+
+                // adding to participant list
+                participants.add(participant_id);
+            } while (c.moveToNext());
+        }
+
+        return participants;
+    }
+
     public List<Long> getAllCoupleIDs() {
         List<Long> couples = new ArrayList<>();
         String selectQuery = "SELECT  * FROM " + TABLE_PARTICIPANTS;
