@@ -5,16 +5,19 @@ import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
 
 import android.support.v4.app.FragmentTransaction;
+import android.support.v7.app.ActionBarActivity;
 import android.support.v7.app.AppCompatActivity;
+import android.text.Layout;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.CompoundButton;
 import android.widget.CheckBox;
 import android.view.View.OnClickListener;
+import android.widget.ImageView;
 import android.widget.PopupWindow;
 import android.widget.TextView;
-import android.widget.Toast;
+import android.util.AttributeSet;
 
 import com.roomorama.caldroid.CaldroidFragment;
 import com.roomorama.caldroid.CaldroidListener;
@@ -29,9 +32,11 @@ import android.content.Context;
 import android.view.Gravity;
 
 import scip.app.databasehelper.DatabaseHelper;
+import scip.app.models.MemsCap;
 import scip.app.models.Participant;
+import scip.app.models.SurveyResult;
 
-public class CalendarViewActivity extends AppCompatActivity {
+public class CalendarViewActivity extends ActionBarActivity {
     private CaldroidFragment caldroidFragment;
     private List<Participant> couple;
     private long couple_id;
@@ -61,6 +66,9 @@ public class CalendarViewActivity extends AppCompatActivity {
         }
     }
 
+
+
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -77,15 +85,30 @@ public class CalendarViewActivity extends AppCompatActivity {
         monthMap.put(10,"Oct");
         monthMap.put(11,"Nov");
         monthMap.put(12,"Dec");
-
+        final SimpleDateFormat formatter = new SimpleDateFormat("dd MMM yyyy");
         couple_id = getIntent().getLongExtra("couple_id", 0);
         DatabaseHelper db = new DatabaseHelper(getApplicationContext());
         couple = db.getCoupleFromID(couple_id);
         db.closeDB();
 
-        final SimpleDateFormat formatter = new SimpleDateFormat("dd MMM yyyy");
+        TextView nextPeakFertilityTextView = (TextView) findViewById(R.id.peakFertilityValue);
+        TextView averageCycle = (TextView) findViewById(R.id.AvgCycleValue);
+        for(Participant participant:couple) {
+            if(participant.isFemale() && participant.getPeakFertility()!=null) {
+                List<Date> fertilityWindow = participant.getPeakFertility().getPeakFertilityWindow();
+                if(fertilityWindow!=null) {
+                    String fertility = formatter.format(fertilityWindow.get(0)) + " - " + formatter.format(fertilityWindow.get(fertilityWindow.size() - 1));
+                    nextPeakFertilityTextView.setText(fertility);
+                }
+                String averageCycleValue = String.valueOf((int)participant.getPeakFertility().getAverageCycleLength());
+                averageCycle.setText(averageCycleValue);
+            }
+        }
+
+
 
         caldroidFragment = new CalendarCustomAdapterFragment();
+
 
         // Setup arguments
 
@@ -168,6 +191,9 @@ public class CalendarViewActivity extends AppCompatActivity {
         );
 
 
+
+
+
         // Attach to the activity
 
 
@@ -175,16 +201,79 @@ public class CalendarViewActivity extends AppCompatActivity {
         final CaldroidListener listener = new CaldroidListener() {
 
             @Override
-            public void onSelectDate(Date date, View view) {
+            public void onSelectDate(final Date date, View view) {
                 LayoutInflater inflater = getLayoutInflater();
 
                 View layout = inflater.inflate(R.layout.popup_detail,
                         (ViewGroup) findViewById(R.id.popUp));
 
                 PopupWindow pw = new PopupWindow(layout,750,450,true);
-                pw.setBackgroundDrawable(new ColorDrawable(1));
                 TextView dateText = (TextView) pw.getContentView().findViewById(R.id.current_date_text);
-                dateText.setText(formatter.format(date));
+                ImageView prepPopupImage = (ImageView) pw.getContentView().findViewById(R.id.prepicon);
+                ImageView sexPopupImage = (ImageView) pw.getContentView().findViewById(R.id.sexIcon);
+                ImageView positivePopupImage = (ImageView) pw.getContentView().findViewById(R.id.positiveicon);
+                ImageView stickyPopupImage = (ImageView) pw.getContentView().findViewById(R.id.stickyicon);
+                ImageView htempPopUpIcon = (ImageView) pw.getContentView().findViewById(R.id.htempicon);
+                ImageView cyclePopUpIcon = (ImageView) pw.getContentView().findViewById(R.id.cycleicon);
+
+                 TextView prepPopupText = (TextView) pw.getContentView().findViewById(R.id.preplabel);
+                 TextView sexPopupText = (TextView) pw.getContentView().findViewById(R.id.sexlabel);
+                 TextView positivePopupText = (TextView) pw.getContentView().findViewById(R.id.positivelabel);
+                 TextView stickyPopupText = (TextView) pw.getContentView().findViewById(R.id.stickylabel);
+                 TextView htempPopUpText = (TextView) pw.getContentView().findViewById(R.id.htemplabel);
+                 TextView cycleLabelText = (TextView) pw.getContentView().findViewById(R.id.cyclelabel);
+                 TextView cycleDayInCycleText = (TextView) pw.getContentView().findViewById(R.id.dayInCycle);
+
+                        for(Participant participant:couple) {
+                            if(participant.isIndex()) {
+                                if(participant.getMemscaps()!=null) {
+                                    for(MemsCap memsCap:participant.getMemscaps()) {
+                                        if(date.compareTo(memsCap.getDate()) ==0) {
+                                            prepPopupImage.setVisibility(View.VISIBLE);
+                                            prepPopupText.setVisibility(View.VISIBLE);
+                                        }
+                                    }
+                                }
+                            }
+                            if(participant.isFemale()) {
+
+                                cycleLabelText.setVisibility(View.VISIBLE);
+                                cyclePopUpIcon.setVisibility(View.VISIBLE);
+                                cycleDayInCycleText.setVisibility(View.VISIBLE);
+
+                                if(participant.getPeakFertility()!=null) {
+                                    long dayInCycle = participant.getPeakFertility().getDayInCycle(date);
+                                    cycleDayInCycleText.setText(String.valueOf(dayInCycle));
+
+                                }
+                                if(participant.getSurveyResults()!=null) {
+                                    for(SurveyResult surveyResult:participant.getSurveyResults()) {
+                                        if(date.compareTo(surveyResult.getDate()) ==0) {
+
+                                            if (surveyResult.isOvulating()) {
+                                                positivePopupImage.setVisibility(View.VISIBLE);
+                                                positivePopupText.setVisibility(View.VISIBLE);
+                                            }
+                                            if(surveyResult.isHadSex() && !surveyResult.isUsedCondom()) {
+                                                sexPopupImage.setVisibility(View.VISIBLE);
+                                                sexPopupText.setVisibility(View.VISIBLE);
+                                            }
+                                            if(surveyResult.getTemperature()>=97.8) {
+                                                htempPopUpIcon.setVisibility(View.VISIBLE);
+                                                htempPopUpText.setVisibility(View.VISIBLE);
+                                            }
+                                            if(surveyResult.isVaginaMucusSticky()) {
+                                                stickyPopupImage.setVisibility(View.VISIBLE);
+                                                stickyPopupText.setVisibility(View.VISIBLE);
+                                            }
+                                        }
+                                    }
+                                }
+
+                            }
+                        }
+                        dateText.setText(formatter.format(date));
+                pw.setBackgroundDrawable(new ColorDrawable(1));
                 pw.dismiss();
                 pw.showAtLocation(layout, Gravity.CENTER, 0, 0);
             }
@@ -198,9 +287,7 @@ public class CalendarViewActivity extends AppCompatActivity {
 
             @Override
             public void onLongClickDate(Date date, View view) {
-               // Toast.makeText(getApplicationContext(),
-                 //       "Long click " + formatter.format(date),
-                    //    Toast.LENGTH_SHORT).show();
+
             }
 
             @Override

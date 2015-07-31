@@ -61,50 +61,55 @@
                     android:layout_alignParentTop="true"
                     android:layout_alignParentRight="true"
                     android:layout_alignParentEnd="true"
-                    android:src="@drawable/ic_sex" />
+                    android:src="@drawable/ic_sex"
+                    android:visibility="invisible" />
 
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:textAppearance="?android:attr/textAppearanceMedium"
                     android:text="Unprotected Sex"
-                    android:id="@+id/textView10"
+                    android:id="@+id/sexlabel"
                     android:textSize="18dp"
                     android:layout_centerVertical="true"
                     android:layout_alignParentRight="true"
-                    android:layout_alignParentEnd="true" />
+                    android:layout_alignParentEnd="true"
+                    android:visibility="invisible" />
 
                 <ImageView
                     android:layout_width="50dp"
                     android:layout_height="50dp"
-                    android:id="@+id/imageView6"
+                    android:id="@+id/cycleicon"
                     android:src="@drawable/ic_day_in_cycle"
                     android:layout_centerVertical="true"
                     android:layout_alignParentLeft="true"
-                    android:layout_alignParentStart="true" />
+                    android:layout_alignParentStart="true"
+                    android:visibility="invisible" />
 
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:textAppearance="?android:attr/textAppearanceMedium"
                     android:text="Cycle Day"
-                    android:id="@+id/textView11"
+                    android:id="@+id/cyclelabel"
                     android:textSize="24dp"
-                    android:layout_alignBottom="@+id/textView10"
-                    android:layout_toRightOf="@+id/imageView6"
-                    android:layout_toEndOf="@+id/imageView6"
-                    android:layout_marginLeft="8dp" />
+                    android:layout_alignBottom="@+id/sexlabel"
+                    android:layout_toRightOf="@+id/cycleicon"
+                    android:layout_toEndOf="@+id/cycleicon"
+                    android:layout_marginLeft="8dp"
+                    android:visibility="invisible" />
 
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:textAppearance="?android:attr/textAppearanceSmall"
                     android:text="13"
-                    android:id="@+id/textView12"
-                    android:layout_alignBottom="@+id/textView11"
+                    android:id="@+id/dayInCycle"
+                    android:layout_alignBottom="@+id/cyclelabel"
                     android:layout_alignParentLeft="true"
                     android:layout_alignParentStart="true"
-                    android:layout_marginLeft="18dp" />
+                    android:layout_marginLeft="18dp"
+                    android:visibility="invisible" />
             </RelativeLayout>
 
             <RelativeLayout
@@ -116,44 +121,48 @@
                 <ImageView
                     android:layout_width="50dp"
                     android:layout_height="50dp"
-                    android:id="@+id/imageView"
+                    android:id="@+id/prepicon"
                     android:layout_alignParentTop="true"
                     android:layout_alignParentLeft="true"
                     android:layout_alignParentStart="true"
-                    android:src="@drawable/ic_prep" />
+                    android:src="@drawable/ic_prep"
+                    android:visibility="invisible" />
 
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:textAppearance="?android:attr/textAppearanceMedium"
                     android:text="Prep Taken"
-                    android:id="@+id/textView6"
+                    android:id="@+id/preplabel"
                     android:layout_centerVertical="true"
-                    android:layout_toRightOf="@+id/imageView"
-                    android:layout_toEndOf="@+id/imageView"
-                    android:textSize="24dp" />
+                    android:layout_toRightOf="@+id/prepicon"
+                    android:layout_toEndOf="@+id/prepicon"
+                    android:textSize="24dp"
+                    android:visibility="invisible" />
 
                 <ImageView
                     android:layout_width="50dp"
                     android:layout_height="50dp"
-                    android:id="@+id/imageView3"
+                    android:id="@+id/positiveicon"
                     android:src="@drawable/ic_opk"
                     android:layout_alignParentTop="true"
-                    android:layout_toLeftOf="@+id/textView8"
-                    android:layout_toStartOf="@+id/textView8"
+                    android:layout_toLeftOf="@+id/positivelabel"
+                    android:layout_toStartOf="@+id/positivelabel"
                     android:layout_marginRight="13dp"
-                    android:layout_marginEnd="32dp" />
+                    android:layout_marginEnd="32dp"
+                    android:visibility="invisible" />
 
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:textAppearance="?android:attr/textAppearanceMedium"
                     android:text="Positive OPK"
-                    android:id="@+id/textView8"
+                    android:id="@+id/positivelabel"
                     android:textSize="24dp"
-                    android:layout_alignTop="@+id/textView6"
+                    android:layout_alignTop="@+id/preplabel"
                     android:layout_alignParentRight="true"
-                    android:layout_alignParentEnd="true" />
+                    android:layout_alignParentEnd="true"
+                    android:visibility="invisible" />
             </RelativeLayout>
 
             <RelativeLayout
@@ -165,43 +174,47 @@
                 <ImageView
                     android:layout_width="50dp"
                     android:layout_height="50dp"
-                    android:id="@+id/imageView2"
+                    android:id="@+id/htempicon"
                     android:layout_alignParentBottom="true"
                     android:layout_alignParentLeft="true"
                     android:layout_alignParentStart="true"
-                    android:src="@drawable/ic_htemp" />
+                    android:src="@drawable/ic_htemp"
+                    android:visibility="invisible" />
 
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:textAppearance="?android:attr/textAppearanceMedium"
                     android:text="High Temp"
-                    android:id="@+id/textView7"
+                    android:id="@+id/htemplabel"
                     android:layout_centerVertical="true"
-                    android:layout_toRightOf="@+id/imageView2"
-                    android:layout_toEndOf="@+id/imageView2"
-                    android:textSize="24dp" />
+                    android:layout_toRightOf="@+id/htempicon"
+                    android:layout_toEndOf="@+id/htempicon"
+                    android:textSize="24dp"
+                    android:visibility="invisible" />
 
                 <ImageView
                     android:layout_width="50dp"
                     android:layout_height="50dp"
-                    android:id="@+id/imageView4"
+                    android:id="@+id/stickyicon"
                     android:src="@drawable/ic_sfluid"
                     android:layout_alignParentTop="true"
-                    android:layout_toLeftOf="@+id/textView9"
-                    android:layout_toStartOf="@+id/textView9"
-                    android:layout_marginRight="24dp" />
+                    android:layout_toLeftOf="@+id/stickylabel"
+                    android:layout_toStartOf="@+id/stickylabel"
+                    android:layout_marginRight="24dp"
+                    android:visibility="invisible" />
 
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:textAppearance="?android:attr/textAppearanceMedium"
                     android:text="Sticky Fluid"
-                    android:id="@+id/textView9"
+                    android:id="@+id/stickylabel"
                     android:textSize="24dp"
                     android:layout_centerVertical="true"
                     android:layout_alignParentRight="true"
-                    android:layout_alignParentEnd="true" />
+                    android:layout_alignParentEnd="true"
+                    android:visibility="invisible" />
             </RelativeLayout>
 
         </FrameLayout>

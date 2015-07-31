@@ -97,13 +97,21 @@ public class DashboardActivity extends ActionBarActivity
 
         switch (position) {
             case 0:
+
+                Bundle bundle = new Bundle();
+                bundle.putLong("coupleId",couple_id);
                 LandingFragment coupleFragment = new LandingFragment();
+                coupleFragment.setArguments(bundle);
                 mTitle  = "Couples Main";
                 fragmentTransaction.replace(R.id.content_frame, coupleFragment);
                 fragmentTransaction.commit();
                 break;
             case 1:
+
+                Bundle coupleBundle = new Bundle();
+                coupleBundle.putLong("coupleId",couple_id);
                 LandingFragment couplesFragment = new LandingFragment();
+                couplesFragment.setArguments(coupleBundle);
                 mTitle  = "Couples Main";
                 fragmentTransaction.replace(R.id.content_frame, couplesFragment);
                 fragmentTransaction.commit();

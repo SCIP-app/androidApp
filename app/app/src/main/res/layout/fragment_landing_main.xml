@@ -14,14 +14,14 @@
         android:layout_marginTop="560dp" />
 
     <TextView
-        android:layout_width="160dp"
+        android:layout_width="167dp"
         android:layout_height="wrap_content"
         android:textAppearance="?android:attr/textAppearanceMedium"
-        android:text="Next Cycle : "
+        android:text="              Next Cycle : "
         android:id="@+id/NextCycleLabel"
-        android:layout_gravity="bottom|left|top"
         android:layout_marginLeft="440dp"
-        android:layout_marginTop="590dp" />
+        android:layout_marginTop="590dp"
+        android:textAlignment="gravity" />
 
     <TextView
         android:layout_width="wrap_content"
@@ -30,7 +30,8 @@
         android:id="@+id/Peak_Fertility"
         android:layout_gravity="left|top"
         android:layout_marginTop="560dp"
-        android:layout_marginLeft="180dp" />
+        android:layout_marginLeft="610dp"
+        android:text="11" />
 
     <TextView
         android:layout_width="wrap_content"
@@ -39,7 +40,8 @@
         android:id="@+id/Next_Cycle"
         android:layout_gravity="left|top"
         android:layout_marginTop="590dp"
-        android:layout_marginLeft="120dp" />
+        android:layout_marginLeft="605dp"
+        android:text="11" />
 
     <ImageButton
         android:layout_width="450dp"

@@ -71,7 +71,7 @@
         android:id="@+id/checkboxLayout"
         android:layout_toEndOf="@+id/linearLabelLayout"
         android:layout_marginTop="16dp"
-        android:layout_marginLeft="88dp"
+        android:layout_marginLeft="250dp"
         android:weightSum="1">
 
 

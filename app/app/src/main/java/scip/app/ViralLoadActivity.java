@@ -88,7 +88,7 @@ public class ViralLoadActivity extends ActionBarActivity {
 
         private void generateData() {
             couple_id =  getActivity().getIntent().getLongExtra("couple_id", 0);
-            chart.getBubbleChartData().setMinBubbleRadius(30);
+            chart.getBubbleChartData().setBubbleScale((float)0.1);
             DatabaseHelper db = new DatabaseHelper(getActivity().getApplicationContext());
             List<Participant> couple = db.getCoupleFromID(couple_id);
             db.closeDB();
@@ -96,6 +96,7 @@ public class ViralLoadActivity extends ActionBarActivity {
             List<ViralLoad> viralLoadList = new ArrayList<ViralLoad>();
             List<BubbleValue> values = new ArrayList<BubbleValue>();
             List<AxisValue> axisValues = new ArrayList<AxisValue>();
+            List<AxisValue> axisYValues = new ArrayList<AxisValue>();
 
             HashMap<Integer,String> monthMap = new HashMap<Integer,String>();
             monthMap.put(1,"Jan");
@@ -134,11 +135,35 @@ public class ViralLoadActivity extends ActionBarActivity {
                                     month = month*diff;
                                 }
 
-                                BubbleValue value = new BubbleValue((float) month, num, num);
+                                float bubbleSize = (float) viralLoad.getNumber();
+                                if(bubbleSize<=1000) {
+                                    bubbleSize = 15;
+
+                                }
+
+                                if(bubbleSize>1000 && bubbleSize<=10000) {
+                                    bubbleSize = 30;
+                                }
+
+                                if(bubbleSize>10000) {
+                                    bubbleSize = 45;
+                                }
+
+                                BubbleValue value = new BubbleValue((float) month, num, bubbleSize);
+
+                                if(num <1000) {
+                                    value.setColor(getResources().getColor(R.color.material_green_800));
+                                } else {
+                                    value.setColor(getResources().getColor(R.color.material_orange_800));
+                                }
+
                                 AxisValue axisValue = new AxisValue(month);
+                                AxisValue axisYValue = new AxisValue(num);
                                 axisValue.setLabel(monthMap.get(calendar.get(Calendar.MONTH)+1)+" "+calendar.get(Calendar.YEAR));
+                                axisYValue.setLabel(String.valueOf(num));
                                 axisValues.add(axisValue);
-                                value.setColor(ChartUtils.pickColor());
+                                axisYValues.add(axisYValue);
+
                                 value.setLabel(String.valueOf(viralLoad.getNumber()));
                                 value.setShape(shape);
                                 values.add(value);
@@ -161,7 +186,9 @@ public class ViralLoadActivity extends ActionBarActivity {
             if (hasAxes) {
                 Axis axisX = new Axis();
                 axisX.setValues(axisValues);
-                Axis axisY = new Axis().setHasLines(true);
+                Axis axisY = new Axis().setHasLines(false);
+                axisY.setValues(axisYValues);
+
                 if (hasAxesNames) {
                     axisX.setName("MONTHS");
                     axisY.setName("RNA VALUE");

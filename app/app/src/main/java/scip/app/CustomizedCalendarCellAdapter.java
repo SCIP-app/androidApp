@@ -24,6 +24,7 @@ import java.util.HashMap;
 import java.util.List;
 
 import hirondelle.date4j.DateTime;
+import scip.app.models.MemsCap;
 import scip.app.models.Participant;
 import scip.app.models.SurveyResult;
 
@@ -109,10 +110,15 @@ public class CustomizedCalendarCellAdapter extends CaldroidGridAdapter {
         for (Participant participant: couple) {
             Calendar calendar = Calendar.getInstance();
             if(!participant.isIndex() && participant.getMemscaps()!=null) {
-                if(calendar.get(Calendar.MONTH) == dateTime.getMonth() && calendar.get(Calendar.YEAR) == dateTime.getYear() && calendar.get(Calendar.DAY_OF_MONTH) == dateTime.getDay()){
-                    prep.setVisibility(View.VISIBLE);
-                }
+                List<MemsCap> memsCaps = participant.getMemscaps();
+                for(MemsCap memsCap:memsCaps) {
+                    Date memsCapDate = memsCap.getDate();
+                    calendar.setTime(memsCapDate);
 
+                    if((calendar.get(Calendar.MONTH) == (dateTime.getMonth()-1)) && (calendar.get(Calendar.YEAR) == dateTime.getYear()) && (calendar.get(Calendar.DAY_OF_MONTH) == dateTime.getDay())){
+                        prep.setVisibility(View.VISIBLE);
+                    }
+                }
             }
 
             if(participant.isFemale()) {
@@ -120,12 +126,13 @@ public class CustomizedCalendarCellAdapter extends CaldroidGridAdapter {
                 for(SurveyResult surveyResult:surveyResults) {
                     Date date = surveyResult.getDate();
                     calendar.setTime(date);
-                    if(calendar.get(Calendar.MONTH) == dateTime.getMonth() && calendar.get(Calendar.YEAR) == dateTime.getYear() && calendar.get(Calendar.DAY_OF_MONTH) == dateTime.getDay()){
-                       if(surveyResult!=null) {
+                    if((calendar.get(Calendar.MONTH) == dateTime.getMonth()-1) && (calendar.get(Calendar.YEAR) == dateTime.getYear()) && (calendar.get(Calendar.DAY_OF_MONTH) == dateTime.getDay())){
+                        int month = calendar.get(Calendar.MONTH);
+                        if(surveyResult!=null) {
                            if (surveyResult.isOvulating()) {
                                opk.setVisibility(View.VISIBLE);
                            }
-                           if(surveyResult.isHadSex()) {
+                           if(surveyResult.isHadSex() && !surveyResult.isUsedCondom()) {
                                unprotectedSex.setVisibility(View.VISIBLE);
                            }
                            if(surveyResult.getTemperature()>=97.8) {
@@ -140,7 +147,7 @@ public class CustomizedCalendarCellAdapter extends CaldroidGridAdapter {
             }
         }
 
-
+        /*
         CheckBox sexCheckBox = (CheckBox) activity.findViewById(R.id.SexCheck);
         if(sexCheckBox.isChecked()) {
             sfluid.setVisibility(View.INVISIBLE);
@@ -183,7 +190,7 @@ public class CustomizedCalendarCellAdapter extends CaldroidGridAdapter {
             sfluid.setVisibility(View.INVISIBLE);
             opk.setVisibility(View.INVISIBLE);
         }
-
+        */
 
         // Customize for selected dates
         if (selectedDates != null && selectedDates.indexOf(dateTime) != -1) {
