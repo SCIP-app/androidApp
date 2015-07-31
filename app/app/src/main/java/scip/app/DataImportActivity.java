@@ -105,7 +105,7 @@ public class DataImportActivity extends ActionBarActivity {
                 if(p.isFemale()) {
                     List<Date> nextPeakFertilityWindow = p.getPeakFertility().getPeakFertilityWindow();
                     publishProgress("Participant id " + String.valueOf(p.getParticipantId()));
-                    Calendar dec30 = new GregorianCalendar(2015, 12, 30);
+                    Calendar dec30 = new GregorianCalendar(2015, 9, 14);
                     publishProgress("Dec 30 is day " + String.valueOf(p.getPeakFertility().getDayInCycle(new Date(dec30.getTimeInMillis())))+ " in cycle.");
                     for (Date next : nextPeakFertilityWindow)
                         publishProgress(next.toString());
