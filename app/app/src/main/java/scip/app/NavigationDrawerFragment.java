@@ -1,5 +1,6 @@
 package scip.app;
 
+import android.content.Intent;
 import android.support.v7.app.ActionBarActivity;
 import android.app.Activity;
 import android.support.v7.app.ActionBar;
@@ -269,6 +270,12 @@ public class NavigationDrawerFragment extends Fragment{
         if (item.getItemId() == R.id.action_example) {
             Toast.makeText(getActivity(), "Example action.", Toast.LENGTH_SHORT).show();
             return true;
+        }
+
+        if(item.getTitle().toString().contains(mDrawerArrayList.get(1))) {
+            Intent endSession = new Intent(getActivity(), SessionSelectionActivity.class);
+            startActivity(endSession);
+
         }
 
         return super.onOptionsItemSelected(item);

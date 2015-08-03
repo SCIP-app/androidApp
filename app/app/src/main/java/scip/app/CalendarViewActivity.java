@@ -96,12 +96,14 @@ public class CalendarViewActivity extends ActionBarActivity {
         for(Participant participant:couple) {
             if(participant.isFemale() && participant.getPeakFertility()!=null) {
                 List<Date> fertilityWindow = participant.getPeakFertility().getPeakFertilityWindow();
-                if(fertilityWindow!=null) {
+                if(fertilityWindow!=null && fertilityWindow.size() == 2) {
                     String fertility = formatter.format(fertilityWindow.get(0)) + " - " + formatter.format(fertilityWindow.get(fertilityWindow.size() - 1));
                     nextPeakFertilityTextView.setText(fertility);
                 }
-                String averageCycleValue = String.valueOf((int)participant.getPeakFertility().getAverageCycleLength());
-                averageCycle.setText(averageCycleValue);
+                if(participant.getPeakFertility().getAverageCycleLength() != -1) {
+                    String averageCycleValue = String.valueOf((int) participant.getPeakFertility().getAverageCycleLength());
+                    averageCycle.setText(averageCycleValue);
+                }
             }
         }
 
