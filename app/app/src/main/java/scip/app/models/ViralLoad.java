@@ -46,4 +46,27 @@ public class ViralLoad {
         return visit_id;
     }
 
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (!(o instanceof ViralLoad)) return false;
+
+        ViralLoad viralLoad = (ViralLoad) o;
+
+        if (number != viralLoad.number) return false;
+        if (participant_id != viralLoad.participant_id) return false;
+        if (visit_id != viralLoad.visit_id) return false;
+        if (!date.equals(viralLoad.date)) return false;
+
+        return true;
+    }
+
+    @Override
+    public int hashCode() {
+        int result = (int) (participant_id ^ (participant_id >>> 32));
+        result = 31 * result + number;
+        result = 31 * result + date.hashCode();
+        result = 31 * result + visit_id;
+        return result;
+    }
 }

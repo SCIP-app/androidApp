@@ -100,4 +100,38 @@ public class SurveyResult implements Comparable<SurveyResult>{
     public int compareTo(SurveyResult o) {
         return getDate().compareTo(o.getDate());
     }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (!(o instanceof SurveyResult)) return false;
+
+        SurveyResult that = (SurveyResult) o;
+
+        if (hadSex != that.hadSex) return false;
+        if (isOvulating != that.isOvulating) return false;
+        if (onPeriod != that.onPeriod) return false;
+        if (participant_id != that.participant_id) return false;
+        if (Double.compare(that.temperature, temperature) != 0) return false;
+        if (usedCondom != that.usedCondom) return false;
+        if (vaginaMucusSticky != that.vaginaMucusSticky) return false;
+        if (!date.equals(that.date)) return false;
+
+        return true;
+    }
+
+    @Override
+    public int hashCode() {
+        int result;
+        long temp;
+        result = date.hashCode();
+        temp = Double.doubleToLongBits(temperature);
+        result = 31 * result + (int) (temp ^ (temp >>> 32));
+        result = 31 * result + (vaginaMucusSticky ? 1 : 0);
+        result = 31 * result + (onPeriod ? 1 : 0);
+        result = 31 * result + (isOvulating ? 1 : 0);
+        result = 31 * result + (hadSex ? 1 : 0);
+        result = 31 * result + (usedCondom ? 1 : 0);
+        return result;
+    }
 }

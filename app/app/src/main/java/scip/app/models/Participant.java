@@ -137,6 +137,35 @@ public class Participant {
         db.closeDB();
     }
 
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (!(o instanceof Participant)) return false;
 
+        Participant that = (Participant) o;
 
+        if (isFemale != that.isFemale) return false;
+        if (participant_id != that.participant_id) return false;
+        if (memscaps != null ? !memscaps.equals(that.memscaps) : that.memscaps != null)
+            return false;
+        if (peakFertility != null ? !peakFertility.equals(that.peakFertility) : that.peakFertility != null)
+            return false;
+        if (surveyResults != null ? !surveyResults.equals(that.surveyResults) : that.surveyResults != null)
+            return false;
+        if (viralLoads != null ? !viralLoads.equals(that.viralLoads) : that.viralLoads != null)
+            return false;
+
+        return true;
+    }
+
+    @Override
+    public int hashCode() {
+        int result = (int) (participant_id ^ (participant_id >>> 32));
+        result = 31 * result + (isFemale ? 1 : 0);
+        result = 31 * result + (surveyResults != null ? surveyResults.hashCode() : 0);
+        result = 31 * result + (viralLoads != null ? viralLoads.hashCode() : 0);
+        result = 31 * result + (memscaps != null ? memscaps.hashCode() : 0);
+        result = 31 * result + (peakFertility != null ? peakFertility.hashCode() : 0);
+        return result;
+    }
 }
