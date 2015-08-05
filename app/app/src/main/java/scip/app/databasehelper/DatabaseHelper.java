@@ -28,6 +28,10 @@ import scip.app.models.ViralLoad;
  */
 public class DatabaseHelper extends SQLiteOpenHelper{
     Context context;
+    List<MemsCap> existingMemsCap = null;
+    List<Participant> existingParticipants = null;
+    List<SurveyResult> existingSurveyResults = null;
+    List<ViralLoad> existingViralLoads = null;
 
     private static final String LOG = "DatabaseHelper";  // Logcat tag
     private static final int DATABASE_VERSION = 9;  // This number MUST be incremented whenever a database is created/destroyed or columns are created/removed
@@ -113,23 +117,28 @@ public class DatabaseHelper extends SQLiteOpenHelper{
     // Participant-specific CRUD Methods
 
     public boolean createParticipant(Participant participant) {
-        SQLiteDatabase db = this.getWritableDatabase();
+        if(existingParticipants == null)
+            existingParticipants = getAllParticipants();
+        if(!existingParticipants.contains(participant)) {
+            SQLiteDatabase db = this.getWritableDatabase();
 
-        ContentValues values = new ContentValues();
-        values.put(KEY_PARTICIPANT_ID, participant.getParticipantId());
-        values.put(KEY_IS_FEMALE, intFromBoolean(participant.isFemale()));
+            ContentValues values = new ContentValues();
+            values.put(KEY_PARTICIPANT_ID, participant.getParticipantId());
+            values.put(KEY_IS_FEMALE, intFromBoolean(participant.isFemale()));
 
-        // insert row
-        long id = db.insert(TABLE_PARTICIPANTS, null, values);
+            // insert row
+            long id = db.insert(TABLE_PARTICIPANTS, null, values);
 
-        if(id != -1) {
-            participant.setId(id);
-            return true ;
+            if (id != -1) {
+                participant.setId(id);
+                return true;
+            } else {
+                // There was an error in creating the row
+                return false;
+            }
         }
-        else {
-            // There was an error in creating the row
-            return false;
-        }
+        Log.d("DB", "Skipping existing participant");
+        return false;
 
     }
 
@@ -212,10 +221,7 @@ public class DatabaseHelper extends SQLiteOpenHelper{
         // looping through all rows and adding to list
         if (c.moveToFirst()) {
             do {
-                long id = c.getInt((c.getColumnIndex(KEY_ID)));
                 long participant_id = c.getInt((c.getColumnIndex(KEY_PARTICIPANT_ID)));
-                int isFemale = c.getInt(c.getColumnIndex(KEY_IS_FEMALE));
-                //Participant participant = new Participant(context, id, participant_id, isFemale);
 
                 // adding to couple list
                 couples.add(participant_id/100);
@@ -256,26 +262,59 @@ public class DatabaseHelper extends SQLiteOpenHelper{
     // ViralLoad-specific CRUD Methods
 
     public boolean createViralLoad(ViralLoad viralLoad) {
-        SQLiteDatabase db = this.getWritableDatabase();
+        if(existingViralLoads == null )
+            existingViralLoads = getAllViralLoads();
 
-        ContentValues values = new ContentValues();
-        values.put(KEY_PARTICIPANT_ID, viralLoad.getParticipant_id());
-        values.put(KEY_NUMBER, viralLoad.getNumber());
-        values.put(KEY_DATE, DateUtil.getStringFromDate(viralLoad.getDate()));
-        values.put(KEY_VISIT_ID, viralLoad.getVisit_id());
+        if(!existingViralLoads.contains(viralLoad)) {
+            SQLiteDatabase db = this.getWritableDatabase();
 
-        // insert row
-        long id = db.insert(TABLE_VIRAL_LOADS, null, values);
+            ContentValues values = new ContentValues();
+            values.put(KEY_PARTICIPANT_ID, viralLoad.getParticipant_id());
+            values.put(KEY_NUMBER, viralLoad.getNumber());
+            values.put(KEY_DATE, DateUtil.getStringFromDate(viralLoad.getDate()));
+            values.put(KEY_VISIT_ID, viralLoad.getVisit_id());
 
-        if(id != -1) {
-            viralLoad.setId(id);
-            return true ;
+            // insert row
+            long id = db.insert(TABLE_VIRAL_LOADS, null, values);
+
+            if (id != -1) {
+                viralLoad.setId(id);
+                return true;
+            } else {
+                // There was an error in creating the row
+                return false;
+            }
         }
-        else {
-            // There was an error in creating the row
-            return false;
+        Log.d("DB", "Skipping existing viral load");
+        return false;
+    }
+
+    public List<ViralLoad> getAllViralLoads() {
+        List<ViralLoad> viralLoads = new ArrayList<>();
+        String selectQuery = "SELECT  * FROM " + TABLE_VIRAL_LOADS;
+
+        Log.e(LOG, selectQuery);
+
+        SQLiteDatabase db = this.getReadableDatabase();
+        Cursor c = db.rawQuery(selectQuery, null);
+
+        // looping through all rows and adding to list
+        if (c.moveToFirst()) {
+            do {
+                long id = c.getInt((c.getColumnIndex(KEY_ID)));
+                long participant_id = c.getInt(c.getColumnIndex(KEY_PARTICIPANT_ID));
+                String date = c.getString((c.getColumnIndex(KEY_DATE)));
+                int number = c.getInt((c.getColumnIndex(KEY_NUMBER)));
+                int visit_id = c.getInt((c.getColumnIndex(KEY_VISIT_ID)));
+                ViralLoad vl = new ViralLoad(participant_id, number, date, visit_id);
+                vl.setId(id);
+
+                // adding to participant list
+                viralLoads.add(vl);
+            } while (c.moveToNext());
         }
 
+        return viralLoads;
     }
 
     public List<ViralLoad> getAllViralLoadsById(long participant_id) {
@@ -309,29 +348,35 @@ public class DatabaseHelper extends SQLiteOpenHelper{
     // Survey Result-specific CRUD Methods
 
     public boolean createSurveyResult(SurveyResult surveyResult) {
-        SQLiteDatabase db = this.getWritableDatabase();
+        if(existingSurveyResults == null)
+            existingSurveyResults = getAllSurveyResults();
 
-        ContentValues values = new ContentValues();
-        values.put(KEY_PARTICIPANT_ID, surveyResult.getParticipant_id());
-        values.put(KEY_DATE, DateUtil.getStringFromDate(surveyResult.getDate()));
-        values.put(KEY_TEMPERATURE, surveyResult.getTemperature());
-        values.put(KEY_VAGINA_MUCUS_STICKY, intFromBoolean(surveyResult.isVaginaMucusSticky()));
-        values.put(KEY_HAS_PERIOD, intFromBoolean(surveyResult.isOnPeriod()));
-        values.put(KEY_IS_OVULATING, intFromBoolean(surveyResult.isOvulating()));
-        values.put(KEY_HAD_SEX, intFromBoolean(surveyResult.isHadSex()));
-        values.put(KEY_USED_CONDOM, intFromBoolean(surveyResult.isUsedCondom()));
+        if(!existingSurveyResults.contains(surveyResult)) {
+            SQLiteDatabase db = this.getWritableDatabase();
 
-        // insert row
-        long id = db.insert(TABLE_SURVEY_RESULTS, null, values);
+            ContentValues values = new ContentValues();
+            values.put(KEY_PARTICIPANT_ID, surveyResult.getParticipant_id());
+            values.put(KEY_DATE, DateUtil.getStringFromDate(surveyResult.getDate()));
+            values.put(KEY_TEMPERATURE, surveyResult.getTemperature());
+            values.put(KEY_VAGINA_MUCUS_STICKY, intFromBoolean(surveyResult.isVaginaMucusSticky()));
+            values.put(KEY_HAS_PERIOD, intFromBoolean(surveyResult.isOnPeriod()));
+            values.put(KEY_IS_OVULATING, intFromBoolean(surveyResult.isOvulating()));
+            values.put(KEY_HAD_SEX, intFromBoolean(surveyResult.isHadSex()));
+            values.put(KEY_USED_CONDOM, intFromBoolean(surveyResult.isUsedCondom()));
 
-        if(id != -1) {
-            surveyResult.setId(id);
-            return true ;
+            // insert row
+            long id = db.insert(TABLE_SURVEY_RESULTS, null, values);
+
+            if (id != -1) {
+                surveyResult.setId(id);
+                return true;
+            } else {
+                // There was an error in creating the row
+                return false;
+            }
         }
-        else {
-            // There was an error in creating the row
-            return false;
-        }
+        Log.d("DB", "Skipping existing survey result");
+        return false;
 
     }
 
@@ -366,6 +411,7 @@ public class DatabaseHelper extends SQLiteOpenHelper{
 
         return surveyResults;
     }
+
     public List<SurveyResult> getAllSurveyResults() {
         List<SurveyResult> surveyResults = new ArrayList<>();
         String selectQuery = "SELECT  * FROM " + TABLE_SURVEY_RESULTS;
@@ -400,25 +446,30 @@ public class DatabaseHelper extends SQLiteOpenHelper{
     // MEMSCap-specific CRUD Methods
 
     public boolean createMemsCap(MemsCap memsCap) {
-        SQLiteDatabase db = this.getWritableDatabase();
+        if(existingMemsCap == null)
+            existingMemsCap = getAllMemsCap();
 
-        ContentValues values = new ContentValues();
-        values.put(KEY_PARTICIPANT_ID, memsCap.getParticipant_id());
-        values.put(KEY_DATE, DateUtil.getStringFromDate(memsCap.getDate()));
-        values.put(KEY_MEMS_ID, memsCap.getMems_id());
+        if(!existingMemsCap.contains(memsCap)) {
+            SQLiteDatabase db = this.getWritableDatabase();
 
-        // insert row
-        long id = db.insert(TABLE_MEMS_CAP, null, values);
+            ContentValues values = new ContentValues();
+            values.put(KEY_PARTICIPANT_ID, memsCap.getParticipant_id());
+            values.put(KEY_DATE, DateUtil.getStringFromDate(memsCap.getDate()));
+            values.put(KEY_MEMS_ID, memsCap.getMems_id());
 
-        if(id != -1) {
-            memsCap.setId(id);
-            return true ;
+            // insert row
+            long id = db.insert(TABLE_MEMS_CAP, null, values);
+
+            if (id != -1) {
+                memsCap.setId(id);
+                return true;
+            } else {
+                // There was an error in creating the row
+                return false;
+            }
         }
-        else {
-            // There was an error in creating the row
-            return false;
-        }
-
+        Log.d("DB", "Skipping existing memscap");
+        return false;
     }
 
     public List<MemsCap> getAllMemsCapById(long participant_id) {
@@ -435,6 +486,33 @@ public class DatabaseHelper extends SQLiteOpenHelper{
         if (c.moveToFirst()) {
             do {
                 long id = c.getInt((c.getColumnIndex(KEY_ID)));
+                String date = c.getString((c.getColumnIndex(KEY_DATE)));
+                long mems = c.getInt((c.getColumnIndex(KEY_MEMS_ID)));
+                MemsCap mc = new MemsCap(participant_id, date, mems);
+                mc.setId(id);
+
+                // adding to participant list
+                prepAdherence.add(mc);
+            } while (c.moveToNext());
+        }
+
+        return prepAdherence;
+    }
+
+    public List<MemsCap> getAllMemsCap() {
+        List<MemsCap> prepAdherence = new ArrayList<MemsCap>();
+        String selectQuery = "SELECT  * FROM " + TABLE_MEMS_CAP;
+
+        Log.e(LOG, selectQuery);
+
+        SQLiteDatabase db = this.getReadableDatabase();
+        Cursor c = db.rawQuery(selectQuery, null);
+
+        // looping through all rows and adding to list
+        if (c.moveToFirst()) {
+            do {
+                long id = c.getInt((c.getColumnIndex(KEY_ID)));
+                long participant_id = c.getInt(c.getColumnIndex(KEY_PARTICIPANT_ID));
                 String date = c.getString((c.getColumnIndex(KEY_DATE)));
                 long mems = c.getInt((c.getColumnIndex(KEY_MEMS_ID)));
                 MemsCap mc = new MemsCap(participant_id, date, mems);
