@@ -2,6 +2,7 @@ package scip.app;
 
 
 import android.app.Activity;
+import android.content.Context;
 import android.content.Intent;
 
 import android.os.Bundle;
@@ -12,6 +13,9 @@ import android.view.View.OnClickListener;
 import android.widget.AutoCompleteTextView;
 import android.widget.Button;
 import android.widget.EditText;
+
+import com.google.android.gms.analytics.GoogleAnalytics;
+import com.google.android.gms.analytics.Tracker;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -25,6 +29,8 @@ import scip.app.models.ViralLoad;
 
 
 public class LoginActivity extends Activity{
+    public static GoogleAnalytics analytics;
+    public static Tracker tracker;
 
     /**
      * A dummy authentication store containing known user names and passwords.
@@ -46,6 +52,12 @@ public class LoginActivity extends Activity{
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
+        analytics = GoogleAnalytics.getInstance(this);
+        analytics.setLocalDispatchPeriod(1800);
+        tracker = analytics.newTracker("UA-65988344-1");
+        tracker.enableExceptionReporting(true);
+        tracker.enableAutoActivityTracking(true);
+
 
         // Set up the login form.
         mEmailView = (AutoCompleteTextView) findViewById(R.id.email);
