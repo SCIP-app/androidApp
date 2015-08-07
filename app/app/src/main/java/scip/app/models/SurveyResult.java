@@ -134,4 +134,18 @@ public class SurveyResult implements Comparable<SurveyResult>{
         result = 31 * result + (usedCondom ? 1 : 0);
         return result;
     }
+
+    @Override
+    public String toString() {
+        return "SurveyResult{" +
+                "participant_id=" + participant_id +
+                ", date=" + date +
+                ", temperature=" + temperature +
+                ", vaginaMucusSticky=" + vaginaMucusSticky +
+                ", onPeriod=" + onPeriod +
+                ", isOvulating=" + isOvulating +
+                ", hadSex=" + hadSex +
+                ", usedCondom=" + usedCondom +
+                '}';
+    }
 }
