@@ -45,5 +45,25 @@ public class MemsCap {
         return mems_id;
     }
 
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (!(o instanceof MemsCap)) return false;
+
+        MemsCap memsCap = (MemsCap) o;
+
+        if (mems_id != memsCap.mems_id) return false;
+        if (participant_id != memsCap.participant_id) return false;
+        if (!date.equals(memsCap.date)) return false;
+
+        return true;
+    }
+
+    @Override
+    public int hashCode() {
+        int result = date.hashCode();
+        result = 31 * result + (int) (mems_id ^ (mems_id >>> 32));
+        return result;
+    }
 }
 

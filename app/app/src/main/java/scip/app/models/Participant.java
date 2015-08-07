@@ -137,6 +137,25 @@ public class Participant {
         db.closeDB();
     }
 
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (!(o instanceof Participant)) return false;
+
+        Participant that = (Participant) o;
+
+        if (isFemale != that.isFemale) return false;
+        if (participant_id != that.participant_id) return false;
 
 
+        return true;
+    }
+
+    @Override
+    public int hashCode() {
+        int result = (int) (participant_id ^ (participant_id >>> 32));
+        result = 31 * result + (isFemale ? 1 : 0);
+
+        return result;
+    }
 }
