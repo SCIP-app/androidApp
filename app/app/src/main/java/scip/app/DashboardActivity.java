@@ -1,6 +1,7 @@
 package scip.app;
 
 import android.app.Activity;
+import android.content.Intent;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.ActionBarActivity;
 import android.support.v7.app.ActionBar;
@@ -107,14 +108,8 @@ public class DashboardActivity extends ActionBarActivity
                 fragmentTransaction.commit();
                 break;
             case 1:
-
-                Bundle coupleBundle = new Bundle();
-                coupleBundle.putLong("coupleId",couple_id);
-                LandingFragment couplesFragment = new LandingFragment();
-                couplesFragment.setArguments(coupleBundle);
-                mTitle  = "Couples Main";
-                fragmentTransaction.replace(R.id.content_frame, couplesFragment);
-                fragmentTransaction.commit();
+                Intent intent = new Intent(this,SessionSelectionActivity.class);
+                startActivity(intent);
                 break;
 
             default:

@@ -13,6 +13,7 @@ import android.widget.TextView;
 import android.widget.CompoundButton;
 
 import com.roomorama.caldroid.CaldroidGridAdapter;
+import com.roomorama.caldroid.CellView;
 
 
 import java.text.ParseException;
@@ -26,6 +27,7 @@ import java.util.List;
 import hirondelle.date4j.DateTime;
 import scip.app.models.MemsCap;
 import scip.app.models.Participant;
+import scip.app.models.PeakFertility;
 import scip.app.models.SurveyResult;
 
 
@@ -84,13 +86,7 @@ public class CustomizedCalendarCellAdapter extends CaldroidGridAdapter {
             cellView.setBackgroundColor(R.color.material_blue_500);
         }
 
-        SimpleDateFormat formatter = new SimpleDateFormat("dd/MM/yyyy");
-        Date today;
-        try {
-            today = formatter.parse(String.valueOf(dateTime.getDay())+"/"+String.valueOf(dateTime.getMonth())+"/"+String.valueOf(dateTime.getYear()));
-        } catch (ParseException e) {
-            today = null;
-        }
+
 
         // Just show them all for now. Will parse through data soon
 
@@ -104,8 +100,6 @@ public class CustomizedCalendarCellAdapter extends CaldroidGridAdapter {
         opk.setVisibility(View.INVISIBLE);
         final ImageView prep = (ImageView) cellView.findViewById(R.id.prep);
         prep.setVisibility(View.INVISIBLE);
-
-        Participant female;
 
         for (Participant participant: couple) {
             Calendar calendar = Calendar.getInstance();
@@ -123,11 +117,22 @@ public class CustomizedCalendarCellAdapter extends CaldroidGridAdapter {
 
             if(participant.isFemale()) {
                 List<SurveyResult> surveyResults = participant.getSurveyResults();
+                PeakFertility fertility = participant.getPeakFertility();
+                if(fertility!=null) {
+                    List<Date> fertilityWindow = participant.getPeakFertility().getPeakFertilityWindow();
+                    if(fertilityWindow!=null && fertilityWindow.size()>0) {
+                        for(Date fertilityDate:fertilityWindow) {
+                            calendar.setTime(fertilityDate);
+                            if((calendar.get(Calendar.MONTH) == dateTime.getMonth()-1) && (calendar.get(Calendar.YEAR) == dateTime.getYear()) && (calendar.get(Calendar.DAY_OF_MONTH) == dateTime.getDay())) {
+                                cellView.setBackgroundResource(R.color.color_fertile);
+                            }
+                        }
+                    }
+                }
+
                 for(SurveyResult surveyResult:surveyResults) {
-                    Date date = surveyResult.getDate();
-                    calendar.setTime(date);
+                    calendar.setTime(surveyResult.getDate());
                     if((calendar.get(Calendar.MONTH) == dateTime.getMonth()-1) && (calendar.get(Calendar.YEAR) == dateTime.getYear()) && (calendar.get(Calendar.DAY_OF_MONTH) == dateTime.getDay())){
-                        int month = calendar.get(Calendar.MONTH);
                         if(surveyResult!=null) {
                            if (surveyResult.isOvulating()) {
                                opk.setVisibility(View.VISIBLE);
@@ -141,76 +146,29 @@ public class CustomizedCalendarCellAdapter extends CaldroidGridAdapter {
                            if(surveyResult.isVaginaMucusSticky()) {
                                sfluid.setVisibility(View.VISIBLE);
                            }
+                            if(surveyResult.isOnPeriod()) {
+                                cellView.setBackgroundResource(com.caldroid.R.drawable.red_border);
+                            }
                        }
                     }
                 }
             }
         }
 
+
+
         /*
-        CheckBox sexCheckBox = (CheckBox) activity.findViewById(R.id.SexCheck);
-        if(sexCheckBox.isChecked()) {
-            sfluid.setVisibility(View.INVISIBLE);
-            opk.setVisibility(View.INVISIBLE);
-            prep.setVisibility(View.INVISIBLE);
-            htemp.setVisibility(View.INVISIBLE);
-        }
-
-
-        CheckBox prepCheckBox = (CheckBox) activity.findViewById(R.id.PrepCheck);
-        if(prepCheckBox.isChecked()) {
-            unprotectedSex.setVisibility(View.INVISIBLE);
-            opk.setVisibility(View.INVISIBLE);
-            sfluid.setVisibility(View.INVISIBLE);
-            htemp.setVisibility(View.INVISIBLE);
-        }
-
-
-
-        CheckBox opkCheckBox = (CheckBox) activity.findViewById(R.id.OPKCheck);
-        if(opkCheckBox.isChecked()) {
-            unprotectedSex.setVisibility(View.INVISIBLE);
-            htemp.setVisibility(View.INVISIBLE);
-            prep.setVisibility(View.INVISIBLE);
-            sfluid.setVisibility(View.INVISIBLE);
-        }
-
-        CheckBox sFluidCheckBox = (CheckBox) activity.findViewById(R.id.CervicalCheck);
-        if(sFluidCheckBox.isChecked()) {
-            unprotectedSex.setVisibility(View.INVISIBLE);
-            htemp.setVisibility(View.INVISIBLE);
-            prep.setVisibility(View.INVISIBLE);
-            opk.setVisibility(View.INVISIBLE);
-        }
-
-        CheckBox htempCheck = (CheckBox) activity.findViewById(R.id.TempCheck);
-        if(htempCheck.isChecked()) {
-            unprotectedSex.setVisibility(View.INVISIBLE);
-            prep.setVisibility(View.INVISIBLE);
-            sfluid.setVisibility(View.INVISIBLE);
-            opk.setVisibility(View.INVISIBLE);
-        }
-        */
-
-        // Customize for selected dates
-        if (selectedDates != null && selectedDates.indexOf(dateTime) != -1) {
-            cellView.setBackgroundColor(resources
-                    .getColor(com.caldroid.R.color.caldroid_sky_blue));
-
-            tv1.setTextColor(Color.BLACK);
-
-        }
-
 
         if (dateTime.equals(getToday())) {
             cellView.setBackgroundResource(com.caldroid.R.drawable.red_border);
         } else {
             cellView.setBackgroundResource(com.caldroid.R.drawable.cell_bg);
         }
+        */
 
 
         tv1.setText("" + dateTime.getDay());
-        
+
 
         // Somehow after setBackgroundResource, the padding collapse.
         // This is to recover the padding
@@ -225,8 +183,26 @@ public class CustomizedCalendarCellAdapter extends CaldroidGridAdapter {
     }
 
 
-    public void refresh() {
-        calendarCellView.invalidate();
+    public void refreshView() {
+
+        final ImageView unprotectedSex = (ImageView) calendarCellView.findViewById(R.id.sex);
+        unprotectedSex.setVisibility(View.INVISIBLE);
+        final ImageView sfluid = (ImageView) calendarCellView.findViewById(R.id.sfluid);
+        sfluid.setVisibility(View.INVISIBLE);
+        final ImageView htemp = (ImageView) calendarCellView.findViewById(R.id.htemp);
+        htemp.setVisibility(View.INVISIBLE);
+        final ImageView opk = (ImageView) calendarCellView.findViewById(R.id.opk);
+        opk.setVisibility(View.INVISIBLE);
+        final ImageView prep = (ImageView) calendarCellView.findViewById(R.id.prep);
+        prep.setVisibility(View.INVISIBLE);
+
+        final CheckBox sexCheck = (CheckBox) calendarCellView.findViewById(R.id.SexCheck);
+        if (sexCheck.isChecked()) {
+            prep.setVisibility(View.INVISIBLE);
+            htemp.setVisibility(View.INVISIBLE);
+            opk.setVisibility(View.INVISIBLE);
+            sfluid.setVisibility(View.INVISIBLE);
+        }
     }
 
 

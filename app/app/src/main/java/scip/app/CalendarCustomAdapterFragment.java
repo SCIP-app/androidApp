@@ -1,12 +1,11 @@
 package scip.app;
 
 
+import android.view.View;
+import android.widget.CheckBox;
+
 import com.roomorama.caldroid.CaldroidFragment;
 import com.roomorama.caldroid.CaldroidGridAdapter;
-
-import java.util.List;
-
-import scip.app.models.Participant;
 
 public class CalendarCustomAdapterFragment extends CaldroidFragment{
 
@@ -20,9 +19,12 @@ public class CalendarCustomAdapterFragment extends CaldroidFragment{
         return instance;
     }
 
-    public CustomizedCalendarCellAdapter getInstance() {
-        return instance;
+    @Override
+    public void refreshView() {
+        instance.calendarCellView.invalidate();
     }
-
+    /**
+     * Created by Sindu on 8/6/15.
+     */
 
 }
