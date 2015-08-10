@@ -1,0 +1,98 @@
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools" android:layout_width="match_parent"
+    android:layout_height="match_parent" tools:context="scip.app.CouplesMain"
+    android:id="@+id/Couple_Main_Screen">
+
+    <TextView
+        android:layout_width="165dp"
+        android:layout_height="32dp"
+        android:textAppearance="?android:attr/textAppearanceMedium"
+        android:text="Next Peak Fertility : "
+        android:id="@+id/PeriodCycleLabel"
+        android:layout_gravity="bottom|left|top"
+        android:layout_marginLeft="440dp"
+        android:layout_marginTop="560dp" />
+
+    <TextView
+        android:layout_width="167dp"
+        android:layout_height="wrap_content"
+        android:textAppearance="?android:attr/textAppearanceMedium"
+        android:text="              Next Cycle : "
+        android:id="@+id/NextCycleLabel"
+        android:layout_marginLeft="440dp"
+        android:layout_marginTop="590dp"
+        android:textAlignment="gravity" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textAppearance="?android:attr/textAppearanceMedium"
+        android:id="@+id/Peak_Fertility"
+        android:layout_gravity="left|top"
+        android:layout_marginTop="560dp"
+        android:layout_marginLeft="610dp"
+        android:text="11" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textAppearance="?android:attr/textAppearanceMedium"
+        android:id="@+id/Next_Cycle"
+        android:layout_gravity="left|top"
+        android:layout_marginTop="590dp"
+        android:layout_marginLeft="610dp"
+        android:text="11" />
+
+    <ImageButton
+        android:layout_width="450dp"
+        android:layout_height="450dp"
+        android:id="@+id/calendarButton"
+        android:layout_marginLeft="160dp"
+        android:layout_marginTop="64dp"
+        android:background="@color/material_blue_500"
+        android:paddingLeft="50dp"
+        android:paddingRight="50dp"
+        android:paddingTop="50dp"
+        android:paddingBottom="100dp"
+        android:scaleType="fitCenter"
+        android:src="@drawable/ic_calendar" />
+
+    <ImageButton
+        android:layout_width="450dp"
+        android:layout_height="450dp"
+        android:id="@+id/artButton"
+        android:layout_marginRight="16dp"
+        android:layout_marginTop="64dp"
+        android:paddingLeft="130dp"
+        android:paddingRight="100dp"
+        android:paddingTop="50dp"
+        android:paddingBottom="50dp"
+        android:scaleType="fitCenter"
+        android:background="@color/material_blue_500"
+        android:src="@drawable/ic_cap"
+        android:layout_marginLeft="650dp" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textAppearance="?android:attr/textAppearanceLarge"
+        android:text="Calendar View"
+        android:id="@+id/textView3"
+        android:layout_marginLeft="280dp"
+        android:textSize="32dp"
+        android:layout_marginTop="460dp"
+        android:textColor="#ffffffff" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textAppearance="?android:attr/textAppearanceLarge"
+        android:text="ART View"
+        android:id="@+id/textView5"
+        android:layout_marginTop="460dp"
+        android:textColor="#ffffff"
+        android:textSize="32dp"
+        android:layout_marginLeft="820dp" />
+
+</FrameLayout>
+

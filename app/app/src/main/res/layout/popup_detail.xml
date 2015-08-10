@@ -1,0 +1,223 @@
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:id="@+id/popUp"
+    android:orientation="horizontal"
+    android:gravity="bottom"
+    android:background="@drawable/popup_shadow"
+    >
+
+    <RelativeLayout
+        android:layout_width="500dp"
+        android:layout_height="300dp"
+        android:background="@color/caldroid_white"
+        android:elevation="@dimen/cardview_default_elevation">
+
+        <FrameLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_centerVertical="true"
+            android:layout_alignParentLeft="true"
+            android:layout_alignParentStart="true"
+            android:paddingLeft="15dp"
+            android:paddingTop="15dp"
+            android:paddingRight="20dp"
+            android:paddingBottom="15dp">
+
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="48dp"
+                android:layout_gravity="left|top"
+                android:id="@+id/inner_container">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textAppearance="?android:attr/textAppearanceLarge"
+                    android:id="@+id/current_date_text"
+                    android:textStyle="bold"
+                    android:textColor="@color/caldroid_black"
+                    android:layout_alignParentTop="false"
+                    android:textSize="25dp"
+                    android:text="Date"
+                    android:layout_marginTop="4dp"
+                    android:layout_centerHorizontal="true"
+                    android:singleLine="true" />
+
+            </RelativeLayout>
+
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="48dp"
+                android:layout_gravity="center_vertical|left|top"
+                android:layout_marginTop="60dp">
+
+                <ImageView
+                    android:layout_width="50dp"
+                    android:layout_height="50dp"
+                    android:id="@+id/sexIcon"
+                    android:layout_marginRight="147dp"
+                    android:layout_marginEnd="147dp"
+                    android:layout_alignParentTop="true"
+                    android:layout_alignParentRight="true"
+                    android:layout_alignParentEnd="true"
+                    android:src="@drawable/ic_sex"
+                    android:visibility="invisible" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textAppearance="?android:attr/textAppearanceMedium"
+                    android:text="Unprotected Sex"
+                    android:id="@+id/sexlabel"
+                    android:textSize="18dp"
+                    android:layout_centerVertical="true"
+                    android:layout_alignParentRight="true"
+                    android:layout_alignParentEnd="true"
+                    android:visibility="invisible" />
+
+                <ImageView
+                    android:layout_width="50dp"
+                    android:layout_height="50dp"
+                    android:id="@+id/cycleicon"
+                    android:src="@drawable/ic_day_in_cycle"
+                    android:layout_centerVertical="true"
+                    android:layout_alignParentLeft="true"
+                    android:layout_alignParentStart="true"
+                    android:visibility="invisible" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textAppearance="?android:attr/textAppearanceMedium"
+                    android:text="Cycle Day"
+                    android:id="@+id/cyclelabel"
+                    android:textSize="24dp"
+                    android:layout_alignBottom="@+id/sexlabel"
+                    android:layout_toRightOf="@+id/cycleicon"
+                    android:layout_toEndOf="@+id/cycleicon"
+                    android:layout_marginLeft="8dp"
+                    android:visibility="invisible" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textAppearance="?android:attr/textAppearanceSmall"
+                    android:text="13"
+                    android:id="@+id/dayInCycle"
+                    android:layout_alignBottom="@+id/cyclelabel"
+                    android:layout_alignParentLeft="true"
+                    android:layout_alignParentStart="true"
+                    android:layout_marginLeft="18dp"
+                    android:visibility="invisible" />
+            </RelativeLayout>
+
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="50dp"
+                android:layout_gravity="center"
+                android:layout_marginTop="25dp">
+
+                <ImageView
+                    android:layout_width="50dp"
+                    android:layout_height="50dp"
+                    android:id="@+id/prepicon"
+                    android:layout_alignParentTop="true"
+                    android:layout_alignParentLeft="true"
+                    android:layout_alignParentStart="true"
+                    android:src="@drawable/ic_prep"
+                    android:visibility="invisible" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textAppearance="?android:attr/textAppearanceMedium"
+                    android:text="Prep Taken"
+                    android:id="@+id/preplabel"
+                    android:layout_centerVertical="true"
+                    android:layout_toRightOf="@+id/prepicon"
+                    android:layout_toEndOf="@+id/prepicon"
+                    android:textSize="24dp"
+                    android:visibility="invisible" />
+
+                <ImageView
+                    android:layout_width="50dp"
+                    android:layout_height="50dp"
+                    android:id="@+id/positiveicon"
+                    android:src="@drawable/ic_opk"
+                    android:layout_alignParentTop="true"
+                    android:layout_toLeftOf="@+id/positivelabel"
+                    android:layout_toStartOf="@+id/positivelabel"
+                    android:layout_marginRight="13dp"
+                    android:layout_marginEnd="32dp"
+                    android:visibility="invisible" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textAppearance="?android:attr/textAppearanceMedium"
+                    android:text="Positive OPK"
+                    android:id="@+id/positivelabel"
+                    android:textSize="24dp"
+                    android:layout_alignTop="@+id/preplabel"
+                    android:layout_alignParentRight="true"
+                    android:layout_alignParentEnd="true"
+                    android:visibility="invisible" />
+            </RelativeLayout>
+
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="50dp"
+                android:layout_gravity="bottom"
+                android:layout_marginBottom="10dp">
+
+                <ImageView
+                    android:layout_width="50dp"
+                    android:layout_height="50dp"
+                    android:id="@+id/htempicon"
+                    android:layout_alignParentBottom="true"
+                    android:layout_alignParentLeft="true"
+                    android:layout_alignParentStart="true"
+                    android:src="@drawable/ic_htemp"
+                    android:visibility="invisible" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textAppearance="?android:attr/textAppearanceMedium"
+                    android:text="High Temp"
+                    android:id="@+id/htemplabel"
+                    android:layout_centerVertical="true"
+                    android:layout_toRightOf="@+id/htempicon"
+                    android:layout_toEndOf="@+id/htempicon"
+                    android:textSize="24dp"
+                    android:visibility="invisible" />
+
+                <ImageView
+                    android:layout_width="50dp"
+                    android:layout_height="50dp"
+                    android:id="@+id/stickyicon"
+                    android:src="@drawable/ic_sfluid"
+                    android:layout_alignParentTop="true"
+                    android:layout_toLeftOf="@+id/stickylabel"
+                    android:layout_toStartOf="@+id/stickylabel"
+                    android:layout_marginRight="24dp"
+                    android:visibility="invisible" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textAppearance="?android:attr/textAppearanceMedium"
+                    android:text="Sticky Fluid"
+                    android:id="@+id/stickylabel"
+                    android:textSize="24dp"
+                    android:layout_centerVertical="true"
+                    android:layout_alignParentRight="true"
+                    android:layout_alignParentEnd="true"
+                    android:visibility="invisible" />
+            </RelativeLayout>
+
+        </FrameLayout>
+
+    </RelativeLayout>
+</LinearLayout>

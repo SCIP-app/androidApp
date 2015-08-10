@@ -5,7 +5,9 @@ import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 
+import android.os.AsyncTask;
 import android.os.Bundle;
+import android.support.v7.app.ActionBarActivity;
 import android.text.TextUtils;
 import android.util.Log;
 import android.view.View;
@@ -17,9 +19,27 @@ import android.widget.EditText;
 import com.google.android.gms.analytics.GoogleAnalytics;
 import com.google.android.gms.analytics.Tracker;
 
+
+import org.apache.http.client.ClientProtocolException;
+import org.apache.http.client.HttpClient;
+import org.apache.http.client.ResponseHandler;
+import org.apache.http.client.methods.HttpGet;
+import org.apache.http.impl.client.BasicResponseHandler;
+import org.apache.http.impl.client.DefaultHttpClient;
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
+
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.net.URL;
+
 import java.util.ArrayList;
 import java.util.List;
 
+import scip.app.databasehelper.CSVImporter;
 import scip.app.databasehelper.DatabaseHelper;
 import scip.app.models.MemsCap;
 import scip.app.models.Participant;
@@ -27,10 +47,10 @@ import scip.app.models.PeakFertility;
 import scip.app.models.SurveyResult;
 import scip.app.models.ViralLoad;
 
-
-public class LoginActivity extends Activity{
+public class LoginActivity extends ActionBarActivity{
     public static GoogleAnalytics analytics;
     public static Tracker tracker;
+
 
     /**
      * A dummy authentication store containing known user names and passwords.
@@ -39,10 +59,6 @@ public class LoginActivity extends Activity{
     private static final String[] DUMMY_CREDENTIALS = new String[]{
             "foo@example.com:hello", "bar@example.com:world"
     };
-    /**
-     * Keep track of the login task to ensure we can cancel it if requested.
-     */
-
 
     // UI references.
     private AutoCompleteTextView mEmailView;
@@ -64,15 +80,6 @@ public class LoginActivity extends Activity{
 
         mPasswordView = (EditText) findViewById(R.id.password);
 
-        List<Participant> participants = getParticipantList();
-        //populateDatabase(participants);
-        testDatabase(participants);
-
-        for(Participant p : participants) {
-            Log.d("P ID", String.valueOf(p.getParticipantId()));
-            Log.d("C ID", String.valueOf(p.getCoupleId()));
-        }
-
         Button mEmailSignInButton = (Button) findViewById(R.id.email_sign_in_button);
         mEmailSignInButton.setOnClickListener(new OnClickListener() {
             @Override
@@ -80,16 +87,23 @@ public class LoginActivity extends Activity{
                 loadCouples();
             }
         });
-    }
 
+        Button button = (Button) findViewById(R.id.dataImportBtn);
+        button.setOnClickListener(new OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent dataImport = new Intent(getApplicationContext(), DataImportActivity.class);
+                startActivity(dataImport);
+            }
+        });
+
+    }
 
     /**
      * Attempts to sign in or register the account specified by the login form.
      * Does not take into account if the user account already exists
      */
     public void loadCouples() {
-
-
         // Reset errors.
         mEmailView.setError(null);
         mPasswordView.setError(null);
@@ -124,7 +138,7 @@ public class LoginActivity extends Activity{
             // form field with an error.
             focusView.requestFocus();
         } else {
-            Intent intent = new Intent(this,CoupleSelection.class);
+            Intent intent = new Intent(this,SessionSelectionActivity.class);
             startActivity(intent);
 
         }
@@ -138,104 +152,6 @@ public class LoginActivity extends Activity{
     private boolean isPasswordValid(String password) {
         //TODO: Replace this with your own logic
         return password.length() > 4;
-    }
-
-    private List<Participant> getParticipantList() {
-        List<Participant> participants = new ArrayList<>();
-
-        Participant participant1 = new Participant(getApplicationContext(), 987654321); // Male
-        Participant participant2 = new Participant(getApplicationContext(), 123456789); // Female in partner
-        Participant participant3 = new Participant(getApplicationContext(), 123456766); // Male in partner
-
-        participants.add(participant1);
-        participants.add(participant2);
-        participants.add(participant3);
-
-        return participants;
-    }
-    private void populateDatabase(List<Participant> participants) {
-        DatabaseHelper db = new DatabaseHelper(getApplicationContext());
-
-        ViralLoad viralLoad1 = new ViralLoad(participants.get(0).getParticipantId(), 1234, "25/06/2015", 6789);
-        ViralLoad viralLoad2 = new ViralLoad(participants.get(0).getParticipantId(), 5555, "25/08/2015", 1245);
-        ViralLoad viralLoad3 = new ViralLoad(participants.get(2).getParticipantId(), 3333, "21/06/2015", 5894);
-
-        SurveyResult surveyResult1 = new SurveyResult(participants.get(1).getParticipantId(), "25/06/2015", 98.4, 1, 0, 0, 0, 0);
-        SurveyResult surveyResult2 = new SurveyResult(participants.get(1).getParticipantId(), "26/06/2015", 98.1, 1, 0, 0, 0, 0);
-        SurveyResult surveyResult3 = new SurveyResult(participants.get(1).getParticipantId(), "27/06/2015", 98.5, 0, 1, 0, 0, 0);
-
-        PeakFertility peakFertility1 = new PeakFertility(participants.get(1).getParticipantId(), "24/07/2015", "26/07/2015");
-
-        MemsCap memsCap1 = new MemsCap (participants.get(1).getParticipantId(), "24/07/2015", 123456789);
-
-        db.createParticipant(participants.get(0));
-        db.createParticipant(participants.get(1));
-        db.createParticipant(participants.get(2));
-
-        db.createViralLoad(viralLoad1);
-        db.createViralLoad(viralLoad2);
-        db.createViralLoad(viralLoad3);
-
-        db.createSurveyResult(surveyResult1);
-        db.createSurveyResult(surveyResult2);
-        db.createSurveyResult(surveyResult3);
-
-        db.createPeakFertility(peakFertility1);
-
-        db.createMemsCap(memsCap1);
-
-        db.closeDB();
-    }
-
-    private void testDatabase(List<Participant> participantList) {
-        DatabaseHelper db = new DatabaseHelper(getApplicationContext());
-        List<Participant> participants= db.getAllParticipants();
-        for(Participant participant : participants) {
-            Log.d("Participant id", String.valueOf(participant.getParticipantId()));
-        }
-
-        List<PeakFertility> pfs = db.getAllPeakFertilityById(participantList.get(1).getParticipantId());
-        for(PeakFertility pf : pfs) {
-            Log.d("PF", String.valueOf(pf.getParticipant_id()));
-        }
-
-        List<MemsCap> mcs = db.getAllMemsCapById(participantList.get(0).getParticipantId());
-        for(MemsCap mc : mcs) {
-            Log.d("MC", String.valueOf(mc.getParticipant_id()));
-        }
-        List<ViralLoad> vls = db.getAllViralLoadsById(participantList.get(0).getParticipantId());
-        for(ViralLoad vl : vls) {
-            Log.d("VL", String.valueOf(vl.getParticipant_id()));
-            Log.d("VL: number", String.valueOf(vl.getNumber()));
-        }
-
-        vls = db.getAllViralLoadsById(participantList.get(2).getParticipantId());
-        for(ViralLoad vl : vls) {
-            Log.d("VL", String.valueOf(vl.getParticipant_id()));
-            Log.d("VL: number", String.valueOf(vl.getNumber()));
-        }
-
-        List<SurveyResult> srs = db.getAllSurveyResultsById(participantList.get(1).getParticipantId());
-        for (SurveyResult sr : srs) {
-            Log.d("SR", String.valueOf(sr.getParticipant_id()));
-            Log.d("SR: Temp", String.valueOf(sr.getTemperature()));
-        }
-
-        List<Long> cids = db.getAllCoupleIDs();
-        for(Long cid : cids) {
-            Log.d("Couple ID", String.valueOf(cid));
-        }
-
-        List<Participant> couple = db.getCoupleFromID(participantList.get(1).getCoupleId());
-        for(Participant p : couple) {
-            Log.d("P in C", String.valueOf(p.getParticipantId()));
-        }
-
-        Participant partner = participantList.get(1).getPartner();
-        Log.d("Participant", String.valueOf(participantList.get(1).getParticipantId()));
-        Log.d("Partner is", String.valueOf(partner.getParticipantId()));
-
-        db.closeDB();
     }
 
     /**

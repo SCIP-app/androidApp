@@ -7,6 +7,7 @@ import android.support.v7.app.ActionBar;
 import android.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -17,8 +18,13 @@ import android.support.v4.widget.DrawerLayout;
 import android.widget.ArrayAdapter;
 import android.widget.TextView;
 
+import java.util.List;
 
-public class Dashboard extends ActionBarActivity
+import scip.app.databasehelper.DatabaseHelper;
+import scip.app.models.Participant;
+
+
+public class DashboardActivity extends ActionBarActivity
         implements NavigationDrawerFragment.NavigationDrawerCallbacks {
 
     /**
@@ -30,6 +36,8 @@ public class Dashboard extends ActionBarActivity
      * Used to store the last screen title. For use in {@link #restoreActionBar()}.
      */
     private CharSequence mTitle;
+    List<Participant> couple;
+    long couple_id;
 
     FragmentTransaction fragmentTransaction = null;
 
@@ -38,6 +46,27 @@ public class Dashboard extends ActionBarActivity
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_dashboard);
+        couple_id = getIntent().getLongExtra("couple_id", 0);
+        DatabaseHelper db = new DatabaseHelper(getApplicationContext());
+        couple = db.getCoupleFromID(couple_id);
+        db.closeDB();
+
+        for(Participant p : couple) {
+            Log.d("Participant id in couple", String.valueOf(p.getParticipantId()));
+            if(p.isFemale()) {
+                int length = p.getSurveyResults().size();
+                Log.d("# of SurveyResults", String.valueOf(length));
+            }
+
+            if(p.isIndex()) {
+                int length = p.getViralLoads().size();
+                Log.d("# of ViralLoads", String.valueOf(length));
+            }
+            else {
+                int length = p.getMemscaps().size();
+                Log.d("# of MemsCaps", String.valueOf(length));
+            }
+        }
 
         mNavigationDrawerFragment = (NavigationDrawerFragment)
                 getSupportFragmentManager().findFragmentById(R.id.navigation_drawer);
@@ -51,6 +80,13 @@ public class Dashboard extends ActionBarActivity
 
     }
 
+    public List<Participant> getCouple() {
+        return couple;
+    }
+
+    public long getCouple_id() {
+        return couple_id;
+    }
 
     @Override
     public void onNavigationDrawerItemSelected(int position) {
@@ -61,13 +97,21 @@ public class Dashboard extends ActionBarActivity
 
         switch (position) {
             case 0:
-                CoupleMain coupleFragment = new CoupleMain();
+
+                Bundle bundle = new Bundle();
+                bundle.putLong("coupleId",couple_id);
+                LandingFragment coupleFragment = new LandingFragment();
+                coupleFragment.setArguments(bundle);
                 mTitle  = "Couples Main";
                 fragmentTransaction.replace(R.id.content_frame, coupleFragment);
                 fragmentTransaction.commit();
                 break;
             case 1:
-                CoupleMain couplesFragment = new CoupleMain();
+
+                Bundle coupleBundle = new Bundle();
+                coupleBundle.putLong("coupleId",couple_id);
+                LandingFragment couplesFragment = new LandingFragment();
+                couplesFragment.setArguments(coupleBundle);
                 mTitle  = "Couples Main";
                 fragmentTransaction.replace(R.id.content_frame, couplesFragment);
                 fragmentTransaction.commit();
@@ -166,7 +210,7 @@ public class Dashboard extends ActionBarActivity
         @Override
         public void onAttach(Activity activity) {
             super.onAttach(activity);
-            ((Dashboard) activity).onSectionAttached(
+            ((DashboardActivity) activity).onSectionAttached(
                     getArguments().getInt(ARG_SECTION_NUMBER));
         }
     }

@@ -1,8 +1,13 @@
 package scip.app.models;
 
 import android.content.Context;
+import android.util.Log;
 
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Date;
 import java.util.List;
+import java.util.concurrent.TimeUnit;
 
 import scip.app.databasehelper.DatabaseHelper;
 
@@ -74,10 +79,14 @@ public class Participant {
     List<SurveyResult> surveyResults;
     List<ViralLoad> viralLoads;
     List<MemsCap> memscaps;
-    List<PeakFertility> peakFertilities;
+    PeakFertility peakFertility;
 
     // Constructors
-    public Participant() {
+
+    // this constructor only to be used for creating database entries
+    public Participant(long participant_id, boolean isFemale) {
+        this.participant_id = participant_id;
+        this.isFemale = isFemale;
     }
 
     public Participant(Context context, long participant_id) {
@@ -86,10 +95,16 @@ public class Participant {
         loadData();
     }
 
-    public Participant(Context context, long id, long participant_id) {
+    public Participant(Context context, long id, long participant_id, int isFemale) {
         this.context = context;
         this.id = id;
         this.participant_id = participant_id;
+        if(isFemale == 1) {
+            this.isFemale = true;
+            Log.d("PC", "Is Female");
+        }
+        else
+            this.isFemale = false;
         loadData();
     }
 
@@ -122,9 +137,15 @@ public class Participant {
         return null;
     }
 
-    public List<PeakFertility> getPeakFertilities() {
+    public PeakFertility getPeakFertility() {
         if (isFemale)
-            return peakFertilities;
+            return peakFertility;
+        return null;
+    }
+
+    public List<MemsCap> getMemscaps() {
+        if (!isIndex())
+            return memscaps;
         return null;
     }
 
@@ -133,6 +154,10 @@ public class Participant {
         if(tmp == 0)
             return true;
         return false;
+    }
+
+    public boolean isFemale() {
+        return isFemale;
     }
 
     public Participant getPartner() {
@@ -146,11 +171,17 @@ public class Participant {
         return null;
     }
 
+    public void reCalculateFertilityData() {
+        if(isFemale) {
+
+        }
+    }
+
     private void loadData() {
         DatabaseHelper db = new DatabaseHelper(context);
         if(isFemale) {
-            this.peakFertilities = db.getAllPeakFertilityById(participant_id);
             this.surveyResults = db.getAllSurveyResultsById(participant_id);
+            this.peakFertility = new PeakFertility(surveyResults);
         }
         if(isIndex()) {
             this.viralLoads = db.getAllViralLoadsById(participant_id);
@@ -161,4 +192,25 @@ public class Participant {
         db.closeDB();
     }
 
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (!(o instanceof Participant)) return false;
+
+        Participant that = (Participant) o;
+
+        if (isFemale != that.isFemale) return false;
+        if (participant_id != that.participant_id) return false;
+
+
+        return true;
+    }
+
+    @Override
+    public int hashCode() {
+        int result = (int) (participant_id ^ (participant_id >>> 32));
+        result = 31 * result + (isFemale ? 1 : 0);
+
+        return result;
+    }
 }

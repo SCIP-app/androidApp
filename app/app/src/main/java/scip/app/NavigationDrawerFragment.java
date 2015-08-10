@@ -1,5 +1,6 @@
 package scip.app;
 
+import android.content.Intent;
 import android.support.v7.app.ActionBarActivity;
 import android.app.Activity;
 import android.support.v7.app.ActionBar;
@@ -21,6 +22,9 @@ import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
 import android.widget.Toast;
+
+import java.util.ArrayList;
+import java.util.Arrays;
 
 /**
  * Fragment used for managing interactions for and presentation of a navigation drawer.
@@ -53,6 +57,8 @@ public class NavigationDrawerFragment extends Fragment{
     private DrawerLayout mDrawerLayout;
     private ListView mDrawerListView;
     private View mFragmentContainerView;
+    private ArrayAdapter<String> mDrawerArrayAdapter;
+    ArrayList<String> mDrawerArrayList;
 
     private int mCurrentSelectedPosition = 0;
     private boolean mFromSavedInstanceState;
@@ -101,18 +107,22 @@ public class NavigationDrawerFragment extends Fragment{
             }
         });
 
-        mDrawerListView.setAdapter(new ArrayAdapter<String>(
+        mDrawerArrayList = new ArrayList<String>(Arrays.asList(new String[]{
+                getString(R.string.title_section1),
+                getString(R.string.title_section3),
+                getString(R.string.title_section4),
+                getString(R.string.title_section5),
+                getString(R.string.title_section6),
+        }));
+
+        mDrawerArrayAdapter = new ArrayAdapter<String>(
                 getActionBar().getThemedContext(),
                 android.R.layout.simple_list_item_activated_1,
                 android.R.id.text1,
-                new String[]{
-                        getString(R.string.title_section1),
-                        getString(R.string.title_section2),
-                        getString(R.string.title_section3),
-                        getString(R.string.title_section4),
-                        getString(R.string.title_section5),
-                        getString(R.string.title_section6),
-                }));
+                mDrawerArrayList);
+
+        mDrawerListView.setAdapter(mDrawerArrayAdapter);
+
         mDrawerListView.setItemChecked(mCurrentSelectedPosition, true);
         return mDrawerListView;
     }
@@ -127,7 +137,7 @@ public class NavigationDrawerFragment extends Fragment{
      * @param fragmentId   The android:id of this fragment in its activity's layout.
      * @param drawerLayout The DrawerLayout containing this fragment's UI.
      */
-    public void setUp(int fragmentId, DrawerLayout drawerLayout) {
+    public void setUp(int fragmentId, final DrawerLayout drawerLayout) {
         mFragmentContainerView = getActivity().findViewById(fragmentId);
         mDrawerLayout = drawerLayout;
 
@@ -161,6 +171,8 @@ public class NavigationDrawerFragment extends Fragment{
             @Override
             public void onDrawerOpened(View drawerView) {
                 super.onDrawerOpened(drawerView);
+                mDrawerArrayList.set(0, getString(R.string.title_section1).concat(String.valueOf(((DashboardActivity)getActivity()).getCouple_id())));
+                mDrawerArrayAdapter.notifyDataSetChanged();
                 if (!isAdded()) {
                     return;
                 }
@@ -258,6 +270,12 @@ public class NavigationDrawerFragment extends Fragment{
         if (item.getItemId() == R.id.action_example) {
             Toast.makeText(getActivity(), "Example action.", Toast.LENGTH_SHORT).show();
             return true;
+        }
+
+        if(item.getTitle().toString().contains(mDrawerArrayList.get(1))) {
+            Intent endSession = new Intent(getActivity(), SessionSelectionActivity.class);
+            startActivity(endSession);
+
         }
 
         return super.onOptionsItemSelected(item);
