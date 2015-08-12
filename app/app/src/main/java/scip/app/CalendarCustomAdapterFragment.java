@@ -19,12 +19,10 @@ public class CalendarCustomAdapterFragment extends CaldroidFragment{
         return instance;
     }
 
-    @Override
-    public void refreshView() {
-        instance.calendarCellView.invalidate();
+    public CustomizedCalendarCellAdapter getInstance() {
+        return instance;
     }
-    /**
-     * Created by Sindu on 8/6/15.
-     */
+
+
 
 }

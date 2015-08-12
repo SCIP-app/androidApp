@@ -1,16 +1,14 @@
+
 package scip.app;
 
 
-import android.content.Intent;
 import android.graphics.drawable.ColorDrawable;
-import android.os.AsyncTask;
 import android.os.Bundle;
 
 import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.ActionBarActivity;
 import android.support.v7.app.AppCompatActivity;
 import android.text.Layout;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -28,11 +26,10 @@ import com.roomorama.caldroid.CaldroidListener;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
-import android.widget.CompoundButton.OnCheckedChangeListener;
 import java.util.HashMap;
 import java.util.List;
 
-import android.widget.Toast;
+import android.content.Context;
 import android.view.Gravity;
 
 import scip.app.databasehelper.DatabaseHelper;
@@ -46,7 +43,6 @@ public class CalendarViewActivity extends ActionBarActivity {
     private long couple_id;
 
     HashMap<Integer,String> monthMap = new HashMap<>();
-
 
 
     private void setCustomResourceForDates() {
@@ -78,7 +74,7 @@ public class CalendarViewActivity extends ActionBarActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_calendar_view);
-        monthMap.put(1, "Jan");
+        monthMap.put(1,"Jan");
         monthMap.put(2,"Feb");
         monthMap.put(3,"Mar");
         monthMap.put(4,"Apr");
@@ -91,40 +87,30 @@ public class CalendarViewActivity extends ActionBarActivity {
         monthMap.put(11,"Nov");
         monthMap.put(12,"Dec");
         final SimpleDateFormat formatter = new SimpleDateFormat("dd MMM yyyy");
-
-
-
-
         couple_id = getIntent().getLongExtra("couple_id", 0);
         DatabaseHelper db = new DatabaseHelper(getApplicationContext());
         couple = db.getCoupleFromID(couple_id);
         db.closeDB();
-
 
         TextView nextPeakFertilityTextView = (TextView) findViewById(R.id.peakFertilityValue);
         TextView averageCycle = (TextView) findViewById(R.id.AvgCycleValue);
         for(Participant participant:couple) {
             if(participant.isFemale() && participant.getPeakFertility()!=null) {
                 List<Date> fertilityWindow = participant.getPeakFertility().getPeakFertilityWindow();
-                if(fertilityWindow!=null) {
+                if(fertilityWindow!=null && fertilityWindow.size() == 2) {
                     String fertility = formatter.format(fertilityWindow.get(0)) + " - " + formatter.format(fertilityWindow.get(fertilityWindow.size() - 1));
                     nextPeakFertilityTextView.setText(fertility);
                 }
-                String averageCycleValue = String.valueOf((int)participant.getPeakFertility().getAverageCycleLength());
-                averageCycle.setText(averageCycleValue);
+                if(participant.getPeakFertility().getAverageCycleLength() != -1) {
+                    String averageCycleValue = String.valueOf((int) participant.getPeakFertility().getAverageCycleLength());
+                    averageCycle.setText(averageCycleValue);
+                }
             }
         }
 
 
+
         caldroidFragment = new CalendarCustomAdapterFragment();
-
-
-        CheckBox sexCheck = (CheckBox) findViewById(R.id.SexCheck);
-        sexCheck.setOnClickListener(new View.OnClickListener() {
-            public void onClick(View v) {
-                caldroidFragment.refreshView();
-            }
-        });
 
 
         // Setup arguments
@@ -150,6 +136,74 @@ public class CalendarViewActivity extends ActionBarActivity {
         t.replace(R.id.calendar1, caldroidFragment);
         t.commit();
 
+        final CheckBox sexCheck = (CheckBox)findViewById(R.id.SexCheck);
+        sexCheck.setOnClickListener(new OnClickListener() {
+                                         @Override
+                                         public void onClick(View v) {
+                                             if (!sexCheck.isChecked()) {
+                                                 CalendarCustomAdapterFragment calView = (CalendarCustomAdapterFragment) caldroidFragment;
+                                                 calView.getInstance().refresh();
+                                             }
+                                         }
+                                     }
+        );
+
+
+
+        final CheckBox prepCheck = (CheckBox)findViewById(R.id.PrepCheck);
+        prepCheck.setOnClickListener(new OnClickListener() {
+                                         @Override
+                                         public void onClick(View v) {
+                                             if(!prepCheck.isChecked()) {
+                                                 CalendarCustomAdapterFragment calView = (CalendarCustomAdapterFragment) caldroidFragment;
+                                                 calView.getInstance().refresh();
+                                             }
+                                         }
+                                     }
+        );
+
+
+
+        final CheckBox sfluidCheck = (CheckBox)findViewById(R.id.CervicalCheck);
+        sfluidCheck.setOnClickListener(new OnClickListener() {
+                                           @Override
+                                           public void onClick(View v) {
+                                               if(!sfluidCheck.isChecked()) {
+                                                   CalendarCustomAdapterFragment calView = (CalendarCustomAdapterFragment) caldroidFragment;
+                                                   calView.getInstance().refresh();
+                                               }
+                                           }
+                                       }
+        );
+
+
+        final CheckBox opkCheck = (CheckBox)findViewById(R.id.OPKCheck);
+        opkCheck.setOnClickListener(new OnClickListener() {
+                                        @Override
+                                        public void onClick(View v) {
+                                            if(opkCheck.isChecked()) {
+                                                CalendarCustomAdapterFragment calView = (CalendarCustomAdapterFragment) caldroidFragment;
+                                                calView.getInstance().refresh();
+                                            }
+                                        }
+
+                                    }
+        );
+
+        final CheckBox htempCheck = (CheckBox)findViewById(R.id.TempCheck);
+        htempCheck.setOnClickListener(new OnClickListener() {
+                                          @Override
+                                          public void onClick(View v) {
+                                              if(htempCheck.isChecked()) {
+                                                  CalendarCustomAdapterFragment calView = (CalendarCustomAdapterFragment) caldroidFragment;
+                                                  calView.getInstance().refresh();
+                                              }
+                                          }
+                                      }
+        );
+
+
+
 
 
         // Attach to the activity
@@ -165,93 +219,72 @@ public class CalendarViewActivity extends ActionBarActivity {
                 View layout = inflater.inflate(R.layout.popup_detail,
                         (ViewGroup) findViewById(R.id.popUp));
 
-
-
-
                 PopupWindow pw = new PopupWindow(layout,750,450,true);
                 TextView dateText = (TextView) pw.getContentView().findViewById(R.id.current_date_text);
-
-
                 ImageView prepPopupImage = (ImageView) pw.getContentView().findViewById(R.id.prepicon);
-
                 ImageView sexPopupImage = (ImageView) pw.getContentView().findViewById(R.id.sexIcon);
-                sexPopupImage.setVisibility(View.INVISIBLE);
                 ImageView positivePopupImage = (ImageView) pw.getContentView().findViewById(R.id.positiveicon);
-                positivePopupImage.setVisibility(View.INVISIBLE);
                 ImageView stickyPopupImage = (ImageView) pw.getContentView().findViewById(R.id.stickyicon);
-                stickyPopupImage.setVisibility(View.INVISIBLE);
                 ImageView htempPopUpIcon = (ImageView) pw.getContentView().findViewById(R.id.htempicon);
-                htempPopUpIcon.setVisibility(View.INVISIBLE);
                 ImageView cyclePopUpIcon = (ImageView) pw.getContentView().findViewById(R.id.cycleicon);
-                cyclePopUpIcon.setVisibility(View.INVISIBLE);
 
+                TextView prepPopupText = (TextView) pw.getContentView().findViewById(R.id.preplabel);
+                TextView sexPopupText = (TextView) pw.getContentView().findViewById(R.id.sexlabel);
+                TextView positivePopupText = (TextView) pw.getContentView().findViewById(R.id.positivelabel);
+                TextView stickyPopupText = (TextView) pw.getContentView().findViewById(R.id.stickylabel);
+                TextView htempPopUpText = (TextView) pw.getContentView().findViewById(R.id.htemplabel);
+                TextView cycleLabelText = (TextView) pw.getContentView().findViewById(R.id.cyclelabel);
+                TextView cycleDayInCycleText = (TextView) pw.getContentView().findViewById(R.id.dayInCycle);
 
-                 TextView prepPopupText = (TextView) pw.getContentView().findViewById(R.id.preplabel);
-
-                 TextView sexPopupText = (TextView) pw.getContentView().findViewById(R.id.sexlabel);
-                sexPopupText.setVisibility(View.INVISIBLE);
-                 TextView positivePopupText = (TextView) pw.getContentView().findViewById(R.id.positivelabel);
-                positivePopupText.setVisibility(View.INVISIBLE);
-                 TextView stickyPopupText = (TextView) pw.getContentView().findViewById(R.id.stickylabel);
-                stickyPopupText.setVisibility(View.INVISIBLE);
-                 TextView htempPopUpText = (TextView) pw.getContentView().findViewById(R.id.htemplabel);
-                htempPopUpText.setVisibility(View.INVISIBLE);;
-                 TextView cycleLabelText = (TextView) pw.getContentView().findViewById(R.id.cyclelabel);
-                cycleLabelText.setVisibility(View.INVISIBLE);
-                 TextView cycleDayInCycleText = (TextView) pw.getContentView().findViewById(R.id.dayInCycle);
-                cycleDayInCycleText.setVisibility(View.INVISIBLE);
-
-                        for(Participant participant:couple) {
-                            if(!participant.isIndex()) {
-                                if(participant.getMemscaps()!=null) {
-                                    for(MemsCap memsCap:participant.getMemscaps()) {
-                                        if(date.compareTo(memsCap.getDate())==0) {
-
-                                            prepPopupImage.setVisibility(View.VISIBLE);
-                                            prepPopupText.setVisibility(View.VISIBLE);
-
-                                        }
-                                    }
+                for(Participant participant:couple) {
+                    if(!participant.isIndex()) {
+                        if(participant.getMemscaps()!=null) {
+                            for(MemsCap memsCap:participant.getMemscaps()) {
+                                if(date.compareTo(memsCap.getDate()) ==0) {
+                                    prepPopupImage.setVisibility(View.VISIBLE);
+                                    prepPopupText.setVisibility(View.VISIBLE);
                                 }
-                            }
-
-                            if(participant.isFemale()) {
-
-                                cycleLabelText.setVisibility(View.VISIBLE);
-                                cyclePopUpIcon.setVisibility(View.VISIBLE);
-                                cycleDayInCycleText.setVisibility(View.VISIBLE);
-
-                                if(participant.getPeakFertility()!=null) {
-                                    long dayInCycle = participant.getPeakFertility().getDayInCycle(date);
-                                    cycleDayInCycleText.setText(String.valueOf(dayInCycle));
-
-                                }
-                                if(participant.getSurveyResults()!=null) {
-                                    for(SurveyResult surveyResult:participant.getSurveyResults()) {
-                                        if(date.compareTo(surveyResult.getDate()) ==0) {
-                                            if (surveyResult.isOvulating()) {
-                                                positivePopupImage.setVisibility(View.VISIBLE);
-                                                positivePopupText.setVisibility(View.VISIBLE);
-                                            }
-                                            if(surveyResult.isHadSex() && !surveyResult.isUsedCondom()) {
-                                                sexPopupImage.setVisibility(View.VISIBLE);
-                                                sexPopupText.setVisibility(View.VISIBLE);
-                                            }
-                                            if(surveyResult.getTemperature()>=97.8) {
-                                                htempPopUpIcon.setVisibility(View.VISIBLE);
-                                                htempPopUpText.setVisibility(View.VISIBLE);
-                                            }
-                                            if(surveyResult.isVaginaMucusSticky()) {
-                                                stickyPopupImage.setVisibility(View.VISIBLE);
-                                                stickyPopupText.setVisibility(View.VISIBLE);
-                                            }
-                                        }
-                                    }
-                                }
-
                             }
                         }
-                        dateText.setText(formatter.format(date));
+                    }
+                    if(participant.isFemale()) {
+
+                        cycleLabelText.setVisibility(View.VISIBLE);
+                        cyclePopUpIcon.setVisibility(View.VISIBLE);
+                        cycleDayInCycleText.setVisibility(View.VISIBLE);
+
+                        if(participant.getPeakFertility()!=null) {
+                            long dayInCycle = participant.getPeakFertility().getDayInCycle(date);
+                            cycleDayInCycleText.setText(String.valueOf(dayInCycle));
+
+                        }
+                        if(participant.getSurveyResults()!=null) {
+                            for(SurveyResult surveyResult:participant.getSurveyResults()) {
+                                if(date.compareTo(surveyResult.getDate()) ==0) {
+
+                                    if (surveyResult.isOvulating()) {
+                                        positivePopupImage.setVisibility(View.VISIBLE);
+                                        positivePopupText.setVisibility(View.VISIBLE);
+                                    }
+                                    if(surveyResult.isHadSex() && !surveyResult.isUsedCondom()) {
+                                        sexPopupImage.setVisibility(View.VISIBLE);
+                                        sexPopupText.setVisibility(View.VISIBLE);
+                                    }
+                                    if(surveyResult.getTemperature()>=97.8) {
+                                        htempPopUpIcon.setVisibility(View.VISIBLE);
+                                        htempPopUpText.setVisibility(View.VISIBLE);
+                                    }
+                                    if(surveyResult.isVaginaMucusSticky()) {
+                                        stickyPopupImage.setVisibility(View.VISIBLE);
+                                        stickyPopupText.setVisibility(View.VISIBLE);
+                                    }
+                                }
+                            }
+                        }
+
+                    }
+                }
+                dateText.setText(formatter.format(date));
                 pw.setBackgroundDrawable(new ColorDrawable(1));
                 pw.dismiss();
                 pw.showAtLocation(layout, Gravity.CENTER, 0, 0);
@@ -296,10 +329,7 @@ public class CalendarViewActivity extends ActionBarActivity {
 
     }
 
-
     public List<Participant> getCouple() {
         return couple;
     }
-
-
-    }
+}

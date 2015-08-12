@@ -30,8 +30,7 @@
         android:id="@+id/Peak_Fertility"
         android:layout_gravity="left|top"
         android:layout_marginTop="560dp"
-        android:layout_marginLeft="610dp"
-        android:text="11" />
+        android:layout_marginLeft="610dp" />
 
     <TextView
         android:layout_width="wrap_content"
@@ -40,8 +39,7 @@
         android:id="@+id/Next_Cycle"
         android:layout_gravity="left|top"
         android:layout_marginTop="590dp"
-        android:layout_marginLeft="610dp"
-        android:text="11" />
+        android:layout_marginLeft="610dp" />
 
     <ImageButton
         android:layout_width="450dp"
