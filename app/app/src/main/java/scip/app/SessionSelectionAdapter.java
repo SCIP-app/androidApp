@@ -7,7 +7,14 @@ import android.support.v4.app.FragmentPagerAdapter;
 
 /**
  * Created by Yesh on 7/14/15.
+ * SessionSelectionActivity
+ * Description: This class customizes the view for the SessionSelectionActivity
+ *
+ * Functions:
+ * @ Override methods update the original methods in FragmentPagerAdapter class
+ *
  */
+
 public class SessionSelectionAdapter extends FragmentPagerAdapter {
     final int PAGE_COUNT = 2;
     private String tabTitles[] = new String[] { "Enrolled Couples", "Enrolled Participants"};
