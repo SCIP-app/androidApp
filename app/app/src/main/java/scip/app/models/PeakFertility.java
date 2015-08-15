@@ -10,7 +10,38 @@ import java.util.concurrent.TimeUnit;
 
 /**
  * Created by Allie on 6/29/2015.
- */
+ * PeakFertility
+ * Description: This class sets up fertility data for use elsewhere
+ * Class variables:
+ *  id
+ *  Type: long
+ *  Description: Unique identifier for db rows; this is NOT the same as the participant id
+ *
+ * participant_id
+ *  Type: long
+ *  Description: Contains the participant id
+ *
+ * start
+ *  Type: Date (private class)
+ *  Description: Contains the menses start date
+ *
+ * end
+ *  Type: date
+ *  Description: Contains the menses end date
+ *
+ * Functions:
+ *
+ * PeakFertility (long, Date, Date)
+ *  Description: Constructor; creates a PeakFertility object from given parameters
+ *  Input parameters:
+ *      long: participant's id number (from CSV? or was this a global variable?)
+ *      Date: start of peak fertility period as calculated by algorithm
+ *      Date: end of peak fertility period as calculated by algorithm
+ *  Output parameters: Null
+ *
+ * Getters & setters for id (long), participant id (long), start & end (Date).
+ **/
+
 public class PeakFertility {
     List<SurveyResult> surveyResults;
     boolean dataProcessed;
