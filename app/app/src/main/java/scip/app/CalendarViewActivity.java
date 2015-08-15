@@ -40,9 +40,7 @@ public class CalendarViewActivity extends ActionBarActivity {
     private CaldroidFragment caldroidFragment;
     private List<Participant> couple;
     private long couple_id;
-
     HashMap<Integer,String> monthMap = new HashMap<>();
-
 
     private void setCustomResourceForDates() {
         Calendar cal = Calendar.getInstance();
@@ -65,9 +63,6 @@ public class CalendarViewActivity extends ActionBarActivity {
             caldroidFragment.setTextColorForDate(R.color.abc_primary_text_disable_only_material_light, greenDate);
         }
     }
-
-
-
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -318,7 +313,6 @@ public class CalendarViewActivity extends ActionBarActivity {
         }
 
     }
-
     public List<Participant> getCouple() {
         return couple;
     }

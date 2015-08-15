@@ -20,7 +20,24 @@ import scip.app.databasehelper.DatabaseHelper;
 import scip.app.models.Participant;
 import scip.app.models.ViralLoad;
 
-
+/* LandingFragment: This class sets up the dashboard view for the calendar and viral load activities
+ *
+ *  Functions:
+ *
+ *   onCreateView (LayoutInflater, ViewGroup, Bundle): Creates and sets a View type layout for this
+ *      fragment using a series of setter methods (is this how you'd say it?)
+ *          input parameters: Standard LayoutInflator, ViewGroup, Bundle
+ *          output parameters:
+ *              view: A selectable list view of the couple ID
+ *                  Type: View
+ *
+ *   onClick (View): Sets up the calendar and ART intents
+ *      Input parameters: v
+ *          Type: View
+ *      Output parameters: view
+ *
+ *   Getters & setters
+*/
 public class LandingFragment extends Fragment {
 
     public LandingFragment() {
@@ -35,15 +52,11 @@ public class LandingFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        View view = inflater.inflate(R.layout.fragment_landing_main,
-                container, false);
-
+        View view = inflater.inflate(R.layout.fragment_landing_main, container, false);
         ImageButton calendarButton = (ImageButton) view.findViewById(R.id.calendarButton);
-        calendarButton.setOnClickListener(new OnClickListener()
-        {
+        calendarButton.setOnClickListener(new OnClickListener() {
             @Override
-            public void onClick(View v)
-            {
+            public void onClick(View v) {
                 Intent calendarIntent = new Intent(getActivity(),CalendarViewActivity.class);
                 calendarIntent.putExtra("couple_id", ((DashboardActivity)getActivity()).getCouple_id());
                 startActivity(calendarIntent);
@@ -54,12 +67,9 @@ public class LandingFragment extends Fragment {
         artButton.setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View v) {
-
                 Intent artIntent = new Intent(getActivity(), ViralLoadActivity.class);
                 artIntent.putExtra("couple_id", ((DashboardActivity) getActivity()).getCouple_id());
                 startActivity(artIntent);
-
-
             }
         });
 

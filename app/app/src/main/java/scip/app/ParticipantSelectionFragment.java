@@ -15,14 +15,28 @@ import java.util.List;
 
 import scip.app.databasehelper.DatabaseHelper;
 
-/**
- * A simple {@link Fragment} subclass.
- * Activities that contain this fragment must implement the
- * {@link ParticipantSelectionFragment.OnFragmentInteractionListener} interface
- * to handle interaction events.
- * Use the {@link ParticipantSelectionFragment#newInstance} factory method to
- * create an instance of this fragment.
+/*
+ * ParticipantSelectionFragment: A simple {@link Fragment} subclass. Activities that contain this fragment
+ * must implement the {@link CoupleSelectionFragment.OnFragmentInteractionListener} interface to handle
+ * interaction events. Use the {@link CoupleSelectionFragment#newInstance} factory method to create
+ * an instance of this fragment.
+ *
+ * Class variables:
+ *  m_listview:
+ *      Type: A standard ListView object
+ *  ASK WHY ONLY LISTVIEW AS A CLASS VARIABLE
+ *
+ * Functions:
+ *  ParticipantSelectionFragment (Null): Setter for a new instance of the CoupleSelectionFragment
+ *
+ *  onCreateView (LayoutInflater, ViewGroup, Bundle): Creates and sets a View type layout for this
+ *  fragment using a series of setter methods (is this how you'd say it?)
+ *      input parameters: Standard LayoutInflator, ViewGroup, Bundle
+ *      output parameters:
+ *          view: A selectable list view of the couple ID
+ *              Type: View
  */
+
 public class ParticipantSelectionFragment extends Fragment {
 
     private ListView m_listview;
@@ -44,8 +58,7 @@ public class ParticipantSelectionFragment extends Fragment {
 
 
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container,
-                             Bundle savedInstanceState) {
+    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         // Inflate the layout for this fragment
 
         View view =  inflater.inflate(R.layout.fragment_participant_selection, container, false);
