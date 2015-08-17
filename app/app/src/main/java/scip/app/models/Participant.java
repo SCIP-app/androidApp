@@ -13,9 +13,64 @@ import scip.app.databasehelper.DatabaseHelper;
 
 /**
  * Created by Allie on 6/22/2015.
+ * Participant
+ * Description: This class sets up a participant object that contains all of a single participant's data
+ * Class variables:
+ *  id
+ *  Type: long
+ *  Description: Unique identifier for db rows; this is NOT the same as the participant id.
  *
- * This is the model for the Participant data structure.
+ * participant_id
+ *  Type: long
+ *  Description: Contains the participant id.
+ *
+ * Context
+ *  Type: Context
+ *  Description: Contains data about the state of the app.
+ *
+ * isFemale
+ *  Type: boolean
+ *  Description: Contains whether or not the participant is female.
+ *
+ * surveyResults
+ *  Type: ArrayList
+ *  Description: Contains the participant's survey results as a list
+ *
+ * viralLoads
+ *  Type: ArrayList
+ *  Description: Contains the participant's viral loads as a list
+ *
+ * memscaps
+ *  Type: ArrayList
+ *  Description: Contains the participant's memscap data as a list
+ *
+ * peakFertilities
+ *  Type: ArrayList
+ *  Description: Contains the participant's peak fertility data as a list if available
+ *
+ * Functions:
+ *
+ * Participant (Context, long, long)
+ *  Description: Constructor; creates a Participant object from given parameters
+ *  Input parameters:
+ *      Context: sets app state
+ *      long: sets id
+ *      long: sets participant id
+ *  Output parameters: Null
+ *
+ * getPartner ()
+ *  Description: Gets a couple based on the couple id; if no partner found, returns Participant p
+ *  Input parameters: Null
+ *  Output parameters: Null
+ *
+ * loadData ()
+ *  Description: Pulls up all the data for a participant according to HIV status and whether or not isFemale
+ *  Input parameters: Null
+ *  Output parameters: Null
+ *
+ *  Getters & setters
  */
+
 public class Participant {
     long id;
     long participant_id;

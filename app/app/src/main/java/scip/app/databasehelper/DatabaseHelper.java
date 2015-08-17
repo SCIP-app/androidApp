@@ -23,9 +23,125 @@ import scip.app.models.ViralLoad;
 
 /**
  * Created by Allie on 6/22/2015.
+ * DatabaseHelper
+ * Description: Performs database operations easier.
+ * Class variables: None
  *
- * This class is designed to make performing database operations easier. It will contain methods for all direct database access actions.
+ * Functions:
+ *
+ * DatabaseHelper
+ *  Description: Constructor; sets up a DatabaseHelper extended from parent class SQLiteOpenHelper
+ *  Input parameters:
+ *      Context: Gets the app's state
+ *      Row & column headers (not sure to call these parameters or something else?)
+ *  Output parameters: Null
+ *
+ * onCreate (SQLiteDatabase)
+ *  Description: Generates the table for each db model class
+ *  Input parameters:
+ *      SQLiteDatabase: Java object that manages a SQLite database
+ *  Output parameters: db model tables
+ *
+ * onUpgrade (SQLiteDatabase, int, int)
+ *  Description: Destroys the old db version when a new one is added
+ *  Input parameters:
+ *      SQLiteDatabase: Java object that manages a SQLite database
+ *      int: Contains a number for the old version
+ *      int: Contains a number for the new version
+ *  Output parameters: Null
+ *
+ * closeDB ()
+ *  Description: Closes the db
+ *  Input parameters: Null
+ *  Output parameters: Null
+ *
+ * createParticipant (Participant)
+ *  Description: Creates and populates a new row in the db for the participant table
+ *  Input parameters:
+ *      Participant: Contains all data & functions associated with a participant
+ *  Output parameters: Null
+ *
+ * getParticipant (long)
+ *  Description: Searches by participant id and creates a new participant with all associated data
+ *  Input parameters:
+ *      long: Contains participant id
+ *  Output parameters:
+ *      participant: Contains all data for a single participant by their id
+ *
+ * getAllParticipants ()
+ *  Description: Creates and populates an arraylist of all participants
+ *  Input parameters: None
+ *  Output parameters:
+ *      participants: contains an arraylist of all participants
+ *
+ * getAllCoupleIDs ()
+ *  Description: Creates and populates an arraylist of all couples
+ *  Input parameters: None
+ *  Output parameters:
+ *      couples: contains a Long arraylist of all couple IDs formatted as a linkedHashSet
+ *
+ * getCoupleFromID (Long)
+ *  Description: Makes an arraylist of participants paired by couple id
+ *  Input parameters:
+ *      Long: contains the couple id
+ *  Output parameters:
+ *      couple: contains a Long arraylist of all participants by couple id
+ *
+ * createViralLoad (ViralLoad)
+ * Description: Creates and populates a new row in the db for the viral load table
+ *  Input parameters:
+ *      ViralLoad: Contains all data & functions associated with a participant's viral load
+ *  Output parameters: Null
+ *
+ * getAllViralLoadsById (long)
+ *  Description: Creates and populates an arraylist of all viral load related data by participant
+ *  Input parameters:
+ *      long: contains participant id
+ *  Output parameters:
+ *      viralLoads: contains an arraylist of all viral load related data by participant
+ *
+ * createPeakFertility (PeakFertility)
+ *  Description: Creates and populates a new row in the db for the peak fertility table
+ *  Input parameters:
+ *      PeakFertility: Contains all data & functions associated with a participant's peak fertility
+ *  Output parameters: Null
+ *
+ * getAllPeakFertilityById (long)
+ *  Description: Creates and populates an arraylist of all peak fertility related data by participant
+ *  Input parameters:
+ *      long: contains participant id
+ *  Output parameters:
+ *      peakFertilities: contains an arraylist of all peak fertility related data by participant
+ *
+ * createSurveyResult (SurveyResult)
+ * Description: Creates and populates a new row in the db for the survey result data
+ *  Input parameters:
+ *      SurveyResult: Contains all data & functions associated with a participant's survey results
+ *  Output parameters: Null
+ *
+ * getAllSurveyResultsById (long)
+ *  Description: Creates and populates an arraylist of all peak fertility related data by participant
+ *  Input parameters:
+ *      long: contains participant id
+ *  Output parameters:
+ *      surveyResults: contains an arraylist of all survey results by participant
+ *
+ * createMemsCap (MemsCap)
+ * Description: Creates and populates a new row in the db for the survey result data
+ *  Input parameters:
+ *      MemsCap: Contains all data & functions associated with a participant's MEMScap
+ *  Output parameters: Null
+ *
+ * getAllMemsCapById (long)
+ *  Description: Creates and populates an arraylist of all MEMScap related data by participant
+ *  Input parameters:
+ *      long: contains participant id
+ *  Output parameters:
+ *      prepAdherence: contains an arraylist of all survey results by participant
+ *
+ * Utility functions
  */
+
 public class DatabaseHelper extends SQLiteOpenHelper{
     Context context;
     List<MemsCap> existingMemsCap = null;

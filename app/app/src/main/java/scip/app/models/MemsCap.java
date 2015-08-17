@@ -6,6 +6,36 @@ import java.util.Date;
 
 /**
  * Created by Kristin Dew on 6/30/2015.
+ * MemsCap
+ * Description: This class sets up data parsed from a CSV for use elsewhere
+ * Class variables:
+ * id
+ *  Type: long
+ *  Description: Unique identifier for db rows; this is NOT the same as the participant id. Has getter & setter.
+ *
+ * participant_id
+ *  Type: long
+ *  Description: Contains the participant id.
+ *
+ * date
+ *  Type: date
+ *  Description: Contains the date
+ *
+ * mems_id
+ *  Type: long
+ *  Description: Contains the id of each PrEP participant's Memscap
+ *
+ * Functions (public/private?):
+ *
+ * MemsCap (long, Date, long)
+ *  Description: Constructor; Creates a MemsCap object from given parameters
+ *  Input parameters:
+ *      long: participant's id number
+ *      date: date of Memscap data
+ *      long: mems_id as parsed
+ *  Output parameters: Null
+ *
+ * Getters & setters.
  */
 public class MemsCap {
     long id;
