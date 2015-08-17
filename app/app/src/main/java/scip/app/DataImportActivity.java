@@ -206,11 +206,6 @@ public class DataImportActivity extends ActionBarActivity {
             // See if we've checked msurvey before. If not, look for 3 days worth of information
             SharedPreferences settings = getPreferences(0);
             date = settings.getString("lastReadMsurvey", df.format(new Date(System.currentTimeMillis()-48*60*60*1000)));
-
-            // Save the current date and time as the last time msurvey was checked
-            SharedPreferences.Editor editor = settings.edit();
-            editor.putString("lastReadMsurvey", df.format(new Date(System.currentTimeMillis())));
-            editor.commit();
         }
 
         protected String doInBackground(Void... voids) {
@@ -234,6 +229,16 @@ public class DataImportActivity extends ActionBarActivity {
                 ResponseHandler<String> handler = new BasicResponseHandler();
                 try {
                     result = httpclient.execute(request, handler);
+
+                    // Set up the date formatter
+                    TimeZone tz = TimeZone.getTimeZone("UTC");
+                    DateFormat df = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss");
+                    df.setTimeZone(tz);
+                    // Save the current date and time as the last time msurvey was checked
+                    SharedPreferences settings = getPreferences(0);
+                    SharedPreferences.Editor editor = settings.edit();
+                    editor.putString("lastReadMsurvey", df.format(new Date(System.currentTimeMillis())));
+                    editor.commit();
                 } catch (ClientProtocolException e) {
                     e.printStackTrace();
                 } catch (IOException e) {
