@@ -32,15 +32,19 @@ public class CSVImporter {
 //            Log.d("Mems Id", entry[1]);
 //            Log.d("Date", entry[2]);
 //            Log.d("Time", entry[3]);
+            try {
+                long participant_id = Long.parseLong(entry[0]);
+                long mems_id = Long.parseLong(entry[1]);
 
-            long participant_id = Long.parseLong(entry[0]);
-            long mems_id = Long.parseLong(entry[1]);
+            if(db.getParticipant(participant_id) == null) {
+                db.createParticipant(new Participant(participant_id, false));
+            }
 
-//            if(db.getParticipant(participant_id) == null) {
-//                db.createParticipant(new Participant(participant_id));
-//            }
+                db.createMemsCap(new MemsCap(participant_id, entry[2], mems_id));
+            }
+            catch (Exception e) {
 
-            db.createMemsCap(new MemsCap(participant_id, entry[2], mems_id));
+            }
         }
 
         db.closeDB();
@@ -53,17 +57,19 @@ public class CSVImporter {
 //            Log.d("Visit Id", entry[1]);
 //            Log.d("Date", entry[2]);
 //            Log.d("Load", entry[3]);
+            try {
+                long participant_id = Long.parseLong(entry[0]);
+                int vist_id = Integer.parseInt(entry[1]);
+                int load = Integer.parseInt(entry[3]);
+            if(db.getParticipant(participant_id) == null) {
+                db.createParticipant(new Participant(participant_id, false));
+            }
 
-            long participant_id = Long.parseLong(entry[0]);
-            int vist_id = Integer.parseInt(entry[1]);
-            int load = Integer.parseInt(entry[3]);
+                db.createViralLoad(new ViralLoad(participant_id, load, entry[2], vist_id));
+            }
+            catch (Exception e) {
 
-//            if(db.getParticipant(participant_id) == null) {
-//                db.createParticipant(new Participant(participant_id));
-//            }
-
-           db.createViralLoad(new ViralLoad(participant_id, load, entry[2], vist_id));
-
+            }
         }
     }
 
@@ -129,7 +135,6 @@ public class CSVImporter {
     public void openExternalFiles() {
         if(isExternalStorageWritable()) {
             File[] externalDirs = context.getExternalFilesDirs(null);
-            Toast.makeText(context, String.valueOf(externalDirs.length), Toast.LENGTH_LONG).show();
             Log.d("External Dirs length", String.valueOf(externalDirs.length));
             Log.d("Path", externalDirs[0].getAbsolutePath());
 //            for(File f : externalDirs[0].listFiles()) {
@@ -151,13 +156,12 @@ public class CSVImporter {
                     CSVFile csvFile = new CSVFile(f);
                     List<String[]> memsList = csvFile.read();
                     readMemsCapData(memsList);
-                    Toast.makeText(context, "Done with MEMS Cap", Toast.LENGTH_LONG).show();
+
                 }
                 else if (f.getName().contains("viralload")){
                     CSVFile csvFile = new CSVFile(f);
                     List<String[]> viralLoadList = csvFile.read();
                     readViralLoadData(viralLoadList);
-                    Toast.makeText(context, "Done with Viral Load", Toast.LENGTH_LONG).show();
                 }
             }
         }
