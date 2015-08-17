@@ -1,5 +1,7 @@
 package scip.app;
 
+import android.content.SharedPreferences;
+import android.net.Uri;
 import android.os.AsyncTask;
 import android.support.v7.app.ActionBarActivity;
 import android.os.Bundle;
@@ -11,17 +13,25 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ProgressBar;
 
+import org.apache.http.NameValuePair;
 import org.apache.http.client.ClientProtocolException;
 import org.apache.http.client.HttpClient;
 import org.apache.http.client.ResponseHandler;
+import org.apache.http.client.entity.UrlEncodedFormEntity;
 import org.apache.http.client.methods.HttpGet;
+import org.apache.http.client.methods.HttpRequestBase;
 import org.apache.http.impl.client.BasicResponseHandler;
 import org.apache.http.impl.client.DefaultHttpClient;
+import org.apache.http.message.BasicNameValuePair;
 import org.apache.http.params.BasicHttpParams;
 import org.apache.http.params.HttpParams;
+import org.apache.http.protocol.HTTP;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
+
+import java.net.URI;
+import java.util.Enumeration;
 import java.util.GregorianCalendar;
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -133,7 +143,7 @@ public class DataImportActivity extends ActionBarActivity {
     }
 
     private void importMSurveyData() {
-        AsyncTask<Void, Void, String> ms = new RetrieveMSurveyData().execute();
+        AsyncTask<Void, String, String> ms = new RetrieveMSurveyData().execute();
     }
 
     private void importLocalData(boolean useLocal) {
@@ -177,15 +187,30 @@ public class DataImportActivity extends ActionBarActivity {
         progressBar.setVisibility(View.INVISIBLE);
     }
 
-    class RetrieveMSurveyData extends AsyncTask<Void, Void, String> {
+    class RetrieveMSurveyData extends AsyncTask<Void, String, String> {
 
         private Exception exception;
+        private String date;
 
         @Override
         protected void onPreExecute() {
             super.onPreExecute();
             statusUpdateArea.append("Getting mSurvey Data\n");
             progressBar.setVisibility(View.VISIBLE);
+
+            // Set up the date formatter
+            TimeZone tz = TimeZone.getTimeZone("UTC");
+            DateFormat df = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss");
+            df.setTimeZone(tz);
+
+            // See if we've checked msurvey before. If not, look for 3 days worth of information
+            SharedPreferences settings = getPreferences(0);
+            date = settings.getString("lastReadMsurvey", df.format(new Date(System.currentTimeMillis()-48*60*60*1000)));
+
+            // Save the current date and time as the last time msurvey was checked
+            SharedPreferences.Editor editor = settings.edit();
+            editor.putString("lastReadMsurvey", df.format(new Date(System.currentTimeMillis())));
+            editor.commit();
         }
 
         protected String doInBackground(Void... voids) {
@@ -195,16 +220,16 @@ public class DataImportActivity extends ActionBarActivity {
                 BufferedReader r = new BufferedReader(new InputStreamReader(getResources().openRawResource(R.raw.msurvey_key)));
                 String key = r.readLine();
                 r.close();
-                TimeZone tz = TimeZone.getTimeZone("UTC");
-                DateFormat df = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm'Z'");
-                df.setTimeZone(tz);
-                String nowAsISO = df.format(new Date(System.currentTimeMillis()-24*60*60*1000));
-                Log.d("yesterday", nowAsISO);
-                HttpGet request = new HttpGet("https://apps.msurvey.co.ke/surveyapi/scip/data");
-                HttpParams params = new BasicHttpParams();
-                params.setParameter("format", "json");
-                params.setParameter("start", nowAsISO);
-                request.setParams(params);
+
+                Uri url = new Uri.Builder()
+                        .scheme("https")
+                        .authority("apps.msurvey.co.ke")
+                        .path("surveyapi/scip/data/")
+                        .appendQueryParameter("format", "json")
+                        .appendQueryParameter("start", date)
+                        .build();
+                HttpGet request = new HttpGet(url.toString());
+                Log.d("request", url.toString());
                 request.addHeader("TOKEN", key);
                 ResponseHandler<String> handler = new BasicResponseHandler();
                 try {
@@ -231,6 +256,7 @@ public class DataImportActivity extends ActionBarActivity {
                 JSONArray data = obj.getJSONArray("data");
                 int n = data.length();
                 statusUpdateArea.append("Participant count " + String.valueOf(n) + "\n");
+                DatabaseHelper db = new DatabaseHelper(getApplicationContext());
 
                 for (int i = 0; i < n; i++) {
                     JSONObject entry = data.getJSONObject(i);
@@ -279,10 +305,10 @@ public class DataImportActivity extends ActionBarActivity {
                         isOvulating = true;
 
                     SurveyResult sr = new SurveyResult(participant_id, date, temperature, vaginaMucusSticky, onPeriod, isOvulating, hadSex, usedCondom);
-                    DatabaseHelper db = new DatabaseHelper(getApplicationContext());
+
                     db.createSurveyResult (sr);
-                    db.closeDB();
                 }
+                db.closeDB();
             } catch (JSONException e) {
                 e.printStackTrace();
             // was getting parse exception error on format.parse(timeStarted) and adding this catch seemed to fix it
@@ -291,6 +317,12 @@ public class DataImportActivity extends ActionBarActivity {
             }
             statusUpdateArea.append("Parsing complete.\n");
             progressBar.setVisibility(View.INVISIBLE);
+        }
+
+        @Override
+        protected void onProgressUpdate(String... values) {
+            super.onProgressUpdate(values);
+            statusUpdateArea.append(values[0]+"\n");
         }
     }
 
@@ -319,6 +351,12 @@ public class DataImportActivity extends ActionBarActivity {
             publishProgress("Total Number of Couples " + String.valueOf(cids.size()));
             List<SurveyResult> surveyResultList = db.getAllSurveyResults();
             publishProgress("Number of survey results " + String.valueOf(surveyResultList.size()));
+            List<SurveyResult> surveyResults = db.getAllSurveyResults();
+            for(SurveyResult sr : surveyResults) {
+                Date sinceDate = new Date(System.currentTimeMillis()-24*60*60*1000);
+                if(sinceDate.compareTo(sr.getDate()) != 0)
+                    publishProgress(sr.toString());
+            }
             db.closeDB();
 
             return null;
