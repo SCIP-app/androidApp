@@ -6,6 +6,36 @@ import java.util.Date;
 
 /**
  * Created by Kristin Dew on 6/30/2015.
+ * MemsCap
+ * Description: This class sets up data parsed from a CSV for use elsewhere
+ * Class variables:
+ * id
+ *  Type: long
+ *  Description: Unique identifier for db rows; this is NOT the same as the participant id. Has getter & setter.
+ *
+ * participant_id
+ *  Type: long
+ *  Description: Contains the participant id.
+ *
+ * date
+ *  Type: date
+ *  Description: Contains the date
+ *
+ * mems_id
+ *  Type: long
+ *  Description: Contains the id of each PrEP participant's Memscap
+ *
+ * Functions (public/private?):
+ *
+ * MemsCap (long, Date, long)
+ *  Description: Constructor; Creates a MemsCap object from given parameters
+ *  Input parameters:
+ *      long: participant's id number
+ *      date: date of Memscap data
+ *      long: mems_id as parsed
+ *  Output parameters: Null
+ *
+ * Getters & setters.
  */
 public class MemsCap {
     long id;
@@ -45,5 +75,25 @@ public class MemsCap {
         return mems_id;
     }
 
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (!(o instanceof MemsCap)) return false;
+
+        MemsCap memsCap = (MemsCap) o;
+
+        if (mems_id != memsCap.mems_id) return false;
+        if (participant_id != memsCap.participant_id) return false;
+        if (!date.equals(memsCap.date)) return false;
+
+        return true;
+    }
+
+    @Override
+    public int hashCode() {
+        int result = date.hashCode();
+        result = 31 * result + (int) (mems_id ^ (mems_id >>> 32));
+        return result;
+    }
 }
 

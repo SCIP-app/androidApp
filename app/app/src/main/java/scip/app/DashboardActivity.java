@@ -96,7 +96,7 @@ public class DashboardActivity extends ActionBarActivity
 
         FragmentManager fragmentManager = getSupportFragmentManager();
         fragmentTransaction = fragmentManager.beginTransaction();
-
+        // defines the behavior of each element inside the navigation drawer
         switch (position) {
             case 0:
 

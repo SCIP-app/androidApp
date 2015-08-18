@@ -1,5 +1,6 @@
 package scip.app;
 
+import android.content.Intent;
 import android.support.v7.app.ActionBarActivity;
 import android.app.Activity;
 import android.support.v7.app.ActionBar;
@@ -282,6 +283,12 @@ public class NavigationDrawerFragment extends Fragment{
             return true;
         }
         // Handle your other action bar items...
+
+        if(item.getTitle().toString().contains(mDrawerArrayList.get(1))) {
+            Intent endSession = new Intent(getActivity(), SessionSelectionActivity.class);
+            startActivity(endSession);
+
+        }
 
         return super.onOptionsItemSelected(item);
     }

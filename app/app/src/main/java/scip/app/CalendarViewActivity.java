@@ -112,6 +112,7 @@ public class CalendarViewActivity extends ActionBarActivity {
         TextView nextPeakFertilityTextView = (TextView) findViewById(R.id.peakFertilityValue);
         TextView averageCycle = (TextView) findViewById(R.id.AvgCycleValue);
 
+
         if(couple!=null && couple.size()==2) {
             female = couple.get(0);
             male = couple.get(1);

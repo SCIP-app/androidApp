@@ -77,8 +77,6 @@ public class LandingFragment extends Fragment {
 
         final SimpleDateFormat formatter = new SimpleDateFormat("dd MMM yyyy");
 
-
-
         long coupleId = ((DashboardActivity)getActivity()).getCouple_id();
         new GetData().execute(coupleId);
 
@@ -126,13 +124,13 @@ public class LandingFragment extends Fragment {
                         List<Date> nextPeakFertilityValues = participant.getPeakFertility().getPeakFertilityWindow();
                         List<Date> nextCycleDates = participant.getPeakFertility().getNextCycleDates();
 
-                        if(nextPeakFertilityValues!=null) {
+                        if(nextPeakFertilityValues!=null && nextPeakFertilityValues.size() == 4) {
                             String fertilityRange = formatter.format(nextPeakFertilityValues.get(0)) + " - " + formatter.format(nextPeakFertilityValues.get(nextPeakFertilityValues.size() - 1));
                             peakFertilityText.setText(fertilityRange);
 
                         }
 
-                        if(nextCycleDates!=null) {
+                        if(nextCycleDates!=null && nextCycleDates.size() == 2) {
                             String nextFertilityRange = formatter.format(nextCycleDates.get(0)) + " - " +formatter.format(nextCycleDates.get(nextCycleDates.size()-1));
                             nextCycleText.setText(nextFertilityRange);
                         }

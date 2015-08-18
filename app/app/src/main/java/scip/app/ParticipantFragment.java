@@ -111,13 +111,13 @@ public class ParticipantFragment extends Fragment {
                         peakFertilityText.setVisibility(View.VISIBLE);
                         nextCycleText.setVisibility(View.VISIBLE);
 
-                        if(nextPeakFertilityValues!=null) {
+                        if(nextPeakFertilityValues!=null && nextPeakFertilityValues.size() == 4) {
                             String fertilityRange = formatter.format(nextPeakFertilityValues.get(0)) + " - " + formatter.format(nextPeakFertilityValues.get(nextPeakFertilityValues.size() - 1));
                             peakFertilityText.setText(fertilityRange);
 
                         }
 
-                        if(nextCycleDates!=null) {
+                        if(nextCycleDates!=null && nextCycleDates.size() == 2) {
                             String nextFertilityRange = formatter.format(nextCycleDates.get(0)) + " - " +formatter.format(nextCycleDates.get(nextCycleDates.size()-1));
                             nextCycleText.setText(nextFertilityRange);
                         }

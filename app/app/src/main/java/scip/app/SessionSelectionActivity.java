@@ -12,7 +12,9 @@ import java.util.List;
 import scip.app.databasehelper.DatabaseHelper;
 
 /*
-    Display list view of couple id's from which the provider can select the couple_id they plan to counsel
+SessionSelectionActivity
+    * Description: This class is a tabbed view presenting couples or participant ids for selection
+
  */
 
 public class SessionSelectionActivity extends AppCompatActivity {
