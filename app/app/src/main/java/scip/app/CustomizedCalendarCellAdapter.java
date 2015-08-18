@@ -29,6 +29,9 @@ import scip.app.models.SurveyResult;
 public class CustomizedCalendarCellAdapter extends CaldroidGridAdapter {
 
     private List<Participant> couple;
+    Participant male;
+    Participant female;
+    Participant participant;
     Activity activity;
     public View calendarCellView;
     View cellView;
@@ -40,10 +43,24 @@ public class CustomizedCalendarCellAdapter extends CaldroidGridAdapter {
 
     public CustomizedCalendarCellAdapter(Context context, int month, int year,
                                          HashMap<String, Object> caldroidData,
-                                         HashMap<String, Object> extraData,List<Participant> couple) {
+                                         HashMap<String, Object> extraData,List<Participant> couple,Participant participant) {
         super(context, month, year, caldroidData, extraData);
         activity = (Activity) context;
         this.couple = couple;
+        if(this.couple!=null && this.couple.size() == 2) {
+            female = couple.get(0);
+            male = couple.get(1);
+        }
+
+        this.participant = participant;
+
+        if(participant!=null) {
+            if(participant.isFemale()) {
+                female = participant;
+            } else {
+                male = participant;
+            }
+        }
     }
 
 
@@ -100,24 +117,37 @@ public class CustomizedCalendarCellAdapter extends CaldroidGridAdapter {
         CheckBox sfluidCheck = (CheckBox) activity.findViewById(R.id.CervicalCheck);
         CheckBox htempCheck = (CheckBox) activity.findViewById(R.id.TempCheck);
 
+        Participant participant = null;
+        if(male!=null) {
+            if(male.isIndex()) {
+                participant = male;
+            }
+        }
 
-        for (Participant participant: couple) {
-            Calendar calendar = Calendar.getInstance();
-            if(!participant.isIndex() && participant.getMemscaps()!=null) {
+        if(female!=null) {
+            if(female.isIndex()) {
+                participant = female;
+            }
+        }
+        Calendar calendar = Calendar.getInstance();
+
+        if(participant!=null) {
+            if (!participant.isIndex() && participant.getMemscaps() != null) {
                 List<MemsCap> memsCaps = participant.getMemscaps();
-                for(MemsCap memsCap:memsCaps) {
+                for (MemsCap memsCap : memsCaps) {
                     Date memsCapDate = memsCap.getDate();
                     calendar.setTime(memsCapDate);
 
-                    if((calendar.get(Calendar.MONTH) == (dateTime.getMonth()-1)) && (calendar.get(Calendar.YEAR) == dateTime.getYear()) && (calendar.get(Calendar.DAY_OF_MONTH) == dateTime.getDay())){
+                    if ((calendar.get(Calendar.MONTH) == (dateTime.getMonth() - 1)) && (calendar.get(Calendar.YEAR) == dateTime.getYear()) && (calendar.get(Calendar.DAY_OF_MONTH) == dateTime.getDay())) {
                         prep.setVisibility(View.VISIBLE);
                     }
                 }
             }
+        }
 
-            if(participant.isFemale()) {
-                List<SurveyResult> surveyResults = participant.getSurveyResults();
-                PeakFertility fertility = participant.getPeakFertility();
+            if(female!=null) {
+                List<SurveyResult> surveyResults = female.getSurveyResults();
+                PeakFertility fertility = female.getPeakFertility();
                 if(fertility!=null) {
                     List<Date> fertilityWindow = fertility.getPeakFertilityWindow();
                     for(Date fertilityVal:fertilityWindow) {
@@ -155,8 +185,6 @@ public class CustomizedCalendarCellAdapter extends CaldroidGridAdapter {
                     }
                 }
             }
-        }
-
 
         if(!sexCheck.isChecked()) {
             unprotectedSex.setVisibility(View.INVISIBLE);
@@ -195,9 +223,6 @@ public class CustomizedCalendarCellAdapter extends CaldroidGridAdapter {
         return cellView;
     }
 
-    public void refresh() {
-        notifyDataSetChanged();
-    }
 
 
 
