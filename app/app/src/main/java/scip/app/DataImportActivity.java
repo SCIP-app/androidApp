@@ -104,7 +104,8 @@ public class DataImportActivity extends ActionBarActivity {
         	        peakFertility.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                calculatePeakFertility();
+                //calculatePeakFertility();
+                AsyncTask<Void, String, String> pf = new BackupDatabase().execute();
             }
         });
     }
