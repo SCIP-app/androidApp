@@ -80,7 +80,7 @@ public class DataImportActivity extends ActionBarActivity {
         importLocalData.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                importLocalData(false);
+                importLocalData(true);
             }
         });
         importMSurveyData.setOnClickListener(new View.OnClickListener() {
@@ -98,14 +98,15 @@ public class DataImportActivity extends ActionBarActivity {
         clearDatabase.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                clearDatabase();
+                //clearDatabase();
+                AsyncTask<Void, String, String> pf = new BackupDatabase().execute();
             }
         });
-        	        peakFertility.setOnClickListener(new View.OnClickListener() {
+        peakFertility.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                //calculatePeakFertility();
-                AsyncTask<Void, String, String> pf = new BackupDatabase().execute();
+                calculatePeakFertility();
+
             }
         });
     }
@@ -418,7 +419,8 @@ public class DataImportActivity extends ActionBarActivity {
                 List<ViralLoad> viralLoads = db.getAllViralLoads();
 
                 if(isExternalStorageWritable()) {
-                    File file = new File(getExternalFilesDir(null), "participant_backup.txt");
+                    File[] dirs = getExternalFilesDirs(null);
+                    File file = new File(dirs[1], "participant_backup.txt");
                     OutputStream participantFile = new FileOutputStream(file);
 
                     // Write participant file
@@ -427,25 +429,26 @@ public class DataImportActivity extends ActionBarActivity {
                         String gender = "0";
                         if (p.isFemale())
                             gender = "1";
-                        String string = p.getParticipantId() + ";" + gender;
+                        String string = p.getParticipantId() + ";" + gender + "\n";
                         participantFile.write(string.getBytes());
                     }
                     participantFile.close();
 
-//                    // Write survey results file
-//                    FileOutputStream surveyResultFile = openFileOutput("surveyresult_backup.txt", Context.MODE_PRIVATE);
-//                    for (SurveyResult sr : surveyResults) {
-//                        String string = sr.getParticipant_id() + ";"
-//                                + DateUtil.getStringFromDate(sr.getDate()) + ";"
-//                                + sr.getTemperature() + ";"
-//                                + sr.isVaginaMucusSticky() + ";"
-//                                + sr.isOvulating() + ";"
-//                                + sr.isOnPeriod() + ";"
-//                                + sr.isHadSex() + ";"
-//                                + sr.isUsedCondom();
-//                        surveyResultFile.write(string.getBytes());
-//                    }
-//                    surveyResultFile.close();
+                    // Write survey results file
+                    file = new File(dirs[1], "surveyresult_backup.txt");
+                    OutputStream surveyResultFile = new FileOutputStream(file);
+                    for (SurveyResult sr : surveyResults) {
+                        String string = sr.getParticipant_id() + ";"
+                                + DateUtil.getStringFromDate(sr.getDate()) + ";"
+                                + sr.getTemperature() + ";"
+                                + sr.isVaginaMucusSticky() + ";"
+                                + sr.isOvulating() + ";"
+                                + sr.isOnPeriod() + ";"
+                                + sr.isHadSex() + ";"
+                                + sr.isUsedCondom() + "\n";
+                        surveyResultFile.write(string.getBytes());
+                    }
+                    surveyResultFile.close();
 //
 //                    // Write viral loads file
 //                    FileOutputStream viralLoadsFile = openFileOutput("viralloads_backup.txt", Context.MODE_PRIVATE);
