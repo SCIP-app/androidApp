@@ -5,6 +5,7 @@ import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 
+import android.content.SharedPreferences;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v7.app.ActionBarActivity;
@@ -47,10 +48,10 @@ import scip.app.models.PeakFertility;
 import scip.app.models.SurveyResult;
 import scip.app.models.ViralLoad;
 
-public class LoginActivity extends ActionBarActivity{
+public class LoginActivity extends ActionBarActivity {
     public static GoogleAnalytics analytics;
     public static Tracker tracker;
-
+    private String currentUser = "";
 
     /**
      * A dummy authentication store containing known user names and passwords.
@@ -115,20 +116,17 @@ public class LoginActivity extends ActionBarActivity{
         boolean cancel = false;
         View focusView = null;
 
-        // Check for a valid password, if the user entered one.
-        if (!TextUtils.isEmpty(password) && !isPasswordValid(password)) {
-            mPasswordView.setError(getString(R.string.error_invalid_password));
-            focusView = mPasswordView;
-            cancel = true;
-        }
-
-        // Check for a valid email address.
+        // Check for a valid username/password combination.
         if (TextUtils.isEmpty(email)) {
             mEmailView.setError(getString(R.string.error_field_required));
             focusView = mEmailView;
             cancel = true;
-        } else if (!isEmailValid(email)) {
-            mEmailView.setError(getString(R.string.error_invalid_email));
+        } else if (TextUtils.isEmpty(password)) {
+            mPasswordView.setError(getString(R.string.error_field_required));
+            focusView = mPasswordView;
+            cancel = true;
+        }else if (!isLoginValid(email, password)) {
+            mEmailView.setError(getString(R.string.error_login_invalid));
             focusView = mEmailView;
             cancel = true;
         }
@@ -137,81 +135,49 @@ public class LoginActivity extends ActionBarActivity{
             // There was an error; don't attempt login and focus the first
             // form field with an error.
             focusView.requestFocus();
-        } else {
-            Intent intent = new Intent(this,SessionSelectionActivity.class);
+        } else if (currentUser.equals("clinicteam")) {
+            Intent intent = new Intent(this, SessionSelectionActivity.class);
             startActivity(intent);
-
+        }
+        else {
+            Intent intent = new Intent(this, DataImportActivity.class);
+            intent.putExtra("user", currentUser);
+            startActivity(intent);
         }
     }
 
-    private boolean isEmailValid(String email) {
-        //TODO: Replace this with your own logic
-        return email.contains("@");
-    }
-
-    private boolean isPasswordValid(String password) {
-        //TODO: Replace this with your own logic
-        return password.length() > 4;
-    }
-
-    /**
-     * Represents an asynchronous login/registration task used to authenticate
-     * the user.
-     */
-
-/**
-    public class UserLoginTask extends AsyncTask<Void, Void, Boolean> {
-
-        private final String mEmail;
-        private final String mPassword;
-
-        UserLoginTask(String email, String password) {
-            mEmail = email;
-            mPassword = password;
-        }
-
-        @Override
-        protected Boolean doInBackground(Void... params) {
-            // TODO: attempt authentication against a network service.
-
+    private boolean isLoginValid(String username, String password) {
+        SharedPreferences settings = getPreferences(0);
+        if(!settings.getBoolean("loginsSet", false)) {
+            // process the logins file
+            Log.d("Login", "Reading passwords");
+            SharedPreferences.Editor editor = settings.edit();
+            BufferedReader reader = new BufferedReader(new InputStreamReader(getApplicationContext().getResources().openRawResource(R.raw.users)));
             try {
-                // Simulate network access.
-                Thread.sleep(2000);
-            } catch (InterruptedException e) {
-                return false;
-            }
-
-            for (String credential : DUMMY_CREDENTIALS) {
-                String[] pieces = credential.split(":");
-                if (pieces[0].equals(mEmail)) {
-                    // Account exists, return true if the password matches.
-                    return pieces[1].equals(mPassword);
+                String user;
+                while ((user = reader.readLine()) != null) {
+                    String pwd = reader.readLine();
+                    editor.putString(user, pwd);
                 }
             }
+            catch (Exception e) {
+                Log.d("Login", "exception in reading");
+            }
+            editor.putBoolean("loginsSet", true);
+            editor.commit();
+        }
+        Log.d("Username", username);
+        Log.d("Password", password);
+        Log.d("password stored", settings.getString(username, "BLANK"));
 
-            // TODO: register the new account here.
+        // Check for the username, if it doesn't exist, say the login isn't valid
+        // Check if the password matches, if not, login isn't valid
+        if(settings.contains(username) && password.equals(settings.getString(username, ""))) {
+            currentUser = username;
             return true;
         }
 
-        @Override
-        protected void onPostExecute(final Boolean success) {
-            mAuthTask = null;
-            showProgress(false);
-
-            if (success) {
-                finish();
-            } else {
-                mPasswordView.setError(getString(R.string.error_incorrect_password));
-                mPasswordView.requestFocus();
-            }
-        }
-
-        @Override
-        protected void onCancelled() {
-            mAuthTask = null;
-            showProgress(false);
-        }
+        return false;
     }
-        */
-}
 
+}

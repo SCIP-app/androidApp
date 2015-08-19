@@ -1,8 +1,10 @@
 package scip.app;
 
+import android.content.Context;
 import android.content.SharedPreferences;
 import android.net.Uri;
 import android.os.AsyncTask;
+import android.os.Environment;
 import android.support.v7.app.ActionBarActivity;
 import android.os.Bundle;
 import android.util.Log;
@@ -30,6 +32,9 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.OutputStream;
 import java.net.URI;
 import java.util.Enumeration;
 import java.util.GregorianCalendar;
@@ -57,11 +62,13 @@ import scip.app.models.DateUtil;
 public class DataImportActivity extends ActionBarActivity {
     EditText statusUpdateArea;
     ProgressBar progressBar;
+    String user;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_data_import);
+        user = getIntent().getStringExtra("user");
         statusUpdateArea = (EditText)findViewById(R.id.dataStatusUpdateField);
         progressBar = (ProgressBar)findViewById(R.id.progressBar);
         progressBar.setVisibility(View.INVISIBLE);
@@ -229,16 +236,6 @@ public class DataImportActivity extends ActionBarActivity {
                 ResponseHandler<String> handler = new BasicResponseHandler();
                 try {
                     result = httpclient.execute(request, handler);
-
-                    // Set up the date formatter
-                    TimeZone tz = TimeZone.getTimeZone("UTC");
-                    DateFormat df = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss");
-                    df.setTimeZone(tz);
-                    // Save the current date and time as the last time msurvey was checked
-                    SharedPreferences settings = getPreferences(0);
-                    SharedPreferences.Editor editor = settings.edit();
-                    editor.putString("lastReadMsurvey", df.format(new Date(System.currentTimeMillis())));
-                    editor.commit();
                 } catch (ClientProtocolException e) {
                     e.printStackTrace();
                 } catch (IOException e) {
@@ -314,6 +311,16 @@ public class DataImportActivity extends ActionBarActivity {
                     db.createSurveyResult (sr);
                 }
                 db.closeDB();
+
+                // Set up the date formatter
+                TimeZone tz = TimeZone.getTimeZone("UTC");
+                DateFormat df = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss");
+                df.setTimeZone(tz);
+                // Save the current date and time as the last time msurvey was checked
+                SharedPreferences settings = getPreferences(0);
+                SharedPreferences.Editor editor = settings.edit();
+                editor.putString("lastReadMsurvey", df.format(new Date(System.currentTimeMillis())));
+                editor.commit();
             } catch (JSONException e) {
                 e.printStackTrace();
             // was getting parse exception error on format.parse(timeStarted) and adding this catch seemed to fix it
@@ -388,6 +395,91 @@ public class DataImportActivity extends ActionBarActivity {
     }
     private void testDatabase() {
         AsyncTask<Void, String, Void> td = new TestDatabase().execute();
+    }
+
+    class BackupDatabase extends AsyncTask<Void, String, String> {
+        public boolean isExternalStorageWritable() {
+            String state = Environment.getExternalStorageState();
+            if (Environment.MEDIA_MOUNTED.equals(state)) {
+                return true;
+            }
+            return false;
+        }
+
+        @Override
+        protected String doInBackground(Void... params) {
+            DatabaseHelper db = new DatabaseHelper(getApplicationContext());
+            try {
+                // Get all data from database
+                List<Participant> participants = db.getAllParticipants();
+                List<SurveyResult> surveyResults = db.getAllSurveyResults();
+                List<MemsCap> memsCaps = db.getAllMemsCap();
+                List<ViralLoad> viralLoads = db.getAllViralLoads();
+
+                if(isExternalStorageWritable()) {
+                    File file = new File(getExternalFilesDir(null), "participant_backup.txt");
+                    OutputStream participantFile = new FileOutputStream(file);
+
+                    // Write participant file
+                    //FileOutputStream participantFile = openFileOutput("participant_backup.txt", Context.MODE_PRIVATE);
+                    for (Participant p : participants) {
+                        String gender = "0";
+                        if (p.isFemale())
+                            gender = "1";
+                        String string = p.getParticipantId() + ";" + gender;
+                        participantFile.write(string.getBytes());
+                    }
+                    participantFile.close();
+
+//                    // Write survey results file
+//                    FileOutputStream surveyResultFile = openFileOutput("surveyresult_backup.txt", Context.MODE_PRIVATE);
+//                    for (SurveyResult sr : surveyResults) {
+//                        String string = sr.getParticipant_id() + ";"
+//                                + DateUtil.getStringFromDate(sr.getDate()) + ";"
+//                                + sr.getTemperature() + ";"
+//                                + sr.isVaginaMucusSticky() + ";"
+//                                + sr.isOvulating() + ";"
+//                                + sr.isOnPeriod() + ";"
+//                                + sr.isHadSex() + ";"
+//                                + sr.isUsedCondom();
+//                        surveyResultFile.write(string.getBytes());
+//                    }
+//                    surveyResultFile.close();
+//
+//                    // Write viral loads file
+//                    FileOutputStream viralLoadsFile = openFileOutput("viralloads_backup.txt", Context.MODE_PRIVATE);
+//                    for (ViralLoad vl : viralLoads) {
+//                        String string = ;
+//                        viralLoadsFile.write(string.getBytes());
+//                    }
+//                    surveyResultFile.close();
+                }
+            }
+            catch (Exception e) {
+
+            }
+            return null;
+        }
+
+        @Override
+        protected void onPreExecute() {
+            super.onPreExecute();
+            statusUpdateArea.append("Backing up database to SD card.\n");
+            progressBar.setVisibility(View.VISIBLE);
+        }
+
+        @Override
+        protected void onPostExecute(String s) {
+            super.onPostExecute(s);
+            statusUpdateArea.append("Done.\n");
+            progressBar.setVisibility(View.INVISIBLE);
+        }
+
+        @Override
+        protected void onProgressUpdate(String... values) {
+            super.onProgressUpdate(values);
+            statusUpdateArea.append(values[0] + "\n");
+        }
     }
 
     @Override
