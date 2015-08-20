@@ -5,6 +5,8 @@ import android.support.v4.view.ViewPager;
 import android.support.design.widget.TabLayout;
 import android.app.ActionBar;
 import android.support.v7.app.ActionBarActivity;
+import android.support.v7.app.AppCompatActivity;
+
 import java.util.List;
 
 import scip.app.databasehelper.DatabaseHelper;
@@ -15,7 +17,7 @@ SessionSelectionActivity
 
  */
 
-public class SessionSelectionActivity extends ActionBarActivity {
+public class SessionSelectionActivity extends AppCompatActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
