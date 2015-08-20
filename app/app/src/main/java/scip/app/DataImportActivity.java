@@ -14,6 +14,7 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ProgressBar;
+import android.widget.TextView;
 
 import org.apache.http.NameValuePair;
 import org.apache.http.client.ClientProtocolException;
@@ -62,6 +63,7 @@ import scip.app.models.DateUtil;
 public class DataImportActivity extends ActionBarActivity {
     EditText statusUpdateArea;
     ProgressBar progressBar;
+    TextView welcomeMessage;
     String user;
 
     @Override
@@ -72,11 +74,11 @@ public class DataImportActivity extends ActionBarActivity {
         statusUpdateArea = (EditText)findViewById(R.id.dataStatusUpdateField);
         progressBar = (ProgressBar)findViewById(R.id.progressBar);
         progressBar.setVisibility(View.INVISIBLE);
+        welcomeMessage = (TextView)findViewById(R.id.WelcomeMessageTextView);
+        welcomeMessage.append(user);
         final Button importLocalData = (Button)findViewById(R.id.ImportLocalDataButon);
         final Button importMSurveyData = (Button) findViewById(R.id.ImportMSurveyDataButton);
-        Button testDatabase = (Button) findViewById(R.id.ListDatabaseButton);
-        final Button clearDatabase = (Button) findViewById(R.id.ClearDatabaseButton);
-         final Button peakFertility = (Button) findViewById(R.id.TestFertilityPredictionButton);
+        final Button importDatabaseBackup = (Button) findViewById(R.id.ImportDatabaseBackupButton);
         importLocalData.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -89,24 +91,10 @@ public class DataImportActivity extends ActionBarActivity {
                 importMSurveyData();
             }
         });
-        testDatabase.setOnClickListener(new View.OnClickListener() {
+        importDatabaseBackup.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                testDatabase();
-            }
-        });
-        clearDatabase.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                //clearDatabase();
-                AsyncTask<Void, String, String> pf = new BackupDatabase().execute();
-            }
-        });
-        peakFertility.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                calculatePeakFertility();
-
+                AsyncTask<Void, String, Void> pf = new ImportDatabaseBackup().execute();
             }
         });
     }
@@ -182,6 +170,32 @@ public class DataImportActivity extends ActionBarActivity {
         protected void onPostExecute(Void aVoid) {
             super.onPostExecute(aVoid);
             statusUpdateArea.append("Local data imported\n");
+            progressBar.setVisibility(View.INVISIBLE);
+            // automatically run the database backup
+            AsyncTask<Void, String, String> pf = new BackupDatabase().execute();
+        }
+    }
+
+    class ImportDatabaseBackup extends AsyncTask<Void, String, Void> {
+
+        @Override
+        protected Void doInBackground(Void... useLocal) {
+            CSVImporter csvImporter = new CSVImporter(getApplicationContext());
+            csvImporter.processBackUpFiles();
+            return null;
+        }
+
+        @Override
+        protected void onPreExecute() {
+            super.onPreExecute();
+            statusUpdateArea.append("Reinstating database from backup...\n");
+            progressBar.setVisibility(View.VISIBLE);
+        }
+
+        @Override
+        protected void onPostExecute(Void aVoid) {
+            super.onPostExecute(aVoid);
+            statusUpdateArea.append("Database restored\n");
             progressBar.setVisibility(View.INVISIBLE);
         }
     }
@@ -449,14 +463,29 @@ public class DataImportActivity extends ActionBarActivity {
                         surveyResultFile.write(string.getBytes());
                     }
                     surveyResultFile.close();
-//
-//                    // Write viral loads file
-//                    FileOutputStream viralLoadsFile = openFileOutput("viralloads_backup.txt", Context.MODE_PRIVATE);
-//                    for (ViralLoad vl : viralLoads) {
-//                        String string = ;
-//                        viralLoadsFile.write(string.getBytes());
-//                    }
-//                    surveyResultFile.close();
+
+                    // Write viral loads file
+                    file = new File(dirs[1], "viralload_backup.txt");
+                    OutputStream viralLoadsFile = new FileOutputStream(file);
+                    for (ViralLoad vl : viralLoads) {
+                        String string = vl.getParticipant_id() + ";"
+                                + vl.getVisit_id() + ";"
+                                + DateUtil.getStringFromDate(vl.getDate()) + ";"
+                                + vl.getNumber() + "\n";
+                        viralLoadsFile.write(string.getBytes());
+                    }
+                    viralLoadsFile.close();
+
+                    // Write mems file
+                    file = new File(dirs[1], "memscap_backup.txt");
+                    OutputStream memscapFile = new FileOutputStream(file);
+                    for (MemsCap mc : memsCaps) {
+                        String string = mc.getParticipant_id() + ";"
+                                + mc.getMems_id() + ";"
+                                + DateUtil.getStringFromDate(mc.getDate()) + "\n";
+                        memscapFile.write(string.getBytes());
+                    }
+                    memscapFile.close();
                 }
             }
             catch (Exception e) {

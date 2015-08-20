@@ -31,15 +31,14 @@ public class CSVImporter {
 //            Log.d("Participant Id", entry[0]);
 //            Log.d("Mems Id", entry[1]);
 //            Log.d("Date", entry[2]);
-//            Log.d("Time", entry[3]);
+
             try {
                 long participant_id = Long.parseLong(entry[0]);
                 long mems_id = Long.parseLong(entry[1]);
 
-            if(db.getParticipant(participant_id) == null) {
-                db.createParticipant(new Participant(participant_id, false));
-            }
-
+                if(db.getParticipant(participant_id) == null) {
+                    db.createParticipant(new Participant(participant_id, false));
+                }
                 db.createMemsCap(new MemsCap(participant_id, entry[2], mems_id));
             }
             catch (Exception e) {
@@ -61,10 +60,9 @@ public class CSVImporter {
                 long participant_id = Long.parseLong(entry[0]);
                 int vist_id = Integer.parseInt(entry[1]);
                 int load = Integer.parseInt(entry[3]);
-            if(db.getParticipant(participant_id) == null) {
-                db.createParticipant(new Participant(participant_id, false));
-            }
-
+                if(db.getParticipant(participant_id) == null) {
+                    db.createParticipant(new Participant(participant_id, false));
+                }
                 db.createViralLoad(new ViralLoad(participant_id, load, entry[2], vist_id));
             }
             catch (Exception e) {
@@ -120,7 +118,6 @@ public class CSVImporter {
                 usedCondom = true;
 
             db.createSurveyResult(new SurveyResult(participant_id, date, temperature, vaginaMucusSticky, onPeriod, isOvulating, hadSex, usedCondom));
-
         }
     }
 
@@ -135,33 +132,53 @@ public class CSVImporter {
     public void openExternalFiles() {
         if(isExternalStorageWritable()) {
             File[] externalDirs = context.getExternalFilesDirs(null);
-            Log.d("External Dirs length", String.valueOf(externalDirs.length));
-            Log.d("Path", externalDirs[0].getAbsolutePath());
-//            for(File f : externalDirs[0].listFiles()) {
-//                Log.d("File ", f.getName());
-//                if(f.getName().contains("memscap")) {
-//                    CSVFile csvFile = new CSVFile(f);
-//                    List<String[]> memsList = csvFile.read();
-//                    readMemsCapData(memsList);
-//                }
-//                else if (f.getName().contains("viralload")){
-//                    CSVFile csvFile = new CSVFile(f);
-//                    List<String[]> viralLoadList = csvFile.read();
-//                    readViralLoadData(viralLoadList);
-//                }
-//            }
+            //Log.d("External Dirs length", String.valueOf(externalDirs.length));
+
+            // If the SD card exists, it will be located the second directory in the list of available directories
             for(File f : externalDirs[1].listFiles()) {
                 Log.d("File ", f.getName());
-                if(f.getName().contains("memscap")) {
+                if(f.getName().contains("memscap") && !f.getName().contains("backup")) {
                     CSVFile csvFile = new CSVFile(f);
                     List<String[]> memsList = csvFile.read();
                     readMemsCapData(memsList);
-
+                    //f.delete();  // delete the file when you're done so the team knows it was successful
                 }
-                else if (f.getName().contains("viralload")){
+                else if (f.getName().contains("viralload") && !f.getName().contains("backup")){
                     CSVFile csvFile = new CSVFile(f);
                     List<String[]> viralLoadList = csvFile.read();
                     readViralLoadData(viralLoadList);
+                    //f.delete();  // delete the file when you're done so the team knows it was successful
+                }
+            }
+        }
+    }
+
+    public void processBackUpFiles() {
+        if(isExternalStorageWritable()) {
+            File[] externalDirs = context.getExternalFilesDirs(null);
+
+            // If the SD card exists, it will be located the second directory in the list of available directories
+            for(File f : externalDirs[1].listFiles()) {
+                Log.d("File ", f.getName());
+                // only read in backup files
+                if(f.getName().contains("backup")) {
+                    if (f.getName().contains("memscap")) {
+                        CSVFile csvFile = new CSVFile(f);
+                        List<String[]> memsList = csvFile.read();
+                        readMemsCapData(memsList);
+                    } else if (f.getName().contains("viralload")) {
+                        CSVFile csvFile = new CSVFile(f);
+                        List<String[]> viralLoadList = csvFile.read();
+                        readViralLoadData(viralLoadList);
+                    } else if (f.getName().contains("participant")) {
+                        CSVFile csvFile = new CSVFile(f);
+                        List<String[]> participantList = csvFile.read();
+                        readParticipantData(participantList);
+                    } else if (f.getName().contains("surveyresult")) {
+                        CSVFile csvFile = new CSVFile(f);
+                        List<String[]> surveyResultList = csvFile.read();
+                        readSurveyResults(surveyResultList);
+                    }
                 }
             }
         }
