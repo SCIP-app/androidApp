@@ -111,6 +111,8 @@ public class NavigationDrawerFragment extends Fragment{
             }
         });
 
+
+
         mDrawerArrayList = new ArrayList<String>(Arrays.asList(new String[]{
                 getString(R.string.title_section1),
                 getString(R.string.title_section3),
@@ -182,7 +184,7 @@ public class NavigationDrawerFragment extends Fragment{
                 try {
                     if ((((DashboardActivity) getActivity()) != null)) {
                         if ((((DashboardActivity) getActivity()).getCouple_id() != 0)) {
-                            mDrawerArrayList.set(0, getString(R.string.title_section1).concat(String.valueOf(((DashboardActivity) getActivity()).getCouple_id())));
+                            mDrawerArrayList.set(0,"Couple ID " +(String.valueOf(((DashboardActivity) getActivity()).getCouple_id())));
                         }
                     }
                 } catch(Exception e) {
@@ -191,7 +193,7 @@ public class NavigationDrawerFragment extends Fragment{
                 try {
                     if ((((ParticipantActivity) getActivity()) != null)) {
                         if (((((ParticipantActivity) getActivity()).getParticipant_id() != 0))) {
-                            mDrawerArrayList.set(0, getString(R.string.title_section1).concat(String.valueOf(((ParticipantActivity) getActivity()).getParticipant_id())));
+                            mDrawerArrayList.set(0, "Participant ID "+(String.valueOf(((ParticipantActivity) getActivity()).getParticipant_id())));
 
                         }
                     }
