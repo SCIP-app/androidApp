@@ -25,6 +25,8 @@
     <string name="show_dialog">Show Dialog</string>
     <string name="undo">Undo</string>
     <string name="title_activity_viral_load">Viral Load</string>
+    <string name="title_activity_participant">ParticipantActivity</string>
+
 
 
 </resources>

@@ -117,60 +117,60 @@ public class ViralLoadActivity extends ActionBarActivity {
             for(Participant participant:couple) {
                 if(participant.isIndex()) {
                     viralLoadList = participant.getViralLoads();
-                        for (ViralLoad viralLoad:viralLoadList) {
-                            int year = 2015;
-                            if(viralLoad!=null) {
-                                Calendar calendar = Calendar.getInstance();
-                                Date date = viralLoad.getDate();
+                    for (ViralLoad viralLoad:viralLoadList) {
+                        int year = 2015;
+                        if(viralLoad!=null) {
+                            Calendar calendar = Calendar.getInstance();
+                            Date date = viralLoad.getDate();
 
-                                float num = (float) viralLoad.getNumber();
-                                calendar.setTime(date);
-                                int month = calendar.get(Calendar.MONTH);
-                                if(calendar.get(Calendar.YEAR)>year) {
-                                    int diff = calendar.get(Calendar.YEAR) - year;
-                                    month = month + (12*diff);
-                                }
-                                if(calendar.get(Calendar.YEAR)<year){
-                                    int diff = year - calendar.get(Calendar.YEAR);
-                                    month = month*diff;
-                                }
+                            float num = (float) viralLoad.getNumber();
+                            calendar.setTime(date);
+                            int month = calendar.get(Calendar.MONTH);
+                            if(calendar.get(Calendar.YEAR)>year) {
+                                int diff = calendar.get(Calendar.YEAR) - year;
+                                month = month + (12*diff);
+                            }
+                            if(calendar.get(Calendar.YEAR)<year){
+                                int diff = year - calendar.get(Calendar.YEAR);
+                                month = month*diff;
+                            }
 
-                                float bubbleSize = (float) viralLoad.getNumber();
-                                if(bubbleSize<=1000) {
-                                    bubbleSize = 15;
-
-                                }
-
-                                if(bubbleSize>1000 && bubbleSize<=10000) {
-                                    bubbleSize = 30;
-                                }
-
-                                if(bubbleSize>10000) {
-                                    bubbleSize = 45;
-                                }
-
-                                BubbleValue value = new BubbleValue((float) month, num, bubbleSize);
-
-                                if(num <1000) {
-                                    value.setColor(getResources().getColor(R.color.material_green_800));
-                                } else {
-                                    value.setColor(getResources().getColor(R.color.material_orange_800));
-                                }
-
-                                AxisValue axisValue = new AxisValue(month);
-                                AxisValue axisYValue = new AxisValue(num);
-                                axisValue.setLabel(monthMap.get(calendar.get(Calendar.MONTH)+1)+" "+calendar.get(Calendar.YEAR));
-                                axisYValue.setLabel(String.valueOf(num));
-                                axisValues.add(axisValue);
-                                axisYValues.add(axisYValue);
-
-                                value.setLabel(String.valueOf(viralLoad.getNumber()));
-                                value.setShape(shape);
-                                values.add(value);
+                            float bubbleSize = (float) viralLoad.getNumber();
+                            if(bubbleSize<=1000) {
+                                bubbleSize = 15;
 
                             }
 
+                            if(bubbleSize>1000 && bubbleSize<=10000) {
+                                bubbleSize = 30;
+                            }
+
+                            if(bubbleSize>10000) {
+                                bubbleSize = 45;
+                            }
+
+                            BubbleValue value = new BubbleValue((float) month, num, bubbleSize);
+
+                            if(num <1000) {
+                                value.setColor(getResources().getColor(R.color.material_green_800));
+                            } else {
+                                value.setColor(getResources().getColor(R.color.material_orange_800));
+                            }
+
+                            AxisValue axisValue = new AxisValue(month);
+                            AxisValue axisYValue = new AxisValue(num);
+                            axisValue.setLabel(monthMap.get(calendar.get(Calendar.MONTH)+1)+" "+calendar.get(Calendar.YEAR));
+                            axisYValue.setLabel(String.valueOf(num));
+                            axisValues.add(axisValue);
+                            axisYValues.add(axisYValue);
+
+                            value.setLabel(String.valueOf(viralLoad.getNumber()));
+                            value.setShape(shape);
+                            values.add(value);
+
                         }
+
+                    }
 
 
 
@@ -221,4 +221,3 @@ public class ViralLoadActivity extends ActionBarActivity {
         }
     }
 }
-
