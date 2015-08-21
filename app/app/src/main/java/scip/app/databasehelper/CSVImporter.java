@@ -144,6 +144,12 @@ public class CSVImporter {
                     readViralLoadData(viralLoadList);
                     //f.delete();  // delete the file when you're done so the team knows it was successful
                 }
+                else if (f.getName().contains("surveyresult") && !f.getName().contains("backup")){
+                    CSVFile csvFile = new CSVFile(f);
+                    List<String[]> surveyResultList = csvFile.read();
+                    readSurveyResults(surveyResultList);
+                    //f.delete();  // delete the file when you're done so the team knows it was successful
+                }
             }
         }
     }
