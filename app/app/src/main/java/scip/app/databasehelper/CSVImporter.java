@@ -35,10 +35,7 @@ public class CSVImporter {
             try {
                 long participant_id = Long.parseLong(entry[0]);
                 long mems_id = Long.parseLong(entry[1]);
-
-                if(db.getParticipant(participant_id) == null) {
-                    db.createParticipant(new Participant(participant_id, false));
-                }
+                db.createParticipant(new Participant(participant_id, false));
                 db.createMemsCap(new MemsCap(participant_id, entry[2], mems_id));
             }
             catch (Exception e) {
@@ -60,9 +57,7 @@ public class CSVImporter {
                 long participant_id = Long.parseLong(entry[0]);
                 int vist_id = Integer.parseInt(entry[1]);
                 int load = Integer.parseInt(entry[3]);
-                if(db.getParticipant(participant_id) == null) {
-                    db.createParticipant(new Participant(participant_id, false));
-                }
+                db.createParticipant(new Participant(participant_id, false));
                 db.createViralLoad(new ViralLoad(participant_id, load, entry[2], vist_id));
             }
             catch (Exception e) {
@@ -116,7 +111,7 @@ public class CSVImporter {
             boolean usedCondom = false;
             if(entry[7].contains("true"))
                 usedCondom = true;
-
+            db.createParticipant(new Participant(participant_id, true));
             db.createSurveyResult(new SurveyResult(participant_id, date, temperature, vaginaMucusSticky, onPeriod, isOvulating, hadSex, usedCondom));
         }
     }

@@ -82,7 +82,7 @@ public class DataImportActivity extends ActionBarActivity {
         importLocalData.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                importLocalData(true);
+                importLocalData(false);
             }
         });
         importMSurveyData.setOnClickListener(new View.OnClickListener() {
@@ -489,7 +489,7 @@ public class DataImportActivity extends ActionBarActivity {
                 }
             }
             catch (Exception e) {
-
+                publishProgress("Backup failed.");
             }
             return null;
         }

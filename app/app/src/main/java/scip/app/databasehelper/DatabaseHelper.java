@@ -247,11 +247,15 @@ public class DatabaseHelper extends SQLiteOpenHelper{
 
             if (id != -1) {
                 participant.setId(id);
+                existingParticipants.add(participant);
                 return true;
             } else {
                 // There was an error in creating the row
                 return false;
             }
+        }
+        else {
+            // TODO: make sure the genders match
         }
         Log.d("DB", "Skipping existing participant");
         return false;
@@ -395,6 +399,7 @@ public class DatabaseHelper extends SQLiteOpenHelper{
 
             if (id != -1) {
                 viralLoad.setId(id);
+                existingViralLoads.add(viralLoad);
                 return true;
             } else {
                 // There was an error in creating the row
@@ -485,6 +490,7 @@ public class DatabaseHelper extends SQLiteOpenHelper{
 
             if (id != -1) {
                 surveyResult.setId(id);
+                existingSurveyResults.add(surveyResult);
                 return true;
             } else {
                 // There was an error in creating the row
@@ -578,6 +584,7 @@ public class DatabaseHelper extends SQLiteOpenHelper{
 
             if (id != -1) {
                 memsCap.setId(id);
+                existingMemsCap.add(memsCap);
                 return true;
             } else {
                 // There was an error in creating the row
