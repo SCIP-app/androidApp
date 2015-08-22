@@ -91,6 +91,7 @@ public class ParticipantActivity extends ActionBarActivity
         return participant_id;
     }
 
+
     @Override
     public void onNavigationDrawerItemSelected(int position) {
         // update the main content by replacing fragments
@@ -102,7 +103,7 @@ public class ParticipantActivity extends ActionBarActivity
             case 0:
 
                 Bundle bundle = new Bundle();
-                bundle.putLong("participantId",participant_id);
+                bundle.putLong("participant_id",participant_id);
                 ParticipantFragment participantFragment = new ParticipantFragment();
                 participantFragment.setArguments(bundle);
                 mTitle  = "Participant Main";
