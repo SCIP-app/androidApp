@@ -247,11 +247,28 @@ public class DatabaseHelper extends SQLiteOpenHelper{
 
             if (id != -1) {
                 participant.setId(id);
+                existingParticipants.add(participant);
                 return true;
             } else {
                 // There was an error in creating the row
                 return false;
             }
+        }
+        else {
+            // TODO: make sure the genders match
+            Participant inDB = getParticipant(participant.getParticipantId());
+            if(inDB.isFemale() != participant.isFemale() && participant.isFemale() == true) {
+                SQLiteDatabase db = this.getWritableDatabase();
+
+                ContentValues values = new ContentValues();
+                values.put(KEY_PARTICIPANT_ID, participant.getParticipantId());
+                values.put(KEY_IS_FEMALE, intFromBoolean(participant.isFemale()));
+
+                db.update(TABLE_PARTICIPANTS, values, KEY_ID + " = ?",
+                        new String[] { String.valueOf(inDB.getId()) });
+                return true;
+            }
+
         }
         Log.d("DB", "Skipping existing participant");
         return false;
@@ -395,6 +412,7 @@ public class DatabaseHelper extends SQLiteOpenHelper{
 
             if (id != -1) {
                 viralLoad.setId(id);
+                existingViralLoads.add(viralLoad);
                 return true;
             } else {
                 // There was an error in creating the row
@@ -485,6 +503,7 @@ public class DatabaseHelper extends SQLiteOpenHelper{
 
             if (id != -1) {
                 surveyResult.setId(id);
+                existingSurveyResults.add(surveyResult);
                 return true;
             } else {
                 // There was an error in creating the row
@@ -578,6 +597,7 @@ public class DatabaseHelper extends SQLiteOpenHelper{
 
             if (id != -1) {
                 memsCap.setId(id);
+                existingMemsCap.add(memsCap);
                 return true;
             } else {
                 // There was an error in creating the row
