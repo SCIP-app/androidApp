@@ -114,8 +114,14 @@ public class CalendarViewActivity extends ActionBarActivity {
 
 
         if(couple!=null && couple.size()==2) {
-            female = couple.get(0);
-            male = couple.get(1);
+            if(couple.get(0).isFemale()) {
+                female = couple.get(0);
+                male = couple.get(1);
+            }
+            else {
+                female = couple.get(1);
+                male = couple.get(0);
+            }
         }
 
         if(female!=null) {

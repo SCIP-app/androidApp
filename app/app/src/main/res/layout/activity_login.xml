@@ -65,14 +65,6 @@
                     android:layout_gravity="center_horizontal" />
 
 
-                <Button
-                    android:layout_width="383dp"
-                    android:layout_height="wrap_content"
-                    android:text="Import Data"
-                    android:id="@+id/dataImportBtn"
-                    android:layout_gravity="center_horizontal"
-                    android:layout_marginTop="10dp"/>
-
             </LinearLayout>
         </LinearLayout>
     </ScrollView>

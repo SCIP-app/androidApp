@@ -48,8 +48,14 @@ public class CustomizedCalendarCellAdapter extends CaldroidGridAdapter {
         activity = (Activity) context;
         this.couple = couple;
         if(this.couple!=null && this.couple.size() == 2) {
-            female = couple.get(0);
-            male = couple.get(1);
+            if(couple.get(0).isFemale()) {
+                female = couple.get(0);
+                male = couple.get(1);
+            }
+            else {
+                male = couple.get(0);
+                female = couple.get(1);
+            }
         }
 
         this.participant = participant;
@@ -88,7 +94,7 @@ public class CustomizedCalendarCellAdapter extends CaldroidGridAdapter {
 
         // Get dateTime of this cell
         DateTime dateTime = this.datetimeList.get(position);
-
+        cellView.setBackgroundResource(R.drawable.cell_blank);
 
 
         if (dateTime.equals(getToday())) {
@@ -178,9 +184,10 @@ public class CustomizedCalendarCellAdapter extends CaldroidGridAdapter {
                            if(surveyResult.isVaginaMucusSticky() && sfluidCheck.isChecked()) {
                                sfluid.setVisibility(View.VISIBLE);
                            }
-                            if(surveyResult.isOnPeriod()) {
-                                cellView.setBackgroundResource(com.caldroid.R.drawable.red_border);
-                            }
+                           if(surveyResult.isOnPeriod()) {
+                               cellView.setBackgroundResource(com.caldroid.R.drawable.red_border);
+                           }
+
                        }
                     }
                 }

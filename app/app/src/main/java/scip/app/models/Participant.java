@@ -171,12 +171,6 @@ public class Participant {
         return null;
     }
 
-    public void reCalculateFertilityData() {
-        if(isFemale) {
-
-        }
-    }
-
     private void loadData() {
         DatabaseHelper db = new DatabaseHelper(context);
         if(isFemale) {
@@ -199,7 +193,6 @@ public class Participant {
 
         Participant that = (Participant) o;
 
-        if (isFemale != that.isFemale) return false;
         if (participant_id != that.participant_id) return false;
 
 
@@ -209,7 +202,6 @@ public class Participant {
     @Override
     public int hashCode() {
         int result = (int) (participant_id ^ (participant_id >>> 32));
-        result = 31 * result + (isFemale ? 1 : 0);
 
         return result;
     }
