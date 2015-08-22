@@ -82,7 +82,7 @@ public class DataImportActivity extends ActionBarActivity {
         importLocalData.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                importLocalData(false);
+                importLocalData(true);
             }
         });
         importMSurveyData.setOnClickListener(new View.OnClickListener() {
