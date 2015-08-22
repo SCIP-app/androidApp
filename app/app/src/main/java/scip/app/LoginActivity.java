@@ -89,15 +89,6 @@ public class LoginActivity extends ActionBarActivity {
             }
         });
 
-        Button button = (Button) findViewById(R.id.dataImportBtn);
-        button.setOnClickListener(new OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent dataImport = new Intent(getApplicationContext(), DataImportActivity.class);
-                startActivity(dataImport);
-            }
-        });
-
     }
 
     /**
