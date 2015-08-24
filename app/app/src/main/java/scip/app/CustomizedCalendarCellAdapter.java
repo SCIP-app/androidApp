@@ -167,28 +167,29 @@ public class CustomizedCalendarCellAdapter extends CaldroidGridAdapter {
                     }
                 }
 
+            if(surveyResults != null && surveyResults.size() != 0)  {
+                    for (SurveyResult surveyResult : surveyResults) {
+                        calendar.setTime(surveyResult.getDate());
+                        if ((calendar.get(Calendar.MONTH) == dateTime.getMonth() - 1) && (calendar.get(Calendar.YEAR) == dateTime.getYear()) && (calendar.get(Calendar.DAY_OF_MONTH) == dateTime.getDay())) {
+                          // if (surveyResult != null) {
+                                if (surveyResult.isOvulating() && opkCheck.isChecked()) {
+                                    opk.setVisibility(View.VISIBLE);
+                                }
+                                if (surveyResult.isHadSex() && !surveyResult.isUsedCondom() && sexCheck.isChecked()) {
+                                    unprotectedSex.setVisibility(View.VISIBLE);
+                                }
+                                if (surveyResult.getTemperature() >= 97.8 && htempCheck.isChecked()) {
+                                    htemp.setVisibility(View.VISIBLE);
+                                }
+                                if (surveyResult.isVaginaMucusSticky() && sfluidCheck.isChecked()) {
+                                    sfluid.setVisibility(View.VISIBLE);
+                                }
+                                if (surveyResult.isOnPeriod()) {
+                                    cellView.setBackgroundResource(com.caldroid.R.drawable.red_border);
+                                }
 
-                for(SurveyResult surveyResult:surveyResults) {
-                    calendar.setTime(surveyResult.getDate());
-                    if((calendar.get(Calendar.MONTH) == dateTime.getMonth()-1) && (calendar.get(Calendar.YEAR) == dateTime.getYear()) && (calendar.get(Calendar.DAY_OF_MONTH) == dateTime.getDay())){
-                        if(surveyResult!=null) {
-                           if (surveyResult.isOvulating() && opkCheck.isChecked()) {
-                               opk.setVisibility(View.VISIBLE);
-                           }
-                           if(surveyResult.isHadSex() && !surveyResult.isUsedCondom() && sexCheck.isChecked()) {
-                               unprotectedSex.setVisibility(View.VISIBLE);
-                           }
-                           if(surveyResult.getTemperature()>=97.8 && htempCheck.isChecked()) {
-                              htemp.setVisibility(View.VISIBLE);
-                           }
-                           if(surveyResult.isVaginaMucusSticky() && sfluidCheck.isChecked()) {
-                               sfluid.setVisibility(View.VISIBLE);
-                           }
-                           if(surveyResult.isOnPeriod()) {
-                               cellView.setBackgroundResource(com.caldroid.R.drawable.red_border);
-                           }
-
-                       }
+                            //}
+                        }
                     }
                 }
             }

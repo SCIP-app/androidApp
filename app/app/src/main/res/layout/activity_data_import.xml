@@ -26,8 +26,9 @@
         android:layout_height="wrap_content"
         android:text="Import mSurvey Data"
         android:id="@+id/ImportMSurveyDataButton"
-        android:layout_alignTop="@+id/ImportLocalDataButon"
-        android:layout_centerHorizontal="true" />
+        android:layout_above="@+id/progressBar"
+        android:layout_toStartOf="@+id/ImportDatabaseBackupButton"
+        android:layout_marginEnd="121dp" />
 
     <ProgressBar
         android:layout_width="match_parent"
@@ -60,5 +61,14 @@
         android:id="@+id/ImportDatabaseBackupButton"
         android:layout_alignTop="@+id/ImportMSurveyDataButton"
         android:layout_alignEnd="@+id/progressBar" />
+
+    <Button
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Prepare SD card"
+        android:id="@+id/prepareSDCardButton"
+        android:layout_above="@+id/progressBar"
+        android:layout_toEndOf="@+id/ImportLocalDataButon"
+        android:layout_marginStart="144dp" />
 
 </RelativeLayout>
