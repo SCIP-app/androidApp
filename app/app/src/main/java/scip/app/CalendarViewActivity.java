@@ -39,10 +39,10 @@ import scip.app.models.SurveyResult;
 
 public class CalendarViewActivity extends ActionBarActivity {
     private CaldroidFragment caldroidFragment;
-    private List<Participant> couple;
-    private Participant participant;
-    Participant male;
-    Participant female;
+    private List<Participant> couple = null;
+    private Participant participant = null;
+    Participant male = null;
+    Participant female = null;
     private long couple_id;
     private long participant_id;
 
@@ -96,7 +96,9 @@ public class CalendarViewActivity extends ActionBarActivity {
         DatabaseHelper db = new DatabaseHelper(getApplicationContext());
         if(couple_id !=0) {
             couple = db.getCoupleFromID(couple_id);
-            db.closeDB();
+        }
+        else {
+            couple = null;
         }
 
         if(participant_id!=0) {
@@ -106,8 +108,8 @@ public class CalendarViewActivity extends ActionBarActivity {
             } else {
                 male = participant;
             }
-            db.closeDB();
         }
+        db.closeDB();
 
         TextView nextPeakFertilityTextView = (TextView) findViewById(R.id.peakFertilityValue);
         TextView averageCycle = (TextView) findViewById(R.id.AvgCycleValue);
