@@ -1,6 +1,7 @@
 package scip.app;
 
 import android.app.Activity;
+import android.util.Log;
 import android.widget.CheckBox;
 import android.content.Context;
 import android.content.res.Resources;
@@ -46,25 +47,26 @@ public class CustomizedCalendarCellAdapter extends CaldroidGridAdapter {
                                          HashMap<String, Object> extraData,List<Participant> couple,Participant participant) {
         super(context, month, year, caldroidData, extraData);
         activity = (Activity) context;
-        this.couple = couple;
-        if(this.couple!=null && this.couple.size() == 2) {
+        if(couple!=null) {
             if(couple.get(0).isFemale()) {
+                Log.d("in couple", "female is first");
                 female = couple.get(0);
                 male = couple.get(1);
             }
             else {
+                Log.d("in couple", "female is second");
                 male = couple.get(0);
                 female = couple.get(1);
             }
         }
 
-        this.participant = participant;
-
         if(participant!=null) {
             if(participant.isFemale()) {
                 female = participant;
+                male = null;
             } else {
                 male = participant;
+                female = null;
             }
         }
     }
