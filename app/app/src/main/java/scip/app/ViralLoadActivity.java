@@ -49,8 +49,6 @@ public class ViralLoadActivity extends ActionBarActivity {
      * A fragment containing a bubble chart.
      */
     public static class PlaceholderFragment extends Fragment {
-
-
         private BubbleChartView chart;
         private BubbleChartData data;
         private boolean hasAxes = true;

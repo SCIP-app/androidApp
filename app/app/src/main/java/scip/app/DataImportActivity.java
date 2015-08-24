@@ -281,34 +281,39 @@ public class DataImportActivity extends ActionBarActivity {
                     Long participant_id = Long.valueOf(entry.getString("participant"));
 
                     Boolean hadSex;
-                    if (entry.getString("had_sex").equals("No"))
-                        hadSex = false;
-                    else
+                    if (entry.getString("had_sex").equals("Yes"))
                         hadSex = true;
+                    else
+                        hadSex = false;
 
                     Boolean onPeriod;
-                    if (entry.getString("menses_started").equals("No"))
-                        onPeriod = false;
-                    else
+                    if (entry.getString("menses_started").equals("Yes"))
                         onPeriod = true;
+                    else
+                        onPeriod = false;
 
                     Boolean surveyComplete = entry.getBoolean("complete");
 
                     Boolean vaginaMucusSticky;
-                    if (entry.getString("vaginal_mucus_stretchy").equals("No"))
-                        vaginaMucusSticky = false;
-                    else
+                    if (entry.getString("vaginal_mucus_stretchy").equals("Yes"))
                         vaginaMucusSticky = true;
+                    else
+                        vaginaMucusSticky = false;
 
-                    Double temperature = Double.valueOf(entry.getString("basal_body_temp"));
+                    Double temperature;
+                    try {
+                        temperature = Double.parseDouble(entry.getString("basal_body_temp"));
+                    } catch (Exception e) {
+                        temperature = 0.0;
+                    }
 
                     Boolean passwordAccepted = entry.getBoolean("password_accepted");
 
                     Boolean usedCondom;
-                    if (entry.getString("used_condom").equals("No"))
-                        usedCondom = false;
-                    else
+                    if (entry.getString("used_condom").equals("Yes"))
                         usedCondom = true;
+                    else
+                        usedCondom = false;
 
                     String timeStarted = entry.getString("time_started");
                     String wentToMarket = entry.getString("went_to_market");
@@ -317,10 +322,10 @@ public class DataImportActivity extends ActionBarActivity {
                     Date date = format.parse(timeStarted);
 
                     Boolean isOvulating;
-                    if (entry.getString("ovulation_prediction").equals("Negative"))
-                        isOvulating = false;
-                    else
+                    if (entry.getString("ovulation_prediction").equals("Positive"))
                         isOvulating = true;
+                    else
+                        isOvulating = false;
 
                     SurveyResult sr = new SurveyResult(participant_id, date, temperature, vaginaMucusSticky, onPeriod, isOvulating, hadSex, usedCondom);
 
