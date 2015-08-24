@@ -79,6 +79,7 @@ public class DataImportActivity extends ActionBarActivity {
         final Button importLocalData = (Button)findViewById(R.id.ImportLocalDataButon);
         final Button importMSurveyData = (Button) findViewById(R.id.ImportMSurveyDataButton);
         final Button importDatabaseBackup = (Button) findViewById(R.id.ImportDatabaseBackupButton);
+        final Button prepareSDCard = (Button) findViewById(R.id.prepareSDCardButton);
         importLocalData.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -89,6 +90,12 @@ public class DataImportActivity extends ActionBarActivity {
             @Override
             public void onClick(View v) {
                 importMSurveyData();
+            }
+        });
+        prepareSDCard.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                AsyncTask<Void, String, Void> psd = new prepSDCard().execute();
             }
         });
         importDatabaseBackup.setOnClickListener(new View.OnClickListener() {
@@ -135,7 +142,7 @@ public class DataImportActivity extends ActionBarActivity {
         @Override
         protected void onProgressUpdate(String... values) {
             super.onProgressUpdate(values);
-            statusUpdateArea.append(values[0]+"\n");
+            statusUpdateArea.append(values[0] + "\n");
         }
     }
 
@@ -344,7 +351,7 @@ public class DataImportActivity extends ActionBarActivity {
                 editor.commit();
             } catch (JSONException e) {
                 e.printStackTrace();
-            // was getting parse exception error on format.parse(timeStarted) and adding this catch seemed to fix it
+                // was getting parse exception error on format.parse(timeStarted) and adding this catch seemed to fix it
             } catch (ParseException e) {
                 e.printStackTrace();
             }
@@ -418,14 +425,41 @@ public class DataImportActivity extends ActionBarActivity {
         AsyncTask<Void, String, Void> td = new TestDatabase().execute();
     }
 
-    class BackupDatabase extends AsyncTask<Void, String, String> {
-        public boolean isExternalStorageWritable() {
-            String state = Environment.getExternalStorageState();
-            if (Environment.MEDIA_MOUNTED.equals(state)) {
-                return true;
-            }
-            return false;
+    public boolean isExternalStorageWritable() {
+        String state = Environment.getExternalStorageState();
+        if (Environment.MEDIA_MOUNTED.equals(state)) {
+            return true;
         }
+        return false;
+    }
+    class prepSDCard extends AsyncTask<Void, String, Void> {
+
+        @Override
+        protected Void doInBackground(Void... params) {
+            if (isExternalStorageWritable()) {
+                File[] dirs = getExternalFilesDirs(null);
+                if (!dirs[1].exists()) {
+                    dirs[1].mkdir();
+                }
+            }
+            return null;
+        }
+
+        @Override
+        protected void onPreExecute() {
+            super.onPreExecute();
+            statusUpdateArea.append("Preparing SD card...\n");
+            progressBar.setVisibility(View.VISIBLE);
+        }
+
+        @Override
+        protected void onPostExecute(Void aVoid) {
+            super.onPostExecute(aVoid);
+            statusUpdateArea.append("SD card is ready \n");
+            progressBar.setVisibility(View.VISIBLE);
+        }
+    }
+    class BackupDatabase extends AsyncTask<Void, String, String> {
 
         @Override
         protected String doInBackground(Void... params) {
@@ -439,7 +473,11 @@ public class DataImportActivity extends ActionBarActivity {
 
                 if(isExternalStorageWritable()) {
                     File[] dirs = getExternalFilesDirs(null);
+                    if(!dirs[1].exists()){
+                        dirs[1].mkdir();
+                    }
                     File file = new File(dirs[1], "participant_backup.txt");
+                    file.createNewFile();
                     OutputStream participantFile = new FileOutputStream(file);
 
                     // Write participant file
@@ -494,6 +532,7 @@ public class DataImportActivity extends ActionBarActivity {
                 }
             }
             catch (Exception e) {
+                e.printStackTrace();
                 publishProgress("Backup failed.");
             }
             return null;
