@@ -126,16 +126,18 @@ public class CalendarViewActivity extends ActionBarActivity {
             }
         }
 
-        if(female!=null) {
-            if (female.getPeakFertility() != null) {
-                List<Date> fertilityWindow = female.getPeakFertility().getPeakFertilityWindow();
-                if (fertilityWindow != null && fertilityWindow.size() == 4) {
-                    String fertility = formatter.format(fertilityWindow.get(0)) + " - " + formatter.format(fertilityWindow.get(fertilityWindow.size() - 1));
-                    nextPeakFertilityTextView.setText(fertility);
-                }
-                if (female.getPeakFertility().getAverageCycleLength() != -1) {
-                    String averageCycleValue = String.valueOf((int) female.getPeakFertility().getAverageCycleLength());
-                    averageCycle.setText(averageCycleValue);
+        for (Participant p : couple) {
+            if(p.isFemale()) {
+                if (p.getPeakFertility() != null) {
+                    List<Date> fertilityWindow = p.getPeakFertility().getPeakFertilityWindow();
+                    if (fertilityWindow != null && fertilityWindow.size() == 4) {
+                        String fertility = formatter.format(fertilityWindow.get(0)) + " - " + formatter.format(fertilityWindow.get(fertilityWindow.size() - 1));
+                        nextPeakFertilityTextView.setText(fertility);
+                    }
+                    if (p.getPeakFertility().getAverageCycleLength() != -1) {
+                        String averageCycleValue = String.valueOf((int) p.getPeakFertility().getAverageCycleLength());
+                        averageCycle.setText(averageCycleValue);
+                    }
                 }
             }
         }
