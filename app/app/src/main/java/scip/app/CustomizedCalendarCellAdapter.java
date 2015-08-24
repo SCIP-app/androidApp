@@ -28,10 +28,10 @@ import scip.app.models.SurveyResult;
 
 public class CustomizedCalendarCellAdapter extends CaldroidGridAdapter {
 
-    private List<Participant> couple;
-    Participant male;
-    Participant female;
-    Participant participant;
+    private List<Participant> couple = null;
+    Participant male = null;
+    Participant female = null;
+    Participant participant = null;
     Activity activity;
     public View calendarCellView;
     View cellView;
@@ -88,7 +88,7 @@ public class CustomizedCalendarCellAdapter extends CaldroidGridAdapter {
         int rightPadding = cellView.getPaddingRight();
 
         TextView tv1 = (TextView) cellView.findViewById(R.id.tv1);
-       // TextView tv2 = (TextView) cellView.findViewById(R.id.tv2);
+        // TextView tv2 = (TextView) cellView.findViewById(R.id.tv2);
 
         tv1.setTextColor(Color.BLACK);
 
@@ -151,48 +151,48 @@ public class CustomizedCalendarCellAdapter extends CaldroidGridAdapter {
             }
         }
 
-            if(female!=null) {
-                List<SurveyResult> surveyResults = female.getSurveyResults();
-                PeakFertility fertility = female.getPeakFertility();
-                if(fertility!=null) {
-                    List<Date> fertilityWindow = fertility.getPeakFertilityWindow();
-                    for(Date fertilityVal:fertilityWindow) {
-                        Calendar fertilityCalendar = Calendar.getInstance();
-                        fertilityCalendar.setTime(fertilityVal);
+        if(female!=null) {
+            List<SurveyResult> surveyResults = female.getSurveyResults();
+            PeakFertility fertility = female.getPeakFertility();
+            if(fertility!=null) {
+                List<Date> fertilityWindow = fertility.getPeakFertilityWindow();
+                for(Date fertilityVal:fertilityWindow) {
+                    Calendar fertilityCalendar = Calendar.getInstance();
+                    fertilityCalendar.setTime(fertilityVal);
 
-                        if((fertilityCalendar.get(Calendar.MONTH) == (dateTime.getMonth()-1)) && (fertilityCalendar.get(Calendar.YEAR) == dateTime.getYear()) && (fertilityCalendar.get(Calendar.DAY_OF_MONTH) == dateTime.getDay())){
-                            cellView.setBackgroundResource(R.drawable.cellborder);
-                        }
-
+                    if((fertilityCalendar.get(Calendar.MONTH) == (dateTime.getMonth()-1)) && (fertilityCalendar.get(Calendar.YEAR) == dateTime.getYear()) && (fertilityCalendar.get(Calendar.DAY_OF_MONTH) == dateTime.getDay())){
+                        cellView.setBackgroundResource(R.drawable.cellborder);
                     }
+
                 }
+            }
 
-            if(surveyResults != null && surveyResults.size() != 0)  {
-                    for (SurveyResult surveyResult : surveyResults) {
-                        calendar.setTime(surveyResult.getDate());
-                        if ((calendar.get(Calendar.MONTH) == dateTime.getMonth() - 1) && (calendar.get(Calendar.YEAR) == dateTime.getYear()) && (calendar.get(Calendar.DAY_OF_MONTH) == dateTime.getDay())) {
-                          // if (surveyResult != null) {
-                                if (surveyResult.isOvulating() && opkCheck.isChecked()) {
-                                    opk.setVisibility(View.VISIBLE);
-                                }
-                                if (surveyResult.isHadSex() && !surveyResult.isUsedCondom() && sexCheck.isChecked()) {
-                                    unprotectedSex.setVisibility(View.VISIBLE);
-                                }
-                                if (surveyResult.getTemperature() >= 97.8 && htempCheck.isChecked()) {
-                                    htemp.setVisibility(View.VISIBLE);
-                                }
-                                if (surveyResult.isVaginaMucusSticky() && sfluidCheck.isChecked()) {
-                                    sfluid.setVisibility(View.VISIBLE);
-                                }
-                                if (surveyResult.isOnPeriod()) {
-                                    cellView.setBackgroundResource(com.caldroid.R.drawable.red_border);
-                                }
+            if(surveyResults != null)  {
+                for (SurveyResult surveyResult : surveyResults) {
+                    calendar.setTime(surveyResult.getDate());
+                    if ((calendar.get(Calendar.MONTH) == dateTime.getMonth() - 1) && (calendar.get(Calendar.YEAR) == dateTime.getYear()) && (calendar.get(Calendar.DAY_OF_MONTH) == dateTime.getDay())) {
+                        if (surveyResult != null) {
+                            if (surveyResult.isOvulating() && opkCheck.isChecked()) {
+                                opk.setVisibility(View.VISIBLE);
+                            }
+                            if (surveyResult.isHadSex() && !surveyResult.isUsedCondom() && sexCheck.isChecked()) {
+                                unprotectedSex.setVisibility(View.VISIBLE);
+                            }
+                            if (surveyResult.getTemperature() >= 97.8 && htempCheck.isChecked()) {
+                                htemp.setVisibility(View.VISIBLE);
+                            }
+                            if (surveyResult.isVaginaMucusSticky() && sfluidCheck.isChecked()) {
+                                sfluid.setVisibility(View.VISIBLE);
+                            }
+                            if (surveyResult.isOnPeriod()) {
+                                cellView.setBackgroundResource(com.caldroid.R.drawable.red_border);
+                            }
 
-                            //}
                         }
                     }
                 }
             }
+        }
 
         if(!sexCheck.isChecked()) {
             unprotectedSex.setVisibility(View.INVISIBLE);
