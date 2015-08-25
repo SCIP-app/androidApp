@@ -456,7 +456,7 @@ public class DataImportActivity extends ActionBarActivity {
         protected void onPostExecute(Void aVoid) {
             super.onPostExecute(aVoid);
             statusUpdateArea.append("SD card is ready \n");
-            progressBar.setVisibility(View.VISIBLE);
+            progressBar.setVisibility(View.INVISIBLE);
         }
     }
     class BackupDatabase extends AsyncTask<Void, String, String> {

@@ -59,6 +59,9 @@ public class CustomizedCalendarCellAdapter extends CaldroidGridAdapter {
                 female = couple.get(1);
             }
         }
+        else {
+            Log.d("couple frag", "couple is null");
+        }
 
         if(participant!=null) {
             if(participant.isFemale()) {
@@ -68,6 +71,9 @@ public class CustomizedCalendarCellAdapter extends CaldroidGridAdapter {
                 male = participant;
                 female = null;
             }
+        }
+        else {
+            Log.d("couple frag", "participant is null");
         }
     }
 

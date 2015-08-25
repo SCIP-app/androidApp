@@ -9,6 +9,7 @@ import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.ActionBarActivity;
 import android.support.v7.app.AppCompatActivity;
 import android.text.Layout;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -95,6 +96,7 @@ public class CalendarViewActivity extends ActionBarActivity {
         participant_id = getIntent().getLongExtra("participant_id", 0);
         DatabaseHelper db = new DatabaseHelper(getApplicationContext());
         if(couple_id !=0) {
+            Log.d("couple", "got couple");
             couple = db.getCoupleFromID(couple_id);
         }
         else {
@@ -108,6 +110,10 @@ public class CalendarViewActivity extends ActionBarActivity {
             } else {
                 male = participant;
             }
+        }
+        else {
+            Log.d("couple", "got participant");
+            participant = null;
         }
         db.closeDB();
 
@@ -126,19 +132,16 @@ public class CalendarViewActivity extends ActionBarActivity {
             }
         }
 
-        for (Participant p : couple) {
-            if(p.isFemale()) {
-                if (p.getPeakFertility() != null) {
-                    List<Date> fertilityWindow = p.getPeakFertility().getPeakFertilityWindow();
-                    if (fertilityWindow != null && fertilityWindow.size() == 4) {
-                        String fertility = formatter.format(fertilityWindow.get(0)) + " - " + formatter.format(fertilityWindow.get(fertilityWindow.size() - 1));
-                        nextPeakFertilityTextView.setText(fertility);
-                    }
-                    if (p.getPeakFertility().getAverageCycleLength() != -1) {
-                        String averageCycleValue = String.valueOf((int) p.getPeakFertility().getAverageCycleLength());
-                        averageCycle.setText(averageCycleValue);
-                    }
-                }
+
+        if (female.getPeakFertility() != null) {
+            List<Date> fertilityWindow = female.getPeakFertility().getPeakFertilityWindow();
+            if (fertilityWindow != null && fertilityWindow.size() == 4) {
+                String fertility = formatter.format(fertilityWindow.get(0)) + " - " + formatter.format(fertilityWindow.get(fertilityWindow.size() - 1));
+                nextPeakFertilityTextView.setText(fertility);
+            }
+            if (female.getPeakFertility().getAverageCycleLength() != -1) {
+                String averageCycleValue = String.valueOf((int) female.getPeakFertility().getAverageCycleLength());
+                averageCycle.setText(averageCycleValue);
             }
         }
 
