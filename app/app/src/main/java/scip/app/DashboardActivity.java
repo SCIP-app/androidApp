@@ -44,6 +44,10 @@ public class DashboardActivity extends ActionBarActivity
     long couple_id;
 
     FragmentTransaction fragmentTransaction = null;
+    private void endSession() {
+        Intent intent = new Intent(this, SessionSelectionActivity.class);
+        startActivity(intent);
+    }
 
 
     @Override
@@ -81,8 +85,7 @@ public class DashboardActivity extends ActionBarActivity
                     })
                     .setNegativeButton(R.string.couple_num_error_negative, new DialogInterface.OnClickListener() {
                         public void onClick(DialogInterface dialog, int id) {
-                            Intent intent = new Intent(getParent(), SessionSelectionActivity.class);
-                            startActivity(intent);
+                            endSession();
                         }
                     });
             // Create the AlertDialog object and return it
