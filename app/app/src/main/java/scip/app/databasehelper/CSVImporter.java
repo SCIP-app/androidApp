@@ -171,6 +171,12 @@ public class CSVImporter {
                     processedValues.put("surveyresults", readSurveyResults(surveyResultList));
                     //f.delete();  // delete the file when you're done so the team knows it was successful
                 }
+                else if (f.getName().contains("participant") && !f.getName().contains("backup")){
+                    CSVFile csvFile = new CSVFile(f);
+                    List<String[]> participantList = csvFile.read();
+                    processedValues.put("participant", readParticipantData(participantList));
+                    //f.delete();  // delete the file when you're done so the team knows it was successful
+                }
             }
         }
         return processedValues;
