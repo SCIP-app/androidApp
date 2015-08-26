@@ -105,46 +105,46 @@ public class DataImportActivity extends ActionBarActivity {
             }
         });
     }
-    private void calculatePeakFertility() {
-        AsyncTask<Void, String, Void> pf = new CalculatePeakFertility().execute();
-    }
-    class CalculatePeakFertility extends AsyncTask<Void, String, Void> {
-        @Override
-        protected Void doInBackground(Void... params) {
-            DatabaseHelper db = new DatabaseHelper(getApplicationContext());
-            List<Participant> participants= db.getAllParticipants();
-            db.closeDB();
-            Log.i("Num participants", String.valueOf(participants.size()));
-            for(Participant p : participants) {
-                if(p.isFemale()) {
-                    List<Date> nextPeakFertilityWindow = p.getPeakFertility().getPeakFertilityWindow();
-                    publishProgress("Participant id " + String.valueOf(p.getParticipantId()));
-                    Calendar dec30 = new GregorianCalendar(2015, 9, 14);
-                    publishProgress("Dec 30 is day " + String.valueOf(p.getPeakFertility().getDayInCycle(new Date(dec30.getTimeInMillis())))+ " in cycle.");
-                    for (Date next : nextPeakFertilityWindow)
-                        publishProgress(next.toString());
-                }
-            }
-            return null;
-        }
-        @Override
-        protected void onPreExecute() {
-            super.onPreExecute();
-            statusUpdateArea.append("Calculating Peak Fertility for each Participant...\n");
-            progressBar.setVisibility(View.VISIBLE);
-        }
-        @Override
-        protected void onPostExecute(Void aVoid) {
-            super.onPostExecute(aVoid);
-            statusUpdateArea.append("Done.\n");
-            progressBar.setVisibility(View.INVISIBLE);
-        }
-        @Override
-        protected void onProgressUpdate(String... values) {
-            super.onProgressUpdate(values);
-            statusUpdateArea.append(values[0] + "\n");
-        }
-    }
+//    private void calculatePeakFertility() {
+//        AsyncTask<Void, String, Void> pf = new CalculatePeakFertility().execute();
+//    }
+//    class CalculatePeakFertility extends AsyncTask<Void, String, Void> {
+//        @Override
+//        protected Void doInBackground(Void... params) {
+//            DatabaseHelper db = new DatabaseHelper(getApplicationContext());
+//            List<Participant> participants= db.getAllParticipants();
+//            db.closeDB();
+//            Log.i("Num participants", String.valueOf(participants.size()));
+//            for(Participant p : participants) {
+//                if(p.isFemale()) {
+//                    List<Date> nextPeakFertilityWindow = p.getPeakFertility().getPeakFertilityWindow();
+//                    publishProgress("Participant id " + String.valueOf(p.getParticipantId()));
+//                    Calendar dec30 = new GregorianCalendar(2015, 9, 14);
+//                    publishProgress("Dec 30 is day " + String.valueOf(p.getPeakFertility().getDayInCycle(new Date(dec30.getTimeInMillis())))+ " in cycle.");
+//                    for (Date next : nextPeakFertilityWindow)
+//                        publishProgress(next.toString());
+//                }
+//            }
+//            return null;
+//        }
+//        @Override
+//        protected void onPreExecute() {
+//            super.onPreExecute();
+//            statusUpdateArea.append("Calculating Peak Fertility for each Participant...\n");
+//            progressBar.setVisibility(View.VISIBLE);
+//        }
+//        @Override
+//        protected void onPostExecute(Void aVoid) {
+//            super.onPostExecute(aVoid);
+//            statusUpdateArea.append("Done.\n");
+//            progressBar.setVisibility(View.INVISIBLE);
+//        }
+//        @Override
+//        protected void onProgressUpdate(String... values) {
+//            super.onProgressUpdate(values);
+//            statusUpdateArea.append(values[0] + "\n");
+//        }
+//    }
 
     private void importMSurveyData() {
         AsyncTask<Void, String, String> ms = new RetrieveMSurveyData().execute();
@@ -207,15 +207,15 @@ public class DataImportActivity extends ActionBarActivity {
         }
     }
 
-    private void clearDatabase() {
-        statusUpdateArea.append("Clearing database...\n");
-        progressBar.setVisibility(View.VISIBLE);
-        DatabaseHelper db = new DatabaseHelper(getApplicationContext());
-        db.deleteAllData();
-        db.closeDB();
-        statusUpdateArea.append("Database Cleared\n");
-        progressBar.setVisibility(View.INVISIBLE);
-    }
+//    private void clearDatabase() {
+//        statusUpdateArea.append("Clearing database...\n");
+//        progressBar.setVisibility(View.VISIBLE);
+//        DatabaseHelper db = new DatabaseHelper(getApplicationContext());
+//        db.deleteAllData();
+//        db.closeDB();
+//        statusUpdateArea.append("Database Cleared\n");
+//        progressBar.setVisibility(View.INVISIBLE);
+//    }
 
     class RetrieveMSurveyData extends AsyncTask<Void, String, String> {
 
@@ -238,7 +238,7 @@ public class DataImportActivity extends ActionBarActivity {
             date = settings.getString("lastReadMsurvey", df.format(new Date(System.currentTimeMillis()-48*60*60*1000)));
         }
 
-        protected String doInBackground(Void... voids) {
+        protected String fetchData(Uri url) {
             try {
                 String result = "BLANK";
                 HttpClient httpclient = new DefaultHttpClient();
@@ -246,13 +246,6 @@ public class DataImportActivity extends ActionBarActivity {
                 String key = r.readLine();
                 r.close();
 
-                Uri url = new Uri.Builder()
-                        .scheme("https")
-                        .authority("apps.msurvey.co.ke")
-                        .path("surveyapi/scip/data/")
-                        .appendQueryParameter("format", "json")
-                        .appendQueryParameter("start", date)
-                        .build();
                 HttpGet request = new HttpGet(url.toString());
                 Log.d("request", url.toString());
                 request.addHeader("TOKEN", key);
@@ -265,6 +258,7 @@ public class DataImportActivity extends ActionBarActivity {
                     e.printStackTrace();
                 }
                 httpclient.getConnectionManager().shutdown();
+
                 return result;
             } catch (Exception e) {
                 this.exception = e;
@@ -272,67 +266,47 @@ public class DataImportActivity extends ActionBarActivity {
             }
         }
 
-        protected void onPostExecute(String result) {
-            //Log.i("response", result);
-            statusUpdateArea.append("Data retrieved. Parsing and storing...\n");
+        protected void processSurveyResults(String result) {
+            publishProgress("Survey data retrieved. Parsing and storing...");
             JSONObject obj = null;
+            DateFormat df = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss");
             try {
                 obj = new JSONObject(result);
                 JSONArray data = obj.getJSONArray("data");
                 int n = data.length();
-                statusUpdateArea.append("Participant count " + String.valueOf(n) + "\n");
+                publishProgress(String.valueOf(n) + " new survey results found.");
                 DatabaseHelper db = new DatabaseHelper(getApplicationContext());
 
                 for (int i = 0; i < n; i++) {
                     JSONObject entry = data.getJSONObject(i);
                     Long participant_id = Long.valueOf(entry.getString("participant"));
-
-                    Boolean hadSex;
+                    Boolean hadSex = false;
                     if (entry.getString("had_sex").equals("Yes"))
                         hadSex = true;
-                    else
-                        hadSex = false;
-
-                    Boolean onPeriod;
+                    Boolean onPeriod = false;
                     if (entry.getString("menses_started").equals("Yes"))
                         onPeriod = true;
-                    else
-                        onPeriod = false;
-
                     Boolean surveyComplete = entry.getBoolean("complete");
-
-                    Boolean vaginaMucusSticky;
+                    Boolean vaginaMucusSticky = false;
                     if (entry.getString("vaginal_mucus_stretchy").equals("Yes"))
                         vaginaMucusSticky = true;
-                    else
-                        vaginaMucusSticky = false;
-
                     Double temperature;
                     try {
                         temperature = Double.parseDouble(entry.getString("basal_body_temp"));
                     } catch (Exception e) {
                         temperature = 0.0;
                     }
-
                     Boolean passwordAccepted = entry.getBoolean("password_accepted");
-
-                    Boolean usedCondom;
+                    Boolean usedCondom = false;
                     if (entry.getString("used_condom").equals("Yes"))
                         usedCondom = true;
-                    else
-                        usedCondom = false;
-
                     String timeStarted = entry.getString("time_started");
                     String wentToMarket = entry.getString("went_to_market");
-                    SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ssZ");
                     timeStarted = timeStarted.replace("Z", "+00:00");
-                    Date date = format.parse(timeStarted);
-
-                    Boolean isOvulating;
+                    Date date = df.parse(timeStarted);
+                    Boolean isOvulating = false;
                     if (entry.getString("ovulation_prediction").equals("Positive"))
                         isOvulating = true;
-                    else
-                        isOvulating = false;
 
                     SurveyResult sr = new SurveyResult(participant_id, date, temperature, vaginaMucusSticky, onPeriod, isOvulating, hadSex, usedCondom);
 
@@ -342,21 +316,71 @@ public class DataImportActivity extends ActionBarActivity {
 
                 // Set up the date formatter
                 TimeZone tz = TimeZone.getTimeZone("UTC");
-                DateFormat df = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss");
+
                 df.setTimeZone(tz);
                 // Save the current date and time as the last time msurvey was checked
                 SharedPreferences settings = getPreferences(0);
                 SharedPreferences.Editor editor = settings.edit();
                 editor.putString("lastReadMsurvey", df.format(new Date(System.currentTimeMillis())));
                 editor.commit();
-            } catch (JSONException e) {
+            } catch (Exception e) {
                 e.printStackTrace();
-                // was getting parse exception error on format.parse(timeStarted) and adding this catch seemed to fix it
-            } catch (ParseException e) {
-                e.printStackTrace();
+                publishProgress("Error parsing survey result data.");
             }
-            statusUpdateArea.append("Parsing complete.\n");
+
+        }
+
+        protected void processParticipantData(String result) {
+            publishProgress("Survey data retrieved. Parsing and storing...");
+            JSONObject obj = null;
+            try {
+                obj = new JSONObject(result);
+                JSONArray data = obj.getJSONArray("data");
+                int n = data.length();
+                DatabaseHelper db = new DatabaseHelper(getApplicationContext());
+                for (int i = 0; i < n; i++) {
+                    JSONObject entry = data.getJSONObject(i);
+                    Long participantId = entry.getLong("participantID");
+                    Boolean isFemale = false;
+                    if(entry.getString("gender").equals("female"))
+                        isFemale = true;
+                    db.createParticipant(new Participant(participantId, isFemale));
+                }
+                db.closeDB();
+            } catch (Exception e) {
+                e.printStackTrace();
+                publishProgress("Error parsing participant data.");
+            }
+
+        }
+
+        protected String doInBackground(Void... voids) {
+            Uri survey_url = new Uri.Builder()
+                    .scheme("https")
+                    .authority("apps.msurvey.co.ke")
+                    .path("surveyapi/scip/data/")
+                    .appendQueryParameter("format", "json")
+                    .appendQueryParameter("start", date)
+                    .build();
+
+            Uri participant_url = new Uri.Builder()
+                    .scheme("https")
+                    .authority("apps.msurvey.co.ke")
+                    .path("surveyapi/scip/participants/")
+                    .appendQueryParameter("format", "json")
+                    .build();
+
+            processSurveyResults(fetchData(survey_url));
+            processParticipantData(fetchData(participant_url));
+
+            return null;
+        }
+
+        protected void onPostExecute(String result) {
+            publishProgress("Parsing complete.");
             progressBar.setVisibility(View.INVISIBLE);
+            //Log.i("response", result);
+
         }
 
         @Override
@@ -366,64 +390,64 @@ public class DataImportActivity extends ActionBarActivity {
         }
     }
 
-    class TestDatabase extends AsyncTask<Void, String, Void> {
-
-        @Override
-        protected Void doInBackground(Void... params) {
-            DatabaseHelper db = new DatabaseHelper(getApplicationContext());
-            List<Participant> participantList = db.getAllParticipants();
-
-            for(Participant p : participantList) {
-                publishProgress("Participant id " + String.valueOf(p.getParticipantId()));
-                if(p.isFemale()) {
-                    publishProgress("Number of survey results: " + String.valueOf(p.getSurveyResults().size()));
-                }
-
-                if(p.isIndex()) {
-                    publishProgress("Number of viral loads " + String.valueOf(p.getViralLoads().size()));
-                }
-                else {
-                    publishProgress("Number of MemsCaps" + String.valueOf(p.getMemscaps().size()));
-                }
-            }
-
-            List<Long> cids = db.getAllCoupleIDs();
-            publishProgress("Total Number of Couples " + String.valueOf(cids.size()));
-            List<SurveyResult> surveyResultList = db.getAllSurveyResults();
-            publishProgress("Number of survey results " + String.valueOf(surveyResultList.size()));
-            List<SurveyResult> surveyResults = db.getAllSurveyResults();
-            for(SurveyResult sr : surveyResults) {
-                Date sinceDate = new Date(System.currentTimeMillis()-24*60*60*1000);
-                if(sinceDate.compareTo(sr.getDate()) != 0)
-                    publishProgress(sr.toString());
-            }
-            db.closeDB();
-
-            return null;
-        }
-
-        @Override
-        protected void onPreExecute() {
-            super.onPreExecute();
-            progressBar.setVisibility(View.VISIBLE);
-        }
-
-        @Override
-        protected void onPostExecute(Void aVoid) {
-            super.onPostExecute(aVoid);
-            statusUpdateArea.append("Done.\n");
-            progressBar.setVisibility(View.INVISIBLE);
-        }
-
-        @Override
-        protected void onProgressUpdate(String... values) {
-            super.onProgressUpdate(values);
-            statusUpdateArea.append(values[0] + "\n");
-        }
-    }
-    private void testDatabase() {
-        AsyncTask<Void, String, Void> td = new TestDatabase().execute();
-    }
+//    class TestDatabase extends AsyncTask<Void, String, Void> {
+//
+//        @Override
+//        protected Void doInBackground(Void... params) {
+//            DatabaseHelper db = new DatabaseHelper(getApplicationContext());
+//            List<Participant> participantList = db.getAllParticipants();
+//
+//            for(Participant p : participantList) {
+//                publishProgress("Participant id " + String.valueOf(p.getParticipantId()));
+//                if(p.isFemale()) {
+//                    publishProgress("Number of survey results: " + String.valueOf(p.getSurveyResults().size()));
+//                }
+//
+//                if(p.isIndex()) {
+//                    publishProgress("Number of viral loads " + String.valueOf(p.getViralLoads().size()));
+//                }
+//                else {
+//                    publishProgress("Number of MemsCaps" + String.valueOf(p.getMemscaps().size()));
+//                }
+//            }
+//
+//            List<Long> cids = db.getAllCoupleIDs();
+//            publishProgress("Total Number of Couples " + String.valueOf(cids.size()));
+//            List<SurveyResult> surveyResultList = db.getAllSurveyResults();
+//            publishProgress("Number of survey results " + String.valueOf(surveyResultList.size()));
+//            List<SurveyResult> surveyResults = db.getAllSurveyResults();
+//            for(SurveyResult sr : surveyResults) {
+//                Date sinceDate = new Date(System.currentTimeMillis()-24*60*60*1000);
+//                if(sinceDate.compareTo(sr.getDate()) != 0)
+//                    publishProgress(sr.toString());
+//            }
+//            db.closeDB();
+//
+//            return null;
+//        }
+//
+//        @Override
+//        protected void onPreExecute() {
+//            super.onPreExecute();
+//            progressBar.setVisibility(View.VISIBLE);
+//        }
+//
+//        @Override
+//        protected void onPostExecute(Void aVoid) {
+//            super.onPostExecute(aVoid);
+//            statusUpdateArea.append("Done.\n");
+//            progressBar.setVisibility(View.INVISIBLE);
+//        }
+//
+//        @Override
+//        protected void onProgressUpdate(String... values) {
+//            super.onProgressUpdate(values);
+//            statusUpdateArea.append(values[0] + "\n");
+//        }
+//    }
+//    private void testDatabase() {
+//        AsyncTask<Void, String, Void> td = new TestDatabase().execute();
+//    }
 
     public boolean isExternalStorageWritable() {
         String state = Environment.getExternalStorageState();

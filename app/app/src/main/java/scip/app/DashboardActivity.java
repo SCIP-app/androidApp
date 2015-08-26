@@ -1,6 +1,8 @@
 package scip.app;
 
 import android.app.Activity;
+import android.app.AlertDialog;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.ActionBarActivity;
@@ -68,6 +70,24 @@ public class DashboardActivity extends ActionBarActivity
                 int length = p.getMemscaps().size();
                 Log.d("# of MemsCaps", String.valueOf(length));
             }
+        }
+        if (couple.size() > 2) {
+            AlertDialog.Builder builder = new AlertDialog.Builder(this);
+            builder.setMessage(R.string.couple_num_error_message)
+                    .setPositiveButton(R.string.couple_num_error_positive, new DialogInterface.OnClickListener() {
+                        public void onClick(DialogInterface dialog, int id) {
+                            // Do nothing and let them continue
+                        }
+                    })
+                    .setNegativeButton(R.string.couple_num_error_negative, new DialogInterface.OnClickListener() {
+                        public void onClick(DialogInterface dialog, int id) {
+                            Intent intent = new Intent(getParent(), SessionSelectionActivity.class);
+                            startActivity(intent);
+                        }
+                    });
+            // Create the AlertDialog object and return it
+            AlertDialog alert = builder.create();
+            alert.show();
         }
 
         mNavigationDrawerFragment = (NavigationDrawerFragment)

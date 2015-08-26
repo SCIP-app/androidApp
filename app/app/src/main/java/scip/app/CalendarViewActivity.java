@@ -2,9 +2,13 @@
 package scip.app;
 
 
+import android.app.AlertDialog;
+import android.content.DialogInterface;
+import android.content.Intent;
 import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
 
+import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.ActionBarActivity;
 import android.support.v7.app.AppCompatActivity;
@@ -98,6 +102,24 @@ public class CalendarViewActivity extends ActionBarActivity {
         if(couple_id !=0) {
             Log.d("couple", "got couple");
             couple = db.getCoupleFromID(couple_id);
+            if(couple.size() > 2) {
+                AlertDialog.Builder builder = new AlertDialog.Builder(this);
+                builder.setMessage(R.string.couple_num_error_message)
+                        .setPositiveButton(R.string.couple_num_error_positive, new DialogInterface.OnClickListener() {
+                            public void onClick(DialogInterface dialog, int id) {
+                                // Do nothing and let them continue
+                            }
+                        })
+                        .setNegativeButton(R.string.couple_num_error_negative, new DialogInterface.OnClickListener() {
+                            public void onClick(DialogInterface dialog, int id) {
+                                Intent intent = new Intent(getParent(), SessionSelectionActivity.class);
+                                startActivity(intent);
+                            }
+                        });
+                // Create the AlertDialog object and return it
+                AlertDialog alert = builder.create();
+                alert.show();
+            }
         }
         else {
             couple = null;
@@ -120,8 +142,7 @@ public class CalendarViewActivity extends ActionBarActivity {
         TextView nextPeakFertilityTextView = (TextView) findViewById(R.id.peakFertilityValue);
         TextView averageCycle = (TextView) findViewById(R.id.AvgCycleValue);
 
-
-        if(couple!=null && couple.size()==2) {
+        if(couple!=null) {
             if(couple.get(0).isFemale()) {
                 female = couple.get(0);
                 male = couple.get(1);
@@ -131,7 +152,6 @@ public class CalendarViewActivity extends ActionBarActivity {
                 male = couple.get(0);
             }
         }
-
 
         if (female.getPeakFertility() != null) {
             List<Date> fertilityWindow = female.getPeakFertility().getPeakFertilityWindow();
