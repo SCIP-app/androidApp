@@ -331,7 +331,7 @@ public class DataImportActivity extends ActionBarActivity {
         }
 
         protected void processParticipantData(String result) {
-            publishProgress("Survey data retrieved. Parsing and storing...");
+            publishProgress("Participants retrieved. Parsing and storing...");
             JSONObject obj = null;
             try {
                 obj = new JSONObject(result);
@@ -349,7 +349,7 @@ public class DataImportActivity extends ActionBarActivity {
                 db.closeDB();
             } catch (Exception e) {
                 e.printStackTrace();
-                publishProgress("Error parsing participant data.");
+                publishProgress("Error parsing participants.");
             }
 
         }
@@ -370,8 +370,8 @@ public class DataImportActivity extends ActionBarActivity {
                     .appendQueryParameter("format", "json")
                     .build();
 
-            processSurveyResults(fetchData(survey_url));
             processParticipantData(fetchData(participant_url));
+            processSurveyResults(fetchData(survey_url));
 
             return null;
         }
