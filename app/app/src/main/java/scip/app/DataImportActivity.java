@@ -46,6 +46,7 @@ import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
 import java.util.TimeZone;
 import java.util.ArrayList;
@@ -83,7 +84,7 @@ public class DataImportActivity extends ActionBarActivity {
         importLocalData.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                importLocalData(false);
+                importLocalData(true);
             }
         });
         importMSurveyData.setOnClickListener(new View.OnClickListener() {
@@ -151,18 +152,29 @@ public class DataImportActivity extends ActionBarActivity {
     }
 
     private void importLocalData(boolean useLocal) {
-        AsyncTask<Boolean, Void, Void> thread = new RetrieveLocalData().execute(useLocal);
+        AsyncTask<Boolean, String, Void> thread = new RetrieveLocalData().execute(useLocal);
     }
 
-    class RetrieveLocalData extends AsyncTask<Boolean, Void, Void> {
+    class RetrieveLocalData extends AsyncTask<Boolean, String, Void> {
 
         @Override
         protected Void doInBackground(Boolean... useLocal) {
             CSVImporter csvImporter = new CSVImporter(getApplicationContext());
+            HashMap resultsProcessed = null;
             if(useLocal[0])
-                csvImporter.openLocalFiles();
+                resultsProcessed = csvImporter.openLocalFiles();
             else
-                csvImporter.openExternalFiles();
+                resultsProcessed = csvImporter.openExternalFiles();
+
+            if(resultsProcessed.containsKey("participant"))
+                publishProgress(resultsProcessed.get("participant") + " participant records added");
+            if(resultsProcessed.containsKey("memscap"))
+                publishProgress(resultsProcessed.get("memscap") + " memscap records added");
+            if(resultsProcessed.containsKey("viralload"))
+                publishProgress(resultsProcessed.get("viralload") + " viral load records added");
+            if(resultsProcessed.containsKey("surveyresults"))
+                publishProgress(resultsProcessed.get("surveyresults") + " survey result records added");
+
             return null;
         }
 
@@ -180,6 +192,12 @@ public class DataImportActivity extends ActionBarActivity {
             progressBar.setVisibility(View.INVISIBLE);
             // automatically run the database backup
             AsyncTask<Void, String, String> pf = new BackupDatabase().execute();
+        }
+
+        @Override
+        protected void onProgressUpdate(String... values) {
+            super.onProgressUpdate(values);
+            statusUpdateArea.append(values[0]+"\n");
         }
     }
 

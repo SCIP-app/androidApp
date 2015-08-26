@@ -254,22 +254,21 @@ public class DatabaseHelper extends SQLiteOpenHelper{
                 return false;
             }
         }
-        else {
-            // TODO: make sure the genders match
-            Participant inDB = getParticipant(participant.getParticipantId());
-            if(inDB.isFemale() != participant.isFemale() && participant.isFemale() == true) {
-                SQLiteDatabase db = this.getWritableDatabase();
-
-                ContentValues values = new ContentValues();
-                values.put(KEY_PARTICIPANT_ID, participant.getParticipantId());
-                values.put(KEY_IS_FEMALE, intFromBoolean(participant.isFemale()));
-
-                db.update(TABLE_PARTICIPANTS, values, KEY_ID + " = ?",
-                        new String[] { String.valueOf(inDB.getId()) });
-                return true;
-            }
-
-        }
+//        else if (participant.isFemale()){
+//            Participant inDB = getParticipant(participant.getParticipantId());
+//            if(inDB.isFemale() != participant.isFemale()) {
+//                SQLiteDatabase db = this.getWritableDatabase();
+//
+//                ContentValues values = new ContentValues();
+//                values.put(KEY_PARTICIPANT_ID, participant.getParticipantId());
+//                values.put(KEY_IS_FEMALE, intFromBoolean(participant.isFemale()));
+//
+//                db.update(TABLE_PARTICIPANTS, values, KEY_ID + " = ?",
+//                        new String[] { String.valueOf(inDB.getId()) });
+//                return true;
+//            }
+//
+//        }
         Log.d("DB", "Skipping existing participant");
         return false;
 
