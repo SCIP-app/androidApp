@@ -161,19 +161,24 @@ public class DataImportActivity extends ActionBarActivity {
         protected Void doInBackground(Boolean... useLocal) {
             CSVImporter csvImporter = new CSVImporter(getApplicationContext());
             HashMap resultsProcessed = null;
-            if(useLocal[0])
-                resultsProcessed = csvImporter.openLocalFiles();
-            else
-                resultsProcessed = csvImporter.openExternalFiles();
+            try {
+                if (useLocal[0])
+                    resultsProcessed = csvImporter.openLocalFiles();
+                else
+                    resultsProcessed = csvImporter.openExternalFiles();
 
-            if(resultsProcessed.containsKey("participant"))
-                publishProgress(resultsProcessed.get("participant") + " participant records added");
-            if(resultsProcessed.containsKey("memscap"))
-                publishProgress(resultsProcessed.get("memscap") + " memscap records added");
-            if(resultsProcessed.containsKey("viralload"))
-                publishProgress(resultsProcessed.get("viralload") + " viral load records added");
-            if(resultsProcessed.containsKey("surveyresults"))
-                publishProgress(resultsProcessed.get("surveyresults") + " survey result records added");
+                if(resultsProcessed.containsKey("participant"))
+                    publishProgress(resultsProcessed.get("participant") + " participant records added");
+                if(resultsProcessed.containsKey("memscap"))
+                    publishProgress(resultsProcessed.get("memscap") + " memscap records added");
+                if(resultsProcessed.containsKey("viralload"))
+                    publishProgress(resultsProcessed.get("viralload") + " viral load records added");
+                if(resultsProcessed.containsKey("surveyresults"))
+                    publishProgress(resultsProcessed.get("surveyresults") + " survey result records added");
+
+            } catch (Exception e) {
+                publishProgress("Error Processing Files");
+            }
 
             return null;
         }
@@ -284,15 +289,15 @@ public class DataImportActivity extends ActionBarActivity {
             }
         }
 
-        protected void processSurveyResults(String result) {
+        protected Integer processSurveyResults(String result) {
             publishProgress("Survey data retrieved. Parsing and storing...");
             JSONObject obj = null;
+            Integer count = 0;
             DateFormat df = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss");
             try {
                 obj = new JSONObject(result);
                 JSONArray data = obj.getJSONArray("data");
                 int n = data.length();
-                publishProgress(String.valueOf(n) + " new survey results found.");
                 DatabaseHelper db = new DatabaseHelper(getApplicationContext());
 
                 for (int i = 0; i < n; i++) {
@@ -328,7 +333,8 @@ public class DataImportActivity extends ActionBarActivity {
 
                     SurveyResult sr = new SurveyResult(participant_id, date, temperature, vaginaMucusSticky, onPeriod, isOvulating, hadSex, usedCondom);
 
-                    db.createSurveyResult (sr);
+                    if(db.createSurveyResult (sr))
+                        count++;
                 }
                 db.closeDB();
 
@@ -341,15 +347,19 @@ public class DataImportActivity extends ActionBarActivity {
                 SharedPreferences.Editor editor = settings.edit();
                 editor.putString("lastReadMsurvey", df.format(new Date(System.currentTimeMillis())));
                 editor.commit();
+
+                return count;
             } catch (Exception e) {
                 e.printStackTrace();
                 publishProgress("Error parsing survey result data.");
+                return -1;
             }
 
         }
 
-        protected void processParticipantData(String result) {
+        protected Integer processParticipantData(String result) {
             publishProgress("Participants retrieved. Parsing and storing...");
+            Integer count = 0;
             JSONObject obj = null;
             try {
                 obj = new JSONObject(result);
@@ -362,12 +372,15 @@ public class DataImportActivity extends ActionBarActivity {
                     Boolean isFemale = false;
                     if(entry.getString("gender").equals("female"))
                         isFemale = true;
-                    db.createParticipant(new Participant(participantId, isFemale));
+                    if(db.createParticipant(new Participant(participantId, isFemale)))
+                        count++;
                 }
                 db.closeDB();
+                return count;
             } catch (Exception e) {
                 e.printStackTrace();
                 publishProgress("Error parsing participants.");
+                return -1;
             }
 
         }
@@ -388,8 +401,14 @@ public class DataImportActivity extends ActionBarActivity {
                     .appendQueryParameter("format", "json")
                     .build();
 
-            processParticipantData(fetchData(participant_url));
-            processSurveyResults(fetchData(survey_url));
+            Integer newParticipantCount = processParticipantData(fetchData(participant_url));
+            Integer newSurveyResultsCount = processSurveyResults(fetchData(survey_url));
+
+            if(newParticipantCount != -1)
+                publishProgress(newParticipantCount + " participant records added");
+            if(newSurveyResultsCount != -1)
+                publishProgress(newSurveyResultsCount + " survey result records added");
+
 
             return null;
         }
