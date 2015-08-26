@@ -12,7 +12,7 @@
         android:layout_gravity="bottom|left|top"
         android:layout_marginLeft="440dp"
         android:layout_marginTop="560dp"
-        android:visibility="invisible" />
+        android:visibility="visible" />
 
     <TextView
         android:layout_width="167dp"
@@ -23,7 +23,7 @@
         android:layout_marginLeft="440dp"
         android:layout_marginTop="590dp"
         android:textAlignment="gravity"
-        android:visibility="invisible" />
+        android:visibility="visible" />
 
     <TextView
         android:layout_width="wrap_content"

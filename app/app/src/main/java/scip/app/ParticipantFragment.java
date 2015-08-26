@@ -27,8 +27,6 @@ import scip.app.models.ViralLoad;
 public class ParticipantFragment extends Fragment {
     TextView peakFertilityText;
     TextView nextCycleText ;
-    TextView peakFertilityLabel;
-    TextView nextCycleLabel;
     ImageButton calendarButton;
     ImageButton artButton;
     TextView calendarText;
@@ -52,8 +50,6 @@ public class ParticipantFragment extends Fragment {
 
         peakFertilityText = (TextView) view.findViewById(R.id.Participant_peak_fertility);
         nextCycleText = (TextView) view.findViewById(R.id.Participant_Next_Cycle);
-        peakFertilityLabel = (TextView) view.findViewById(R.id.ParticipantNextCycleLabel);
-        nextCycleLabel = (TextView) view.findViewById(R.id.ParticipantPeriodCycleLabel);
         calendarButton = (ImageButton) view.findViewById(R.id.Participant_Calendar_Button);
         calendarText = (TextView) view.findViewById(R.id.caltext);
         artText = (TextView) view.findViewById(R.id.artLabel);
@@ -102,40 +98,36 @@ public class ParticipantFragment extends Fragment {
             db.closeDB();
 
             if(participant!=null) {
-                if(participant.isFemale()) {
-                    if(participant.getPeakFertility()!=null) {
+                if (participant.isFemale()) {
+                    if (participant.getPeakFertility() != null) {
                         List<Date> nextPeakFertilityValues = participant.getPeakFertility().getPeakFertilityWindow();
                         List<Date> nextCycleDates = participant.getPeakFertility().getNextCycleDates();
-                        peakFertilityLabel.setVisibility(View.VISIBLE);
-                        nextCycleLabel.setVisibility(View.VISIBLE);
                         peakFertilityText.setVisibility(View.VISIBLE);
                         nextCycleText.setVisibility(View.VISIBLE);
 
-                        if(nextPeakFertilityValues!=null && nextPeakFertilityValues.size() == 4) {
+                        if (nextPeakFertilityValues != null && nextPeakFertilityValues.size() == 4) {
                             String fertilityRange = formatter.format(nextPeakFertilityValues.get(0)) + " - " + formatter.format(nextPeakFertilityValues.get(nextPeakFertilityValues.size() - 1));
                             peakFertilityText.setText(fertilityRange);
 
                         }
 
-                        if(nextCycleDates!=null && nextCycleDates.size() == 2) {
-                            String nextFertilityRange = formatter.format(nextCycleDates.get(0)) + " - " +formatter.format(nextCycleDates.get(nextCycleDates.size()-1));
+                        if (nextCycleDates != null && nextCycleDates.size() == 2) {
+                            String nextFertilityRange = formatter.format(nextCycleDates.get(0)) + " - " + formatter.format(nextCycleDates.get(nextCycleDates.size() - 1));
                             nextCycleText.setText(nextFertilityRange);
                         }
 
                         calendarButton.setVisibility(View.VISIBLE);
                         calendarText.setVisibility(View.VISIBLE);
-                        calendarButton.setOnClickListener(new OnClickListener()
-                        {
+                        calendarButton.setOnClickListener(new OnClickListener() {
                             @Override
-                            public void onClick(View v)
-                            {
-                                Intent calendarIntent = new Intent(getActivity(),CalendarViewActivity.class);
+                            public void onClick(View v) {
+                                Intent calendarIntent = new Intent(getActivity(), CalendarViewActivity.class);
                                 calendarIntent.putExtra("participant_id", ((ParticipantActivity) getActivity()).getParticipant_id());
                                 startActivity(calendarIntent);
                             }
                         });
 
-                        if(participant.isIndex()) {
+                        if (participant.isIndex()) {
                             calendarButton.setX(160);
                             calendarButton.setTop(68);
                             calendarText.setX(280);
@@ -159,17 +151,32 @@ public class ParticipantFragment extends Fragment {
 
                     }
                 }
-                if(participant.isIndex()) {
-                    artText.setVisibility(View.VISIBLE);
-                    artButton.setVisibility(View.VISIBLE);
-                    artButton.setOnClickListener(new OnClickListener() {
-                        @Override
-                        public void onClick(View v) {
-                            Intent artIntent = new Intent(getActivity(), ViralLoadActivity.class);
-                            artIntent.putExtra("participant_id", ((ParticipantActivity) getActivity()).getParticipant_id());
-                            startActivity(artIntent);
-                        }
-                    });
+                if (!participant.isFemale()) {
+                    if(!participant.isIndex()) {
+                        calendarButton.setVisibility(View.VISIBLE);
+                        calendarText.setVisibility(View.VISIBLE);
+                        calendarButton.setOnClickListener(new OnClickListener() {
+                            @Override
+                            public void onClick(View v) {
+                                Intent calendarIntent = new Intent(getActivity(), CalendarViewActivity.class);
+                                calendarIntent.putExtra("participant_id", ((ParticipantActivity) getActivity()).getParticipant_id());
+                                startActivity(calendarIntent);
+                            }
+                        });
+                    }
+
+                    else {
+                        artText.setVisibility(View.VISIBLE);
+                        artButton.setVisibility(View.VISIBLE);
+                        artButton.setOnClickListener(new OnClickListener() {
+                            @Override
+                            public void onClick(View v) {
+                                Intent artIntent = new Intent(getActivity(), ViralLoadActivity.class);
+                                artIntent.putExtra("participant_id", ((ParticipantActivity) getActivity()).getParticipant_id());
+                                startActivity(artIntent);
+                            }
+                        });
+                    }
                 }
             }
 

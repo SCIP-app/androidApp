@@ -50,29 +50,6 @@ public class CalendarViewActivity extends ActionBarActivity {
     HashMap<Integer,String> monthMap = new HashMap<>();
 
 
-    private void setCustomResourceForDates() {
-        Calendar cal = Calendar.getInstance();
-
-        // Min date is last 7 days
-        cal.add(Calendar.DATE, -7);
-        Date blueDate = cal.getTime();
-
-        // Max date is next 7 days
-        cal = Calendar.getInstance();
-        cal.add(Calendar.DATE, 7);
-        Date greenDate = cal.getTime();
-
-        if (caldroidFragment != null) {
-            caldroidFragment.setBackgroundResourceForDate(R.color.material_blue_500,
-                    blueDate);
-            caldroidFragment.setBackgroundResourceForDate(R.color.material_deep_teal_200,
-                    greenDate);
-            caldroidFragment.setTextColorForDate(R.color.abc_secondary_text_material_light, blueDate);
-            caldroidFragment.setTextColorForDate(R.color.abc_primary_text_disable_only_material_light, greenDate);
-        }
-    }
-
-
 
 
     @Override
@@ -133,7 +110,7 @@ public class CalendarViewActivity extends ActionBarActivity {
         }
 
 
-        if (female.getPeakFertility() != null) {
+        if (female!=null && female.getPeakFertility() != null) {
             List<Date> fertilityWindow = female.getPeakFertility().getPeakFertilityWindow();
             if (fertilityWindow != null && fertilityWindow.size() == 4) {
                 String fertility = formatter.format(fertilityWindow.get(0)) + " - " + formatter.format(fertilityWindow.get(fertilityWindow.size() - 1));
@@ -260,16 +237,13 @@ public class CalendarViewActivity extends ActionBarActivity {
 
                 Participant participant = null;
                 if (male != null) {
-                    if (male.isIndex()) {
                         participant = male;
-                    }
                 }
 
                 if (female != null) {
-                    if (female.isIndex()) {
                         participant = female;
-                    }
                 }
+
                 if (participant != null) {
                     if (!participant.isIndex()) {
                         if (participant.getMemscaps() != null) {

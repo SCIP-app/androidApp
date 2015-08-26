@@ -133,15 +133,11 @@ public class CustomizedCalendarCellAdapter extends CaldroidGridAdapter {
 
         Participant participant = null;
         if(male!=null) {
-            if(!male.isIndex()) {
                 participant = male;
-            }
         }
 
         if(female!=null) {
-            if(!female.isIndex()) {
                 participant = female;
-            }
         }
         Calendar calendar = Calendar.getInstance();
 

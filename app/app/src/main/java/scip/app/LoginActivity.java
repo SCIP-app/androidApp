@@ -20,33 +20,8 @@ import android.widget.EditText;
 import com.google.android.gms.analytics.GoogleAnalytics;
 import com.google.android.gms.analytics.Tracker;
 
-
-import org.apache.http.client.ClientProtocolException;
-import org.apache.http.client.HttpClient;
-import org.apache.http.client.ResponseHandler;
-import org.apache.http.client.methods.HttpGet;
-import org.apache.http.impl.client.BasicResponseHandler;
-import org.apache.http.impl.client.DefaultHttpClient;
-import org.json.JSONArray;
-import org.json.JSONException;
-import org.json.JSONObject;
-
 import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.InputStream;
 import java.io.InputStreamReader;
-import java.net.URL;
-
-import java.util.ArrayList;
-import java.util.List;
-
-import scip.app.databasehelper.CSVImporter;
-import scip.app.databasehelper.DatabaseHelper;
-import scip.app.models.MemsCap;
-import scip.app.models.Participant;
-import scip.app.models.PeakFertility;
-import scip.app.models.SurveyResult;
-import scip.app.models.ViralLoad;
 
 public class LoginActivity extends ActionBarActivity {
     public static GoogleAnalytics analytics;
@@ -107,6 +82,8 @@ public class LoginActivity extends ActionBarActivity {
         boolean cancel = false;
         View focusView = null;
 
+
+
         // Check for a valid username/password combination.
         if (TextUtils.isEmpty(email)) {
             mEmailView.setError(getString(R.string.error_field_required));
@@ -135,6 +112,7 @@ public class LoginActivity extends ActionBarActivity {
             intent.putExtra("user", currentUser);
             startActivity(intent);
         }
+
     }
 
     private boolean isLoginValid(String username, String password) {
@@ -169,6 +147,7 @@ public class LoginActivity extends ActionBarActivity {
         }
 
         return false;
+
     }
 
 
