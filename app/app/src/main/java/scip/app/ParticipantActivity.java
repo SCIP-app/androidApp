@@ -26,7 +26,7 @@ import scip.app.databasehelper.DatabaseHelper;
 import scip.app.models.Participant;
 
 
-public class DashboardActivity extends ActionBarActivity
+public class ParticipantActivity extends ActionBarActivity
         implements NavigationDrawerFragment.NavigationDrawerCallbacks {
 
     /**
@@ -38,34 +38,35 @@ public class DashboardActivity extends ActionBarActivity
      * Used to store the last screen title. For use in {@link #restoreActionBar()}.
      */
     private CharSequence mTitle;
-    List<Participant> couple;
-    long couple_id;
+    long participant_id;
+    Participant participant;
 
     FragmentTransaction fragmentTransaction = null;
 
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_dashboard);
-        couple_id = getIntent().getLongExtra("couple_id", 0);
+
+        setContentView(R.layout.activity_participant);
+        participant_id = getIntent().getLongExtra("participant_id", 0);
         DatabaseHelper db = new DatabaseHelper(getApplicationContext());
-        couple = db.getCoupleFromID(couple_id);
+        participant = db.getParticipant(participant_id);
         db.closeDB();
 
-        for(Participant p : couple) {
-            Log.d("Participant id in couple", String.valueOf(p.getParticipantId()));
-            if(p.isFemale()) {
-                int length = p.getSurveyResults().size();
+        if(participant!=null) {
+            Log.d("Participant id not in Couple", String.valueOf(participant.getParticipantId()));
+            if (participant.isFemale()) {
+                int length = participant.getSurveyResults().size();
                 Log.d("# of SurveyResults", String.valueOf(length));
             }
 
-            if(p.isIndex()) {
-                int length = p.getViralLoads().size();
+            if (participant.isIndex()) {
+                int length = participant.getViralLoads().size();
                 Log.d("# of ViralLoads", String.valueOf(length));
-            }
-            else {
-                int length = p.getMemscaps().size();
+            } else {
+                int length = participant.getMemscaps().size();
                 Log.d("# of MemsCaps", String.valueOf(length));
             }
         }
@@ -82,13 +83,14 @@ public class DashboardActivity extends ActionBarActivity
 
     }
 
-    public List<Participant> getCouple() {
-        return couple;
+    public Participant getParticipant() {
+        return participant;
     }
 
-    public long getCouple_id() {
-        return couple_id;
+    public long getParticipant_id() {
+        return participant_id;
     }
+
 
     @Override
     public void onNavigationDrawerItemSelected(int position) {
@@ -96,16 +98,16 @@ public class DashboardActivity extends ActionBarActivity
 
         FragmentManager fragmentManager = getSupportFragmentManager();
         fragmentTransaction = fragmentManager.beginTransaction();
-        // defines the behavior of each element inside the navigation drawer
+
         switch (position) {
             case 0:
 
                 Bundle bundle = new Bundle();
-                bundle.putLong("coupleId",couple_id);
-                LandingFragment coupleFragment = new LandingFragment();
-                coupleFragment.setArguments(bundle);
-                mTitle  = "Couples Main";
-                fragmentTransaction.replace(R.id.content_frame, coupleFragment);
+                bundle.putLong("participant_id",participant_id);
+                ParticipantFragment participantFragment = new ParticipantFragment();
+                participantFragment.setArguments(bundle);
+                mTitle  = "Participant Main";
+                fragmentTransaction.replace(R.id.participant_content_frame, participantFragment);
                 fragmentTransaction.commit();
                 break;
             case 1:
@@ -170,6 +172,4 @@ public class DashboardActivity extends ActionBarActivity
 
         return super.onOptionsItemSelected(item);
     }
-
-
 }

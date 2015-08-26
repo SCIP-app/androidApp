@@ -6,12 +6,19 @@
     android:paddingBottom="@dimen/activity_vertical_margin"
     tools:context="scip.app.DataImportActivity">
 
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:textAppearance="?android:attr/textAppearanceMedium"
+        android:text="Welcome, "
+        android:id="@+id/WelcomeMessageTextView" />
+
     <Button
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="Import Local Data"
         android:id="@+id/ImportLocalDataButon"
-        android:layout_alignParentTop="true"
+        android:layout_below="@+id/WelcomeMessageTextView"
         android:layout_alignParentStart="true" />
 
     <Button
@@ -20,26 +27,8 @@
         android:text="Import mSurvey Data"
         android:id="@+id/ImportMSurveyDataButton"
         android:layout_above="@+id/progressBar"
-        android:layout_toEndOf="@+id/ImportLocalDataButon"
-        android:layout_marginStart="85dp" />
-
-    <Button
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="List Database"
-        android:id="@+id/ListDatabaseButton"
-        android:layout_alignParentTop="true"
-        android:layout_centerHorizontal="true" />
-
-    <Button
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Clear Database"
-        android:id="@+id/ClearDatabaseButton"
-        android:singleLine="true"
-        android:layout_alignParentTop="true"
-        android:layout_toEndOf="@+id/ListDatabaseButton"
-        android:layout_marginStart="97dp" />
+        android:layout_toStartOf="@+id/ImportDatabaseBackupButton"
+        android:layout_marginEnd="121dp" />
 
     <ProgressBar
         android:layout_width="match_parent"
@@ -68,9 +57,18 @@
     <Button
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Test Fertility Prediction"
-        android:id="@+id/TestFertilityPredictionButton"
-        android:layout_alignParentTop="true"
-        android:layout_alignParentEnd="true" />
+        android:text="Restore Database from Backup"
+        android:id="@+id/ImportDatabaseBackupButton"
+        android:layout_alignTop="@+id/ImportMSurveyDataButton"
+        android:layout_alignEnd="@+id/progressBar" />
+
+    <Button
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Prepare SD card"
+        android:id="@+id/prepareSDCardButton"
+        android:layout_above="@+id/progressBar"
+        android:layout_toEndOf="@+id/ImportLocalDataButon"
+        android:layout_marginStart="144dp" />
 
 </RelativeLayout>

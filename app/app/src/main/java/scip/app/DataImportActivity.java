@@ -1,8 +1,10 @@
 package scip.app;
 
+import android.content.Context;
 import android.content.SharedPreferences;
 import android.net.Uri;
 import android.os.AsyncTask;
+import android.os.Environment;
 import android.support.v7.app.ActionBarActivity;
 import android.os.Bundle;
 import android.util.Log;
@@ -12,6 +14,7 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ProgressBar;
+import android.widget.TextView;
 
 import org.apache.http.NameValuePair;
 import org.apache.http.client.ClientProtocolException;
@@ -30,6 +33,9 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.OutputStream;
 import java.net.URI;
 import java.util.Enumeration;
 import java.util.GregorianCalendar;
@@ -57,23 +63,27 @@ import scip.app.models.DateUtil;
 public class DataImportActivity extends ActionBarActivity {
     EditText statusUpdateArea;
     ProgressBar progressBar;
+    TextView welcomeMessage;
+    String user;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_data_import);
+        user = getIntent().getStringExtra("user");
         statusUpdateArea = (EditText)findViewById(R.id.dataStatusUpdateField);
         progressBar = (ProgressBar)findViewById(R.id.progressBar);
         progressBar.setVisibility(View.INVISIBLE);
+        welcomeMessage = (TextView)findViewById(R.id.WelcomeMessageTextView);
+        welcomeMessage.append(user);
         final Button importLocalData = (Button)findViewById(R.id.ImportLocalDataButon);
         final Button importMSurveyData = (Button) findViewById(R.id.ImportMSurveyDataButton);
-        Button testDatabase = (Button) findViewById(R.id.ListDatabaseButton);
-        final Button clearDatabase = (Button) findViewById(R.id.ClearDatabaseButton);
-         final Button peakFertility = (Button) findViewById(R.id.TestFertilityPredictionButton);
+        final Button importDatabaseBackup = (Button) findViewById(R.id.ImportDatabaseBackupButton);
+        final Button prepareSDCard = (Button) findViewById(R.id.prepareSDCardButton);
         importLocalData.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                importLocalData(true);
+                importLocalData(false);
             }
         });
         importMSurveyData.setOnClickListener(new View.OnClickListener() {
@@ -82,22 +92,16 @@ public class DataImportActivity extends ActionBarActivity {
                 importMSurveyData();
             }
         });
-        testDatabase.setOnClickListener(new View.OnClickListener() {
+        prepareSDCard.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                testDatabase();
+                AsyncTask<Void, String, Void> psd = new prepSDCard().execute();
             }
         });
-        clearDatabase.setOnClickListener(new View.OnClickListener() {
+        importDatabaseBackup.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                clearDatabase();
-            }
-        });
-        	        peakFertility.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                calculatePeakFertility();
+                AsyncTask<Void, String, Void> pf = new ImportDatabaseBackup().execute();
             }
         });
     }
@@ -138,7 +142,7 @@ public class DataImportActivity extends ActionBarActivity {
         @Override
         protected void onProgressUpdate(String... values) {
             super.onProgressUpdate(values);
-            statusUpdateArea.append(values[0]+"\n");
+            statusUpdateArea.append(values[0] + "\n");
         }
     }
 
@@ -174,6 +178,32 @@ public class DataImportActivity extends ActionBarActivity {
             super.onPostExecute(aVoid);
             statusUpdateArea.append("Local data imported\n");
             progressBar.setVisibility(View.INVISIBLE);
+            // automatically run the database backup
+            AsyncTask<Void, String, String> pf = new BackupDatabase().execute();
+        }
+    }
+
+    class ImportDatabaseBackup extends AsyncTask<Void, String, Void> {
+
+        @Override
+        protected Void doInBackground(Void... useLocal) {
+            CSVImporter csvImporter = new CSVImporter(getApplicationContext());
+            csvImporter.processBackUpFiles();
+            return null;
+        }
+
+        @Override
+        protected void onPreExecute() {
+            super.onPreExecute();
+            statusUpdateArea.append("Reinstating database from backup...\n");
+            progressBar.setVisibility(View.VISIBLE);
+        }
+
+        @Override
+        protected void onPostExecute(Void aVoid) {
+            super.onPostExecute(aVoid);
+            statusUpdateArea.append("Database restored\n");
+            progressBar.setVisibility(View.INVISIBLE);
         }
     }
 
@@ -206,11 +236,6 @@ public class DataImportActivity extends ActionBarActivity {
             // See if we've checked msurvey before. If not, look for 3 days worth of information
             SharedPreferences settings = getPreferences(0);
             date = settings.getString("lastReadMsurvey", df.format(new Date(System.currentTimeMillis()-48*60*60*1000)));
-
-            // Save the current date and time as the last time msurvey was checked
-            SharedPreferences.Editor editor = settings.edit();
-            editor.putString("lastReadMsurvey", df.format(new Date(System.currentTimeMillis())));
-            editor.commit();
         }
 
         protected String doInBackground(Void... voids) {
@@ -263,34 +288,39 @@ public class DataImportActivity extends ActionBarActivity {
                     Long participant_id = Long.valueOf(entry.getString("participant"));
 
                     Boolean hadSex;
-                    if (entry.getString("had_sex").equals("No"))
-                        hadSex = false;
-                    else
+                    if (entry.getString("had_sex").equals("Yes"))
                         hadSex = true;
+                    else
+                        hadSex = false;
 
                     Boolean onPeriod;
-                    if (entry.getString("menses_started").equals("No"))
-                        onPeriod = false;
-                    else
+                    if (entry.getString("menses_started").equals("Yes"))
                         onPeriod = true;
+                    else
+                        onPeriod = false;
 
                     Boolean surveyComplete = entry.getBoolean("complete");
 
                     Boolean vaginaMucusSticky;
-                    if (entry.getString("vaginal_mucus_stretchy").equals("No"))
-                        vaginaMucusSticky = false;
-                    else
+                    if (entry.getString("vaginal_mucus_stretchy").equals("Yes"))
                         vaginaMucusSticky = true;
+                    else
+                        vaginaMucusSticky = false;
 
-                    Double temperature = Double.valueOf(entry.getString("basal_body_temp"));
+                    Double temperature;
+                    try {
+                        temperature = Double.parseDouble(entry.getString("basal_body_temp"));
+                    } catch (Exception e) {
+                        temperature = 0.0;
+                    }
 
                     Boolean passwordAccepted = entry.getBoolean("password_accepted");
 
                     Boolean usedCondom;
-                    if (entry.getString("used_condom").equals("No"))
-                        usedCondom = false;
-                    else
+                    if (entry.getString("used_condom").equals("Yes"))
                         usedCondom = true;
+                    else
+                        usedCondom = false;
 
                     String timeStarted = entry.getString("time_started");
                     String wentToMarket = entry.getString("went_to_market");
@@ -299,19 +329,29 @@ public class DataImportActivity extends ActionBarActivity {
                     Date date = format.parse(timeStarted);
 
                     Boolean isOvulating;
-                    if (entry.getString("ovulation_prediction").equals("Negative"))
-                        isOvulating = false;
-                    else
+                    if (entry.getString("ovulation_prediction").equals("Positive"))
                         isOvulating = true;
+                    else
+                        isOvulating = false;
 
                     SurveyResult sr = new SurveyResult(participant_id, date, temperature, vaginaMucusSticky, onPeriod, isOvulating, hadSex, usedCondom);
 
                     db.createSurveyResult (sr);
                 }
                 db.closeDB();
+
+                // Set up the date formatter
+                TimeZone tz = TimeZone.getTimeZone("UTC");
+                DateFormat df = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss");
+                df.setTimeZone(tz);
+                // Save the current date and time as the last time msurvey was checked
+                SharedPreferences settings = getPreferences(0);
+                SharedPreferences.Editor editor = settings.edit();
+                editor.putString("lastReadMsurvey", df.format(new Date(System.currentTimeMillis())));
+                editor.commit();
             } catch (JSONException e) {
                 e.printStackTrace();
-            // was getting parse exception error on format.parse(timeStarted) and adding this catch seemed to fix it
+                // was getting parse exception error on format.parse(timeStarted) and adding this catch seemed to fix it
             } catch (ParseException e) {
                 e.printStackTrace();
             }
@@ -383,6 +423,140 @@ public class DataImportActivity extends ActionBarActivity {
     }
     private void testDatabase() {
         AsyncTask<Void, String, Void> td = new TestDatabase().execute();
+    }
+
+    public boolean isExternalStorageWritable() {
+        String state = Environment.getExternalStorageState();
+        if (Environment.MEDIA_MOUNTED.equals(state)) {
+            return true;
+        }
+        return false;
+    }
+    class prepSDCard extends AsyncTask<Void, String, Void> {
+
+        @Override
+        protected Void doInBackground(Void... params) {
+            if (isExternalStorageWritable()) {
+                File[] dirs = getExternalFilesDirs(null);
+                if (!dirs[1].exists()) {
+                    dirs[1].mkdir();
+                }
+            }
+            return null;
+        }
+
+        @Override
+        protected void onPreExecute() {
+            super.onPreExecute();
+            statusUpdateArea.append("Preparing SD card...\n");
+            progressBar.setVisibility(View.VISIBLE);
+        }
+
+        @Override
+        protected void onPostExecute(Void aVoid) {
+            super.onPostExecute(aVoid);
+            statusUpdateArea.append("SD card is ready \n");
+            progressBar.setVisibility(View.INVISIBLE);
+        }
+    }
+    class BackupDatabase extends AsyncTask<Void, String, String> {
+
+        @Override
+        protected String doInBackground(Void... params) {
+            DatabaseHelper db = new DatabaseHelper(getApplicationContext());
+            try {
+                // Get all data from database
+                List<Participant> participants = db.getAllParticipants();
+                List<SurveyResult> surveyResults = db.getAllSurveyResults();
+                List<MemsCap> memsCaps = db.getAllMemsCap();
+                List<ViralLoad> viralLoads = db.getAllViralLoads();
+
+                if(isExternalStorageWritable()) {
+                    File[] dirs = getExternalFilesDirs(null);
+                    if(!dirs[1].exists()){
+                        dirs[1].mkdir();
+                    }
+                    File file = new File(dirs[1], "participant_backup.txt");
+                    file.createNewFile();
+                    OutputStream participantFile = new FileOutputStream(file);
+
+                    // Write participant file
+                    //FileOutputStream participantFile = openFileOutput("participant_backup.txt", Context.MODE_PRIVATE);
+                    for (Participant p : participants) {
+                        String gender = "0";
+                        if (p.isFemale())
+                            gender = "1";
+                        String string = p.getParticipantId() + ";" + gender + "\n";
+                        participantFile.write(string.getBytes());
+                    }
+                    participantFile.close();
+
+                    // Write survey results file
+                    file = new File(dirs[1], "surveyresult_backup.txt");
+                    OutputStream surveyResultFile = new FileOutputStream(file);
+                    for (SurveyResult sr : surveyResults) {
+                        String string = sr.getParticipant_id() + ";"
+                                + DateUtil.getStringFromDate(sr.getDate()) + ";"
+                                + sr.getTemperature() + ";"
+                                + sr.isVaginaMucusSticky() + ";"
+                                + sr.isOvulating() + ";"
+                                + sr.isOnPeriod() + ";"
+                                + sr.isHadSex() + ";"
+                                + sr.isUsedCondom() + "\n";
+                        surveyResultFile.write(string.getBytes());
+                    }
+                    surveyResultFile.close();
+
+                    // Write viral loads file
+                    file = new File(dirs[1], "viralload_backup.txt");
+                    OutputStream viralLoadsFile = new FileOutputStream(file);
+                    for (ViralLoad vl : viralLoads) {
+                        String string = vl.getParticipant_id() + ";"
+                                + vl.getVisit_id() + ";"
+                                + DateUtil.getStringFromDate(vl.getDate()) + ";"
+                                + vl.getNumber() + "\n";
+                        viralLoadsFile.write(string.getBytes());
+                    }
+                    viralLoadsFile.close();
+
+                    // Write mems file
+                    file = new File(dirs[1], "memscap_backup.txt");
+                    OutputStream memscapFile = new FileOutputStream(file);
+                    for (MemsCap mc : memsCaps) {
+                        String string = mc.getParticipant_id() + ";"
+                                + mc.getMems_id() + ";"
+                                + DateUtil.getStringFromDate(mc.getDate()) + "\n";
+                        memscapFile.write(string.getBytes());
+                    }
+                    memscapFile.close();
+                }
+            }
+            catch (Exception e) {
+                e.printStackTrace();
+                publishProgress("Backup failed.");
+            }
+            return null;
+        }
+
+        @Override
+        protected void onPreExecute() {
+            super.onPreExecute();
+            statusUpdateArea.append("Backing up database to SD card.\n");
+            progressBar.setVisibility(View.VISIBLE);
+        }
+
+        @Override
+        protected void onPostExecute(String s) {
+            super.onPostExecute(s);
+            statusUpdateArea.append("Done.\n");
+            progressBar.setVisibility(View.INVISIBLE);
+        }
+
+        @Override
+        protected void onProgressUpdate(String... values) {
+            super.onProgressUpdate(values);
+            statusUpdateArea.append(values[0] + "\n");
+        }
     }
 
     @Override

@@ -64,7 +64,7 @@ public  class CoupleSelectionFragment extends Fragment {
         // Inflate the layout for this fragment
 
         View view =  inflater.inflate(R.layout.fragment_couple_selection, container, false);
-        m_listview = (ListView)view.findViewById(R.id.listView);
+        m_listview = (ListView)view.findViewById(R.id.couple_list);
 
         db = new DatabaseHelper(getActivity().getApplicationContext());
         couple_ids = db.getAllCoupleIDs();

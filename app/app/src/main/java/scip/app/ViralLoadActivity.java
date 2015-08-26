@@ -49,8 +49,6 @@ public class ViralLoadActivity extends ActionBarActivity {
      * A fragment containing a bubble chart.
      */
     public static class PlaceholderFragment extends Fragment {
-
-
         private BubbleChartView chart;
         private BubbleChartData data;
         private boolean hasAxes = true;
@@ -58,6 +56,14 @@ public class ViralLoadActivity extends ActionBarActivity {
         private ValueShape shape = ValueShape.CIRCLE;
         private boolean hasLabelForSelected = false;
         private long couple_id;
+        private List<Participant> couple;
+        private long participant_id;
+        private Participant participant;
+        List<ViralLoad> viralLoadList = new ArrayList<ViralLoad>();
+        List<BubbleValue> values = new ArrayList<BubbleValue>();
+        List<AxisValue> axisValues = new ArrayList<AxisValue>();
+        List<AxisValue> axisYValues = new ArrayList<AxisValue>();
+        HashMap<Integer,String> monthMap;
 
         public PlaceholderFragment() {
         }
@@ -87,18 +93,24 @@ public class ViralLoadActivity extends ActionBarActivity {
 
 
         private void generateData() {
-            couple_id =  getActivity().getIntent().getLongExtra("couple_id", 0);
             chart.getBubbleChartData().setBubbleScale((float)0.1);
-            DatabaseHelper db = new DatabaseHelper(getActivity().getApplicationContext());
-            List<Participant> couple = db.getCoupleFromID(couple_id);
-            db.closeDB();
 
-            List<ViralLoad> viralLoadList = new ArrayList<ViralLoad>();
-            List<BubbleValue> values = new ArrayList<BubbleValue>();
-            List<AxisValue> axisValues = new ArrayList<AxisValue>();
-            List<AxisValue> axisYValues = new ArrayList<AxisValue>();
+            couple_id =  getActivity().getIntent().getLongExtra("couple_id", 0);
+            if(couple_id != 0) {
+                DatabaseHelper db = new DatabaseHelper(getActivity().getApplicationContext());
+                couple = db.getCoupleFromID(couple_id);
+                db.closeDB();
+                participant = null;
+            }
+            else {
+                participant_id =  getActivity().getIntent().getLongExtra("participant_id", 0);
+                DatabaseHelper db = new DatabaseHelper(getActivity().getApplicationContext());
+                participant = db.getParticipant(participant_id);
+                db.closeDB();
+                couple = null;
+            }
 
-            HashMap<Integer,String> monthMap = new HashMap<Integer,String>();
+            monthMap = new HashMap<Integer,String>();
             monthMap.put(1,"Jan");
             monthMap.put(2,"Feb");
             monthMap.put(3,"Mar");
@@ -112,70 +124,14 @@ public class ViralLoadActivity extends ActionBarActivity {
             monthMap.put(11,"Nov");
             monthMap.put(12,"Dec");
 
-
-
-            for(Participant participant:couple) {
-                if(participant.isIndex()) {
-                    viralLoadList = participant.getViralLoads();
-                        for (ViralLoad viralLoad:viralLoadList) {
-                            int year = 2015;
-                            if(viralLoad!=null) {
-                                Calendar calendar = Calendar.getInstance();
-                                Date date = viralLoad.getDate();
-
-                                float num = (float) viralLoad.getNumber();
-                                calendar.setTime(date);
-                                int month = calendar.get(Calendar.MONTH);
-                                if(calendar.get(Calendar.YEAR)>year) {
-                                    int diff = calendar.get(Calendar.YEAR) - year;
-                                    month = month + (12*diff);
-                                }
-                                if(calendar.get(Calendar.YEAR)<year){
-                                    int diff = year - calendar.get(Calendar.YEAR);
-                                    month = month*diff;
-                                }
-
-                                float bubbleSize = (float) viralLoad.getNumber();
-                                if(bubbleSize<=1000) {
-                                    bubbleSize = 15;
-
-                                }
-
-                                if(bubbleSize>1000 && bubbleSize<=10000) {
-                                    bubbleSize = 30;
-                                }
-
-                                if(bubbleSize>10000) {
-                                    bubbleSize = 45;
-                                }
-
-                                BubbleValue value = new BubbleValue((float) month, num, bubbleSize);
-
-                                if(num <1000) {
-                                    value.setColor(getResources().getColor(R.color.material_green_800));
-                                } else {
-                                    value.setColor(getResources().getColor(R.color.material_orange_800));
-                                }
-
-                                AxisValue axisValue = new AxisValue(month);
-                                AxisValue axisYValue = new AxisValue(num);
-                                axisValue.setLabel(monthMap.get(calendar.get(Calendar.MONTH)+1)+" "+calendar.get(Calendar.YEAR));
-                                axisYValue.setLabel(String.valueOf(num));
-                                axisValues.add(axisValue);
-                                axisYValues.add(axisYValue);
-
-                                value.setLabel(String.valueOf(viralLoad.getNumber()));
-                                value.setShape(shape);
-                                values.add(value);
-
-                            }
-
-                        }
-
-
-
-
+            if(couple != null) {
+                for (Participant participantInCouple : couple) {
+                    if(participantInCouple.isIndex())
+                        calculateValues(participantInCouple);
                 }
+            }
+            else {
+                calculateValues(participant);
             }
 
 
@@ -204,7 +160,63 @@ public class ViralLoadActivity extends ActionBarActivity {
 
         }
 
+        private void calculateValues(Participant participant) {
+            viralLoadList = participant.getViralLoads();
+            for (ViralLoad viralLoad:viralLoadList) {
+                int year = 2015;
+                if(viralLoad!=null) {
+                    Calendar calendar = Calendar.getInstance();
+                    Date date = viralLoad.getDate();
 
+                    float num = (float) viralLoad.getNumber();
+                    calendar.setTime(date);
+                    int month = calendar.get(Calendar.MONTH);
+                    if(calendar.get(Calendar.YEAR)>year) {
+                        int diff = calendar.get(Calendar.YEAR) - year;
+                        month = month + (12*diff);
+                    }
+                    if(calendar.get(Calendar.YEAR)<year){
+                        int diff = year - calendar.get(Calendar.YEAR);
+                        month = month*diff;
+                    }
+
+                    float bubbleSize = (float) viralLoad.getNumber();
+                    if(bubbleSize<=1000) {
+                        bubbleSize = 15;
+
+                    }
+
+                    if(bubbleSize>1000 && bubbleSize<=10000) {
+                        bubbleSize = 30;
+                    }
+
+                    if(bubbleSize>10000) {
+                        bubbleSize = 45;
+                    }
+
+                    BubbleValue value = new BubbleValue((float) month, num, bubbleSize);
+
+                    if(num <1000) {
+                        value.setColor(getResources().getColor(R.color.material_green_800));
+                    } else {
+                        value.setColor(getResources().getColor(R.color.material_orange_800));
+                    }
+
+                    AxisValue axisValue = new AxisValue(month);
+                    AxisValue axisYValue = new AxisValue(num);
+                    axisValue.setLabel(monthMap.get(calendar.get(Calendar.MONTH)+1)+" "+calendar.get(Calendar.YEAR));
+                    axisYValue.setLabel(String.valueOf(num));
+                    axisValues.add(axisValue);
+                    axisYValues.add(axisYValue);
+
+                    value.setLabel(String.valueOf(viralLoad.getNumber()));
+                    value.setShape(shape);
+                    values.add(value);
+
+                }
+
+            }
+        }
 
         private class ValueTouchListener implements BubbleChartOnValueSelectListener {
 
@@ -221,4 +233,3 @@ public class ViralLoadActivity extends ActionBarActivity {
         }
     }
 }
-

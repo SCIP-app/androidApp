@@ -68,6 +68,8 @@ public class NavigationDrawerFragment extends Fragment{
 
     }
 
+    
+
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -75,7 +77,7 @@ public class NavigationDrawerFragment extends Fragment{
         // Read in the flag indicating whether or not the user has demonstrated awareness of the
         // drawer. See PREF_USER_LEARNED_DRAWER for details.
         SharedPreferences sp = PreferenceManager.getDefaultSharedPreferences(getActivity());
-        mUserLearnedDrawer = sp.getBoolean(PREF_USER_LEARNED_DRAWER, false);
+        mUserLearnedDrawer = true;
 
         if (savedInstanceState != null) {
             mCurrentSelectedPosition = savedInstanceState.getInt(STATE_SELECTED_POSITION);
@@ -93,6 +95,8 @@ public class NavigationDrawerFragment extends Fragment{
         setHasOptionsMenu(true);
     }
 
+
+
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
@@ -107,10 +111,11 @@ public class NavigationDrawerFragment extends Fragment{
             }
         });
 
+
+
         mDrawerArrayList = new ArrayList<String>(Arrays.asList(new String[]{
                 getString(R.string.title_section1),
                 getString(R.string.title_section3),
-                getString(R.string.title_section4),
                 getString(R.string.title_section5),
                 getString(R.string.title_section6),
         }));
@@ -126,6 +131,8 @@ public class NavigationDrawerFragment extends Fragment{
         mDrawerListView.setItemChecked(mCurrentSelectedPosition, true);
         return mDrawerListView;
     }
+
+
 
     public boolean isDrawerOpen() {
         return mDrawerLayout != null && mDrawerLayout.isDrawerOpen(mFragmentContainerView);
@@ -146,6 +153,7 @@ public class NavigationDrawerFragment extends Fragment{
         // set up the drawer's list view with items and click listener
 
         ActionBar actionBar = getActionBar();
+        mDrawerLayout.setDrawerListener(mDrawerToggle);
         actionBar.setDisplayHomeAsUpEnabled(true);
         actionBar.setHomeButtonEnabled(true);
 
@@ -154,7 +162,7 @@ public class NavigationDrawerFragment extends Fragment{
         mDrawerToggle = new ActionBarDrawerToggle(
                 getActivity(),                    /* host Activity */
                 mDrawerLayout,                    /* DrawerLayout object */
-                R.drawable.ic_drawer,             /* nav drawer image to replace 'Up' caret */
+                R.drawable.ic_menu,             /* nav drawer image to replace 'Up' caret */
                 R.string.navigation_drawer_open,  /* "open drawer" description for accessibility */
                 R.string.navigation_drawer_close  /* "close drawer" description for accessibility */
         ) {
@@ -168,22 +176,33 @@ public class NavigationDrawerFragment extends Fragment{
                 getActivity().supportInvalidateOptionsMenu(); // calls onPrepareOptionsMenu()
             }
 
+
+
             @Override
             public void onDrawerOpened(View drawerView) {
                 super.onDrawerOpened(drawerView);
-                mDrawerArrayList.set(0, getString(R.string.title_section1).concat(String.valueOf(((DashboardActivity)getActivity()).getCouple_id())));
+                try {
+                    if ((((DashboardActivity) getActivity()) != null)) {
+                        if ((((DashboardActivity) getActivity()).getCouple_id() != 0)) {
+                            mDrawerArrayList.set(0,"Couple ID " +(String.valueOf(((DashboardActivity) getActivity()).getCouple_id())));
+                        }
+                    }
+                } catch(Exception e) {
+
+                }
+                try {
+                    if ((((ParticipantActivity) getActivity()) != null)) {
+                        if (((((ParticipantActivity) getActivity()).getParticipant_id() != 0))) {
+                            mDrawerArrayList.set(0, "Participant ID "+(String.valueOf(((ParticipantActivity) getActivity()).getParticipant_id())));
+
+                        }
+                    }
+                } catch(Exception e) {
+
+                }
                 mDrawerArrayAdapter.notifyDataSetChanged();
                 if (!isAdded()) {
                     return;
-                }
-
-                if (!mUserLearnedDrawer) {
-                    // The user manually opened the drawer; store this flag to prevent auto-showing
-                    // the navigation drawer automatically in the future.
-                    mUserLearnedDrawer = true;
-                    SharedPreferences sp = PreferenceManager
-                            .getDefaultSharedPreferences(getActivity());
-                    sp.edit().putBoolean(PREF_USER_LEARNED_DRAWER, true).apply();
                 }
 
                 getActivity().supportInvalidateOptionsMenu(); // calls onPrepareOptionsMenu()
@@ -231,6 +250,8 @@ public class NavigationDrawerFragment extends Fragment{
         }
     }
 
+
+
     @Override
     public void onDetach() {
         super.onDetach();
@@ -242,6 +263,7 @@ public class NavigationDrawerFragment extends Fragment{
         super.onSaveInstanceState(outState);
         outState.putInt(STATE_SELECTED_POSITION, mCurrentSelectedPosition);
     }
+
 
     @Override
     public void onConfigurationChanged(Configuration newConfig) {
@@ -261,16 +283,15 @@ public class NavigationDrawerFragment extends Fragment{
         super.onCreateOptionsMenu(menu, inflater);
     }
 
+
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
+        // Pass the event to ActionBarDrawerToggle, if it returns
+        // true, then it has handled the app icon touch event
         if (mDrawerToggle.onOptionsItemSelected(item)) {
             return true;
         }
-
-        if (item.getItemId() == R.id.action_example) {
-            Toast.makeText(getActivity(), "Example action.", Toast.LENGTH_SHORT).show();
-            return true;
-        }
+        // Handle your other action bar items...
 
         if(item.getTitle().toString().contains(mDrawerArrayList.get(1))) {
             Intent endSession = new Intent(getActivity(), SessionSelectionActivity.class);
@@ -280,7 +301,6 @@ public class NavigationDrawerFragment extends Fragment{
 
         return super.onOptionsItemSelected(item);
     }
-
     /**
      * Per the navigation drawer design guidelines, updates the action bar to show the global app
      * 'context', rather than just what's in the current screen.
@@ -289,7 +309,6 @@ public class NavigationDrawerFragment extends Fragment{
         ActionBar actionBar = getActionBar();
         actionBar.setDisplayShowTitleEnabled(true);
         actionBar.setNavigationMode(ActionBar.NAVIGATION_MODE_STANDARD);
-        actionBar.setTitle(R.string.app_name);
     }
 
     private ActionBar getActionBar() {

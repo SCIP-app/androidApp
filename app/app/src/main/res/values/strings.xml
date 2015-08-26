@@ -10,7 +10,7 @@
     <string name="title_activity_dashboard">Dashboard</string>
     <string name="title_section1">Couple #</string>
     <string name="title_section2">Add Couple Notes</string>
-    <string name="title_section3">End Couple Session</string>
+    <string name="title_section3">End Session</string>
     <string name="title_section4">Home Page</string>
     <string name="title_section5">Report a Problem</string>
     <string name="title_section6">Logout</string>
@@ -25,6 +25,8 @@
     <string name="show_dialog">Show Dialog</string>
     <string name="undo">Undo</string>
     <string name="title_activity_viral_load">Viral Load</string>
+    <string name="title_activity_participant">ParticipantActivity</string>
+
 
 
 </resources>
