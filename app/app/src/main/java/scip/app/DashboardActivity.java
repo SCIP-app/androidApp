@@ -1,6 +1,8 @@
 package scip.app;
 
 import android.app.Activity;
+import android.app.AlertDialog;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.ActionBarActivity;
@@ -42,6 +44,12 @@ public class DashboardActivity extends ActionBarActivity
     long couple_id;
 
     FragmentTransaction fragmentTransaction = null;
+    private void endSession() {
+        Intent intent = new Intent(this, SessionSelectionActivity.class);
+        startActivity(intent);
+    }
+
+
 
 
     @Override
@@ -69,6 +77,23 @@ public class DashboardActivity extends ActionBarActivity
                 Log.d("# of MemsCaps", String.valueOf(length));
             }
         }
+        if (couple.size() > 2) {
+            AlertDialog.Builder builder = new AlertDialog.Builder(this);
+            builder.setMessage(R.string.couple_num_error_message)
+                    .setPositiveButton(R.string.couple_num_error_positive, new DialogInterface.OnClickListener() {
+                        public void onClick(DialogInterface dialog, int id) {
+                            // Do nothing and let them continue
+                        }
+                    })
+                    .setNegativeButton(R.string.couple_num_error_negative, new DialogInterface.OnClickListener() {
+                        public void onClick(DialogInterface dialog, int id) {
+                            endSession();
+                        }
+                    });
+            // Create the AlertDialog object and return it
+            AlertDialog alert = builder.create();
+            alert.show();
+        }
 
         mNavigationDrawerFragment = (NavigationDrawerFragment)
                 getSupportFragmentManager().findFragmentById(R.id.navigation_drawer);
@@ -81,6 +106,7 @@ public class DashboardActivity extends ActionBarActivity
 
 
     }
+
 
     public List<Participant> getCouple() {
         return couple;
@@ -109,8 +135,12 @@ public class DashboardActivity extends ActionBarActivity
                 fragmentTransaction.commit();
                 break;
             case 1:
-                Intent intent = new Intent(this,SessionSelectionActivity.class);
-                startActivity(intent);
+                Intent sessionIntent = new Intent(this,SessionSelectionActivity.class);
+                startActivity(sessionIntent);
+                break;
+            case 2:
+                Intent loginIntent = new Intent(this,LoginActivity.class);
+                startActivity(loginIntent);
                 break;
 
             default:

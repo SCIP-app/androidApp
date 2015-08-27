@@ -157,15 +157,12 @@ public class ViralLoadActivity extends AppCompatActivity implements OnSeekBarCha
         ScatterDataSet set1 = new ScatterDataSet(yVals1, "Viral load >1000");
         set1.setScatterShape(ScatterShape.CIRCLE);
         set1.setColor(getResources().getColor(R.color.material_orange_800));
-
         set1.setScatterShapeSize(40f);
 
         ScatterDataSet set2 = new ScatterDataSet(yVals2, "Viral load <1000");
         set2.setScatterShape(ScatterShape.CIRCLE);
         set2.setColor(getResources().getColor(R.color.material_green_800));
         set2.setScatterShapeSize(40f);
-
-        set1.setScatterShapeSize(40f);
 
 
         ArrayList<ScatterDataSet> dataSets = new ArrayList<ScatterDataSet>();
