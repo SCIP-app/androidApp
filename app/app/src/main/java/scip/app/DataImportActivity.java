@@ -60,12 +60,19 @@ import scip.app.models.SurveyResult;
 import scip.app.models.ViralLoad;
 import java.util.concurrent.TimeUnit;
 import scip.app.models.DateUtil;
+import android.app.Application;
+import com.google.android.gms.analytics.GoogleAnalytics;
+import com.google.android.gms.analytics.HitBuilders;
+import com.google.android.gms.analytics.Logger;
+import com.google.android.gms.analytics.Tracker;
+
 
 public class DataImportActivity extends ActionBarActivity {
     EditText statusUpdateArea;
     ProgressBar progressBar;
     TextView welcomeMessage;
     String user;
+    Tracker mTracker;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -77,6 +84,8 @@ public class DataImportActivity extends ActionBarActivity {
         progressBar.setVisibility(View.INVISIBLE);
         welcomeMessage = (TextView)findViewById(R.id.WelcomeMessageTextView);
         welcomeMessage.append(user);
+        AnalyticsApplication application = (AnalyticsApplication) getApplication();
+        mTracker = application.getDefaultTracker();
         final Button importLocalData = (Button)findViewById(R.id.ImportLocalDataButon);
         final Button importMSurveyData = (Button) findViewById(R.id.ImportMSurveyDataButton);
         final Button importDatabaseBackup = (Button) findViewById(R.id.ImportDatabaseBackupButton);
@@ -157,6 +166,8 @@ public class DataImportActivity extends ActionBarActivity {
 
     class RetrieveLocalData extends AsyncTask<Boolean, String, Void> {
 
+        private String TAG;
+
         @Override
         protected Void doInBackground(Boolean... useLocal) {
             CSVImporter csvImporter = new CSVImporter(getApplicationContext());
@@ -180,6 +191,12 @@ public class DataImportActivity extends ActionBarActivity {
                 publishProgress("Error Processing Files");
             }
 
+            mTracker.send(new HitBuilders.EventBuilder()
+                    .setCategory("Data Uploaded")
+                    .setAction("Upload successful")
+                    .setLabel(user)
+                    .setValue(1)
+                    .build());
             return null;
         }
 
@@ -370,7 +387,7 @@ public class DataImportActivity extends ActionBarActivity {
                     JSONObject entry = data.getJSONObject(i);
                     Long participantId = entry.getLong("participantID");
                     Boolean isFemale = false;
-                    if(entry.getString("gender").equals("female"))
+                    if (entry.getString("gender").equals("female"))
                         isFemale = true;
                     if(db.createParticipant(new Participant(participantId, isFemale)))
                         count++;
@@ -408,7 +425,6 @@ public class DataImportActivity extends ActionBarActivity {
                 publishProgress(newParticipantCount + " participant records added");
             if(newSurveyResultsCount != -1)
                 publishProgress(newSurveyResultsCount + " survey result records added");
-
 
             return null;
         }

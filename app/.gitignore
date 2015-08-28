@@ -10,3 +10,4 @@
 /.idea/vcs.xml
 /app/src/main/res/raw/msurvey_key
 /app/src/main/res/raw/users
+/app/google-services.json
