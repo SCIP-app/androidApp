@@ -96,7 +96,6 @@ public class CustomizedCalendarCellAdapter extends CaldroidGridAdapter {
         int rightPadding = cellView.getPaddingRight();
 
         TextView tv1 = (TextView) cellView.findViewById(R.id.tv1);
-        // TextView tv2 = (TextView) cellView.findViewById(R.id.tv2);
 
         tv1.setTextColor(Color.BLACK);
 
@@ -160,18 +159,20 @@ public class CustomizedCalendarCellAdapter extends CaldroidGridAdapter {
             PeakFertility fertility = female.getPeakFertility();
             if(fertility!=null) {
                 List<Date> fertilityWindow = fertility.getPeakFertilityWindow();
-                for(Date fertilityVal:fertilityWindow) {
-                    Calendar fertilityCalendar = Calendar.getInstance();
-                    fertilityCalendar.setTime(fertilityVal);
+                if(fertilityWindow.size()>0) {
+                    for (Date fertilityVal : fertilityWindow) {
+                        Calendar fertilityCalendar = Calendar.getInstance();
+                        fertilityCalendar.setTime(fertilityVal);
 
-                    if((fertilityCalendar.get(Calendar.MONTH) == (dateTime.getMonth()-1)) && (fertilityCalendar.get(Calendar.YEAR) == dateTime.getYear()) && (fertilityCalendar.get(Calendar.DAY_OF_MONTH) == dateTime.getDay())){
-                        cellView.setBackgroundResource(R.drawable.cellborder);
+                        if ((fertilityCalendar.get(Calendar.MONTH) == (dateTime.getMonth() - 1)) && (fertilityCalendar.get(Calendar.YEAR) == dateTime.getYear()) && (fertilityCalendar.get(Calendar.DAY_OF_MONTH) == dateTime.getDay())) {
+                            cellView.setBackgroundResource(R.drawable.cellborder);
+                        }
+
                     }
-
                 }
             }
 
-            if(surveyResults != null)  {
+            if(surveyResults != null && surveyResults.size()>0)  {
                 for (SurveyResult surveyResult : surveyResults) {
                     calendar.setTime(surveyResult.getDate());
                     if ((calendar.get(Calendar.MONTH) == dateTime.getMonth() - 1) && (calendar.get(Calendar.YEAR) == dateTime.getYear()) && (calendar.get(Calendar.DAY_OF_MONTH) == dateTime.getDay())) {
@@ -182,7 +183,7 @@ public class CustomizedCalendarCellAdapter extends CaldroidGridAdapter {
                             if (surveyResult.isHadSex() && !surveyResult.isUsedCondom() && sexCheck.isChecked()) {
                                 unprotectedSex.setVisibility(View.VISIBLE);
                             }
-                            if (surveyResult.getTemperature() >= 97.8 && htempCheck.isChecked()) {
+                            if ((surveyResult.getTemperature() >= 36.6) && htempCheck.isChecked()) {
                                 htemp.setVisibility(View.VISIBLE);
                             }
                             if (surveyResult.isVaginaMucusSticky() && sfluidCheck.isChecked()) {

@@ -119,7 +119,8 @@ public class CalendarViewActivity extends ActionBarActivity {
         }
         db.closeDB();
 
-        TextView nextPeakFertilityTextView = (TextView) findViewById(R.id.peakFertilityValue);
+        TextView nextPeakFertilityTextView1 = (TextView) findViewById(R.id.peakFertilityValue1);
+        TextView nextPeakFertilityTextView2 = (TextView) findViewById(R.id.peakFertilityValue2);
         TextView averageCycle = (TextView) findViewById(R.id.AvgCycleValue);
 
         if(couple!=null) {
@@ -136,9 +137,11 @@ public class CalendarViewActivity extends ActionBarActivity {
 
         if (female!=null && female.getPeakFertility() != null) {
             List<Date> fertilityWindow = female.getPeakFertility().getPeakFertilityWindow();
-            if (fertilityWindow != null && fertilityWindow.size() == 4) {
-                String fertility = formatter.format(fertilityWindow.get(0)) + " - " + formatter.format(fertilityWindow.get(fertilityWindow.size() - 1));
-                nextPeakFertilityTextView.setText(fertility);
+            if (fertilityWindow != null && fertilityWindow.size() == 8) {
+                String fertility_range_1 = formatter.format(fertilityWindow.get(0)) + " - " + formatter.format(fertilityWindow.get(3));
+                String fertility_range_2 = formatter.format(fertilityWindow.get(0)) + " - " + formatter.format(fertilityWindow.get(fertilityWindow.size()-1));
+                nextPeakFertilityTextView1.setText(fertility_range_1);
+                nextPeakFertilityTextView2.setText(fertility_range_2);
             }
             if (female.getPeakFertility().getAverageCycleLength() != -1) {
                 String averageCycleValue = String.valueOf((int) female.getPeakFertility().getAverageCycleLength());
@@ -270,7 +273,7 @@ public class CalendarViewActivity extends ActionBarActivity {
 
                 if (participant != null) {
                     if (!participant.isIndex()) {
-                        if (participant.getMemscaps() != null) {
+                        if (participant.getMemscaps() != null && participant.getMemscaps().size()>0) {
                             for (MemsCap memsCap : participant.getMemscaps()) {
                                 if (date.compareTo(memsCap.getDate()) == 0) {
                                     prepPopupImage.setVisibility(View.VISIBLE);
@@ -292,7 +295,7 @@ public class CalendarViewActivity extends ActionBarActivity {
                         cycleDayInCycleText.setText(String.valueOf(dayInCycle));
 
                     }
-                    if (female.getSurveyResults() != null) {
+                    if (female.getSurveyResults() != null && female.getSurveyResults().size()>0) {
                         for (SurveyResult surveyResult : female.getSurveyResults()) {
                             if (date.compareTo(surveyResult.getDate()) == 0) {
 
@@ -304,7 +307,7 @@ public class CalendarViewActivity extends ActionBarActivity {
                                     sexPopupImage.setVisibility(View.VISIBLE);
                                     sexPopupText.setVisibility(View.VISIBLE);
                                 }
-                                if (surveyResult.getTemperature() >= 97.8) {
+                                if (surveyResult.getTemperature() >= 36.6) {
                                     htempPopUpIcon.setVisibility(View.VISIBLE);
                                     htempPopUpText.setVisibility(View.VISIBLE);
                                 }

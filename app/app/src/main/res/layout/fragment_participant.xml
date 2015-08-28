@@ -11,7 +11,7 @@
         android:id="@+id/ParticipantPeriodCycleLabel"
         android:layout_gravity="bottom|left|top"
         android:layout_marginLeft="440dp"
-        android:layout_marginTop="560dp"
+        android:layout_marginTop="550dp"
         android:visibility="visible" />
 
     <TextView
@@ -29,9 +29,19 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:textAppearance="?android:attr/textAppearanceMedium"
-        android:id="@+id/Participant_peak_fertility"
+        android:id="@+id/Participant_peak_fertility_1"
         android:layout_gravity="left|top"
-        android:layout_marginTop="560dp"
+        android:layout_marginTop="535dp"
+        android:layout_marginLeft="610dp"
+        android:text="Data not available" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textAppearance="?android:attr/textAppearanceMedium"
+        android:id="@+id/Participant_peak_fertility_2"
+        android:layout_gravity="left|top"
+        android:layout_marginTop="563dp"
         android:layout_marginLeft="610dp"
         android:text="Data not available" />
 

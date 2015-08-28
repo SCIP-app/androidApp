@@ -104,7 +104,7 @@ public class ViralLoadActivity extends AppCompatActivity implements OnSeekBarCha
                         int count1 = 0;
                         int count2 = 0;
                         for(ViralLoad viralLoad:viralLoadList) {
-                            if(viralLoad.getNumber()<1000) {
+                            if(viralLoad.getNumber()<400) {
                                 yVals2.add(new Entry(viralLoad.getNumber(),count1));
                                 count1++;
                             } else {

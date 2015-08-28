@@ -20,16 +20,26 @@
         android:text="              Next Cycle : "
         android:id="@+id/NextCycleLabel"
         android:layout_marginLeft="440dp"
-        android:layout_marginTop="590dp"
+        android:layout_marginTop="600dp"
         android:textAlignment="gravity" />
 
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:textAppearance="?android:attr/textAppearanceMedium"
-        android:id="@+id/Peak_Fertility"
+        android:id="@+id/Peak_Fertility_1"
         android:layout_gravity="left|top"
-        android:layout_marginTop="560dp"
+        android:layout_marginTop="545dp"
+        android:layout_marginLeft="610dp"
+        android:text="Data not available" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textAppearance="?android:attr/textAppearanceMedium"
+        android:id="@+id/Peak_Fertility_2"
+        android:layout_gravity="left|top"
+        android:layout_marginTop="570dp"
         android:layout_marginLeft="610dp"
         android:text="Data not available" />
 
@@ -39,7 +49,7 @@
         android:textAppearance="?android:attr/textAppearanceMedium"
         android:id="@+id/Next_Cycle"
         android:layout_gravity="left|top"
-        android:layout_marginTop="590dp"
+        android:layout_marginTop="600dp"
         android:layout_marginLeft="610dp"
         android:text="Data not available" />
 

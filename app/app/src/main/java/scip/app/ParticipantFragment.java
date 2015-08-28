@@ -25,7 +25,8 @@ import scip.app.models.ViralLoad;
 
 
 public class ParticipantFragment extends Fragment {
-    TextView peakFertilityText;
+    TextView peakFertilityText_1;
+    TextView peakFertilityText_2;
     TextView nextCycleText ;
     ImageButton calendarButton;
     ImageButton artButton;
@@ -48,7 +49,8 @@ public class ParticipantFragment extends Fragment {
         View view = inflater.inflate(R.layout.fragment_participant,
                 container, false);
 
-        peakFertilityText = (TextView) view.findViewById(R.id.Participant_peak_fertility);
+        peakFertilityText_1 = (TextView) view.findViewById(R.id.Participant_peak_fertility_1);
+        peakFertilityText_2 = (TextView) view.findViewById(R.id.Participant_peak_fertility_2);
         nextCycleText = (TextView) view.findViewById(R.id.Participant_Next_Cycle);
         calendarButton = (ImageButton) view.findViewById(R.id.Participant_Calendar_Button);
         calendarText = (TextView) view.findViewById(R.id.caltext);
@@ -102,13 +104,15 @@ public class ParticipantFragment extends Fragment {
                     if (participant.getPeakFertility() != null) {
                         List<Date> nextPeakFertilityValues = participant.getPeakFertility().getPeakFertilityWindow();
                         List<Date> nextCycleDates = participant.getPeakFertility().getNextCycleDates();
-                        peakFertilityText.setVisibility(View.VISIBLE);
+                        peakFertilityText_1.setVisibility(View.VISIBLE);
+                        peakFertilityText_2.setVisibility(View.VISIBLE);
                         nextCycleText.setVisibility(View.VISIBLE);
 
-                        if (nextPeakFertilityValues != null && nextPeakFertilityValues.size() == 4) {
-                            String fertilityRange = formatter.format(nextPeakFertilityValues.get(0)) + " - " + formatter.format(nextPeakFertilityValues.get(nextPeakFertilityValues.size() - 1));
-                            peakFertilityText.setText(fertilityRange);
-
+                        if (nextPeakFertilityValues != null && nextPeakFertilityValues.size() == 8) {
+                            String fertilityRange_1 = formatter.format(nextPeakFertilityValues.get(0)) + " - " + formatter.format(nextPeakFertilityValues.get(3));
+                            String fertilityRange_2 = formatter.format(nextPeakFertilityValues.get(4)) + " - " + formatter.format(nextPeakFertilityValues.get(nextPeakFertilityValues.size() - 1));
+                            peakFertilityText_1.setText(fertilityRange_1);
+                            peakFertilityText_2.setText(fertilityRange_2);
                         }
 
                         if (nextCycleDates != null && nextCycleDates.size() == 2) {
