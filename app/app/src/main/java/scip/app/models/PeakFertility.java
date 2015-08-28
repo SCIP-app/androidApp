@@ -93,6 +93,10 @@ public class PeakFertility {
             // return a list of the 4 days before the next ovulation
             for(int i = -4; i < 0; i++)
                 window.add(DateUtil.addDays(nextOvulationStart, i));
+            // also return the one after that
+            Date twoMonthsOutStart = DateUtil.addDays(nextOvulationStart, (int)averageCycleLength);
+            for(int i = -4; i < 0; i++)
+                window.add(DateUtil.addDays(twoMonthsOutStart, i));
             return window;
         }
         return new ArrayList<>();
