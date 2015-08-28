@@ -141,7 +141,7 @@ public class LoginActivity extends ActionBarActivity {
         SharedPreferences settings = getPreferences(0);
         if(!settings.getBoolean("loginsSet", false)) {
             // process the logins file
-            Log.d("Login", "Reading passwords");
+            //Log.d("Login", "Reading passwords");
             SharedPreferences.Editor editor = settings.edit();
             BufferedReader reader = new BufferedReader(new InputStreamReader(getApplicationContext().getResources().openRawResource(R.raw.users)));
             try {
@@ -152,14 +152,14 @@ public class LoginActivity extends ActionBarActivity {
                 }
             }
             catch (Exception e) {
-                Log.d("Login", "exception in reading");
+                //Log.d("Login", "exception in reading");
             }
             editor.putBoolean("loginsSet", true);
             editor.commit();
         }
-        Log.d("Username", username);
-        Log.d("Password", password);
-        Log.d("password stored", settings.getString(username, "BLANK"));
+        //Log.d("Username", username);
+        //Log.d("Password", password);
+        //Log.d("password stored", settings.getString(username, "BLANK"));
 
         // Check for the username, if it doesn't exist, say the login isn't valid
         // Check if the password matches, if not, login isn't valid
