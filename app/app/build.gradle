@@ -1,4 +1,5 @@
 apply plugin: 'com.android.application'
+apply plugin: 'com.google.gms.google-services'
 
 android {
     compileSdkVersion 21
@@ -35,4 +36,5 @@ dependencies {
     compile 'com.github.PhilJay:MPAndroidChart:v2.1.3'
     compile 'com.android.support:design:22.2.0'
     compile 'com.roomorama:caldroid:2.1.0'
+    compile 'com.google.android.gms:play-services-analytics:7.3.0'
 }
