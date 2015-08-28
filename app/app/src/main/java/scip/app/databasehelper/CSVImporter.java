@@ -80,8 +80,8 @@ public class CSVImporter {
         Integer count = 0;
         DatabaseHelper db = new DatabaseHelper(context);
         for(String[] entry : participantList) {
-            Log.d("Participant Id", entry[0]);
-            Log.d("isFemale", "'"+entry[1]+"'");
+            //Log.d("Participant Id", entry[0]);
+            //Log.d("isFemale", "'"+entry[1]+"'");
 
             long participant_id = Long.parseLong(entry[0]);
             boolean isFemale = false;
@@ -152,7 +152,7 @@ public class CSVImporter {
 
             // If the SD card exists, it will be located the second directory in the list of available directories
             for(File f : externalDirs[1].listFiles()) {
-                Log.d("File ", f.getName());
+                //Log.d("File ", f.getName());
                 if(f.getName().contains("memscap") && !f.getName().contains("backup")) {
                     CSVFile csvFile = new CSVFile(f);
                     List<String[]> memsList = csvFile.read();
@@ -188,7 +188,7 @@ public class CSVImporter {
 
             // If the SD card exists, it will be located the second directory in the list of available directories
             for(File f : externalDirs[1].listFiles()) {
-                Log.d("File ", f.getName());
+                //Log.d("File ", f.getName());
                 // only read in backup files
                 if(f.getName().contains("backup")) {
                     if (f.getName().contains("memscap")) {

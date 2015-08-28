@@ -81,7 +81,7 @@ public class CalendarViewActivity extends ActionBarActivity {
         participant_id = getIntent().getLongExtra("participant_id", 0);
         DatabaseHelper db = new DatabaseHelper(getApplicationContext());
         if(couple_id !=0) {
-            Log.d("couple", "got couple");
+            //Log.d("couple", "got couple");
             couple = db.getCoupleFromID(couple_id);
             if(couple.size() > 2) {
                 AlertDialog.Builder builder = new AlertDialog.Builder(this);
@@ -114,7 +114,7 @@ public class CalendarViewActivity extends ActionBarActivity {
             }
         }
         else {
-            Log.d("couple", "got participant");
+            //Log.d("couple", "got participant");
             participant = null;
         }
         db.closeDB();
