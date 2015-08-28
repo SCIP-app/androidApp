@@ -269,7 +269,7 @@ public class DatabaseHelper extends SQLiteOpenHelper{
 //            }
 //
 //        }
-        Log.d("DB", "Skipping existing participant");
+        //Log.d("DB", "Skipping existing participant");
         return false;
 
     }
@@ -280,7 +280,7 @@ public class DatabaseHelper extends SQLiteOpenHelper{
         String selectQuery = "SELECT  * FROM " + TABLE_PARTICIPANTS + " WHERE "
                 + KEY_PARTICIPANT_ID + " = " + participant_id;
 
-        Log.e(LOG, selectQuery);
+        //Log.e(LOG, selectQuery);
 
         Cursor c = db.rawQuery(selectQuery, null);
 
@@ -298,7 +298,7 @@ public class DatabaseHelper extends SQLiteOpenHelper{
         List<Participant> participants = new ArrayList<Participant>();
         String selectQuery = "SELECT  * FROM " + TABLE_PARTICIPANTS;
 
-        Log.e(LOG, selectQuery);
+        //Log.e(LOG, selectQuery);
 
         SQLiteDatabase db = this.getReadableDatabase();
         Cursor c = db.rawQuery(selectQuery, null);
@@ -323,7 +323,7 @@ public class DatabaseHelper extends SQLiteOpenHelper{
         List<Long> participants = new ArrayList<>();
         String selectQuery = "SELECT  * FROM " + TABLE_PARTICIPANTS;
 
-        Log.e(LOG, selectQuery);
+        //Log.e(LOG, selectQuery);
 
         SQLiteDatabase db = this.getReadableDatabase();
         Cursor c = db.rawQuery(selectQuery, null);
@@ -345,7 +345,7 @@ public class DatabaseHelper extends SQLiteOpenHelper{
         List<Long> couples = new ArrayList<>();
         String selectQuery = "SELECT  * FROM " + TABLE_PARTICIPANTS;
 
-        Log.e(LOG, selectQuery);
+        //Log.e(LOG, selectQuery);
 
         SQLiteDatabase db = this.getReadableDatabase();
         Cursor c = db.rawQuery(selectQuery, null);
@@ -368,7 +368,7 @@ public class DatabaseHelper extends SQLiteOpenHelper{
         List<Participant> couple = new ArrayList<>();
         String selectQuery = "SELECT  * FROM " + TABLE_PARTICIPANTS;
 
-        Log.e(LOG, selectQuery);
+        //Log.e(LOG, selectQuery);
 
         SQLiteDatabase db = this.getReadableDatabase();
         Cursor c = db.rawQuery(selectQuery, null);
@@ -418,7 +418,7 @@ public class DatabaseHelper extends SQLiteOpenHelper{
                 return false;
             }
         }
-        Log.d("DB", "Skipping existing viral load");
+        //Log.d("DB", "Skipping existing viral load");
         return false;
     }
 
@@ -426,7 +426,7 @@ public class DatabaseHelper extends SQLiteOpenHelper{
         List<ViralLoad> viralLoads = new ArrayList<>();
         String selectQuery = "SELECT  * FROM " + TABLE_VIRAL_LOADS;
 
-        Log.e(LOG, selectQuery);
+        //Log.e(LOG, selectQuery);
 
         SQLiteDatabase db = this.getReadableDatabase();
         Cursor c = db.rawQuery(selectQuery, null);
@@ -455,7 +455,7 @@ public class DatabaseHelper extends SQLiteOpenHelper{
         String selectQuery = "SELECT  * FROM " + TABLE_VIRAL_LOADS + " WHERE "
                 + KEY_PARTICIPANT_ID + " = " + participant_id;
 
-        Log.e(LOG, selectQuery);
+        //Log.e(LOG, selectQuery);
 
         SQLiteDatabase db = this.getReadableDatabase();
         Cursor c = db.rawQuery(selectQuery, null);
@@ -509,7 +509,7 @@ public class DatabaseHelper extends SQLiteOpenHelper{
                 return false;
             }
         }
-        Log.d("DB", "Skipping existing survey result");
+        //Log.d("DB", "Skipping existing survey result");
         return false;
 
     }
@@ -519,7 +519,7 @@ public class DatabaseHelper extends SQLiteOpenHelper{
         String selectQuery = "SELECT  * FROM " + TABLE_SURVEY_RESULTS + " WHERE "
                 + KEY_PARTICIPANT_ID + " = " + participant_id;
 
-        Log.e(LOG, selectQuery);
+        //Log.e(LOG, selectQuery);
 
         SQLiteDatabase db = this.getReadableDatabase();
         Cursor c = db.rawQuery(selectQuery, null);
@@ -550,7 +550,7 @@ public class DatabaseHelper extends SQLiteOpenHelper{
         List<SurveyResult> surveyResults = new ArrayList<>();
         String selectQuery = "SELECT  * FROM " + TABLE_SURVEY_RESULTS;
 
-        Log.e(LOG, selectQuery);
+        //Log.e(LOG, selectQuery);
 
         SQLiteDatabase db = this.getReadableDatabase();
         Cursor c = db.rawQuery(selectQuery, null);
@@ -603,7 +603,7 @@ public class DatabaseHelper extends SQLiteOpenHelper{
                 return false;
             }
         }
-        Log.d("DB", "Skipping existing memscap");
+        //Log.d("DB", "Skipping existing memscap");
         return false;
     }
 
@@ -612,7 +612,7 @@ public class DatabaseHelper extends SQLiteOpenHelper{
         String selectQuery = "SELECT  * FROM " + TABLE_MEMS_CAP + " WHERE "
                 + KEY_PARTICIPANT_ID + " = " + participant_id;
 
-        Log.e(LOG, selectQuery);
+        //Log.e(LOG, selectQuery);
 
         SQLiteDatabase db = this.getReadableDatabase();
         Cursor c = db.rawQuery(selectQuery, null);
@@ -638,7 +638,7 @@ public class DatabaseHelper extends SQLiteOpenHelper{
         List<MemsCap> prepAdherence = new ArrayList<MemsCap>();
         String selectQuery = "SELECT  * FROM " + TABLE_MEMS_CAP;
 
-        Log.e(LOG, selectQuery);
+        //Log.e(LOG, selectQuery);
 
         SQLiteDatabase db = this.getReadableDatabase();
         Cursor c = db.rawQuery(selectQuery, null);

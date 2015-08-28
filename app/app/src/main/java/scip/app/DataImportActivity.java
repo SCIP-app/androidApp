@@ -270,7 +270,7 @@ public class DataImportActivity extends ActionBarActivity {
                 r.close();
 
                 HttpGet request = new HttpGet(url.toString());
-                Log.d("request", url.toString());
+                //Log.d("request", url.toString());
                 request.addHeader("TOKEN", key);
                 ResponseHandler<String> handler = new BasicResponseHandler();
                 try {

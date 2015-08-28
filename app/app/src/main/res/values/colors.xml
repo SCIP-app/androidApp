@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <color name="material_blue_500">#5677fc</color>
+    <color name="material_white_500">#ffffff</color>
     <color name="material_green_800">#00695C</color>
     <color name="material_orange_800">#D84315</color>
     <color name="color_period">#D5573C</color>
