@@ -50,6 +50,8 @@ public class DashboardActivity extends ActionBarActivity
     }
 
 
+
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -105,6 +107,7 @@ public class DashboardActivity extends ActionBarActivity
 
     }
 
+
     public List<Participant> getCouple() {
         return couple;
     }
@@ -132,8 +135,12 @@ public class DashboardActivity extends ActionBarActivity
                 fragmentTransaction.commit();
                 break;
             case 1:
-                Intent intent = new Intent(this,SessionSelectionActivity.class);
-                startActivity(intent);
+                Intent sessionIntent = new Intent(this,SessionSelectionActivity.class);
+                startActivity(sessionIntent);
+                break;
+            case 2:
+                Intent loginIntent = new Intent(this,LoginActivity.class);
+                startActivity(loginIntent);
                 break;
 
             default:
