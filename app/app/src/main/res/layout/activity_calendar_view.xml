@@ -142,19 +142,12 @@
         android:layout_height="wrap_content"
         android:layout_below="@id/TopContent"
         android:orientation = "vertical">
-    <TextView
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:id="@+id/monthLabel"
-        android:textSize="16dp"
-        android:gravity="center_horizontal" />
 
     <FrameLayout
         android:id="@+id/calendar1"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:orientation="horizontal"
-        android:layout_below="@id/monthLabel"
         >
     </FrameLayout>
     </LinearLayout>

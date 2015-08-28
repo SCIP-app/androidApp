@@ -139,7 +139,7 @@ public class CalendarViewActivity extends ActionBarActivity {
             List<Date> fertilityWindow = female.getPeakFertility().getPeakFertilityWindow();
             if (fertilityWindow != null && fertilityWindow.size() == 8) {
                 String fertility_range_1 = formatter.format(fertilityWindow.get(0)) + " - " + formatter.format(fertilityWindow.get(3));
-                String fertility_range_2 = formatter.format(fertilityWindow.get(0)) + " - " + formatter.format(fertilityWindow.get(fertilityWindow.size()-1));
+                String fertility_range_2 = formatter.format(fertilityWindow.get(4)) + " - " + formatter.format(fertilityWindow.get(fertilityWindow.size()-1));
                 nextPeakFertilityTextView1.setText(fertility_range_1);
                 nextPeakFertilityTextView2.setText(fertility_range_2);
             }
@@ -330,9 +330,9 @@ public class CalendarViewActivity extends ActionBarActivity {
 
             @Override
             public void onChangeMonth(int month, int year) {
-                String text = monthMap.get(month) + " " + year;
-                TextView monthText = (TextView) findViewById(R.id.monthLabel);
-                monthText.setText(text);
+               // String text = monthMap.get(month) + " " + year;
+                //TextView monthText = (TextView) findViewById(R.id.monthLabel);
+                //monthText.setText(text);
             }
 
             @Override
