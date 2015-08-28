@@ -134,15 +134,15 @@ public class ParticipantFragment extends Fragment {
                         if (participant.isIndex()) {
                             calendarButton.setX(160);
                             calendarButton.setTop(68);
-                            calendarText.setX(280);
+                            calendarText.setX(340);
                             calendarText.setTop(460);
                             artText.setVisibility(View.VISIBLE);
                             artButton.setVisibility(View.VISIBLE);
-                            artButton.setX(650);
+                            artButton.setX(1000);
                             artButton.setTop(68);
                             artButton.setRight(16);
                             artText.setTop(460);
-                            artText.setX(820);
+                            artText.setX(1250);
                             artButton.setOnClickListener(new OnClickListener() {
                                 @Override
                                 public void onClick(View v) {

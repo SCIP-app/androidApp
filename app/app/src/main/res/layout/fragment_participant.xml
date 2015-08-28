@@ -21,7 +21,7 @@
         android:text="              Next Cycle : "
         android:id="@+id/ParticipantNextCycleLabel"
         android:layout_marginLeft="440dp"
-        android:layout_marginTop="590dp"
+        android:layout_marginTop="600dp"
         android:textAlignment="gravity"
         android:visibility="visible" />
 
@@ -51,7 +51,7 @@
         android:textAppearance="?android:attr/textAppearanceMedium"
         android:id="@+id/Participant_Next_Cycle"
         android:layout_gravity="left|top"
-        android:layout_marginTop="590dp"
+        android:layout_marginTop="600dp"
         android:layout_marginLeft="610dp"
         android:text="Data not available" />
 
