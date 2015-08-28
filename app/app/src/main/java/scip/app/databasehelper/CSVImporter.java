@@ -148,7 +148,7 @@ public class CSVImporter {
 
         if(isExternalStorageWritable()) {
             File[] externalDirs = context.getExternalFilesDirs(null);
-            //Log.d("External Dirs length", String.valueOf(externalDirs.length));
+            Log.d("External Dirs length", String.valueOf(externalDirs.length));
 
             // If the SD card exists, it will be located the second directory in the list of available directories
             for(File f : externalDirs[1].listFiles()) {
