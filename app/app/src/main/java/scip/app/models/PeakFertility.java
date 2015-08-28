@@ -93,6 +93,10 @@ public class PeakFertility {
             // return a list of the 4 days before the next ovulation
             for(int i = -4; i < 0; i++)
                 window.add(DateUtil.addDays(nextOvulationStart, i));
+            // also return the one after that
+            Date twoMonthsOutStart = DateUtil.addDays(nextOvulationStart, (int)averageCycleLength);
+            for(int i = -4; i < 0; i++)
+                window.add(DateUtil.addDays(twoMonthsOutStart, i));
             return window;
         }
         return new ArrayList<>();
@@ -144,8 +148,8 @@ public class PeakFertility {
         nextMensesStart = DateUtil.addDays(menses.get(menses.size()-1), (int)averageCycleLength+1);
         nextOvulationStart = DateUtil.addDays(nextMensesStart, -1*(int)averageLuteralPhaseLength);
 
-        Log.i("Next Menses", nextMensesStart.toString());
-        Log.i("Next Ovulation", nextOvulationStart.toString());
+        //Log.i("Next Menses", nextMensesStart.toString());
+        //Log.i("Next Ovulation", nextOvulationStart.toString());
 
         dataProcessed = true;
     }
@@ -156,7 +160,7 @@ public class PeakFertility {
             averageCycleLength += DateUtil.getDateDiff(menses.get(i - 1), menses.get(i), TimeUnit.DAYS);
         }
         averageCycleLength = averageCycleLength / (menses.size() - 1);
-        Log.i("Average Cycle Length", String.valueOf(averageCycleLength));
+        //Log.i("Average Cycle Length", String.valueOf(averageCycleLength));
     }
 
     // TODO: add check to revert to temperature data if something is weird
@@ -166,7 +170,7 @@ public class PeakFertility {
             int count = 0;
             if (menses.get(0).before(ovulation.get(0))) {
                 for (int i = 1; i < menses.size(); i++) {
-                    Log.i("Date difference", String.valueOf(DateUtil.getDateDiff(ovulation.get(i - 1), menses.get(i), TimeUnit.DAYS)));
+                    //Log.i("Date difference", String.valueOf(DateUtil.getDateDiff(ovulation.get(i - 1), menses.get(i), TimeUnit.DAYS)));
                     if (i <= ovulation.size() && DateUtil.getDateDiff(ovulation.get(i - 1), menses.get(i), TimeUnit.DAYS) < 30) {
                         averageLuteralPhaseLength += DateUtil.getDateDiff(ovulation.get(i - 1), menses.get(i), TimeUnit.DAYS);
                         count++;
@@ -174,7 +178,7 @@ public class PeakFertility {
                 }
             } else {
                 for (int i = 0; i < menses.size(); i++) {
-                    Log.i("Date difference", String.valueOf(DateUtil.getDateDiff(ovulation.get(i), menses.get(i), TimeUnit.DAYS)));
+                    //Log.i("Date difference", String.valueOf(DateUtil.getDateDiff(ovulation.get(i), menses.get(i), TimeUnit.DAYS)));
                     if (i <= ovulation.size() && DateUtil.getDateDiff(ovulation.get(i), menses.get(i), TimeUnit.DAYS) < 30) {
                         averageLuteralPhaseLength += DateUtil.getDateDiff(ovulation.get(i), menses.get(i), TimeUnit.DAYS);
                         count++;
@@ -182,7 +186,7 @@ public class PeakFertility {
                 }
             }
             averageLuteralPhaseLength = averageLuteralPhaseLength / count;
-            Log.i("Average Luteral Phase Length", String.valueOf(averageLuteralPhaseLength));
+            //Log.i("Average Luteral Phase Length", String.valueOf(averageLuteralPhaseLength));
         }
         else if (menses.size() >= 3) {
             averageLuteralPhaseLength = 14;

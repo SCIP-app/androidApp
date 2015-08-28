@@ -58,7 +58,7 @@ public  class ParticipantSelectionFragment extends Fragment {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                 Long participantId = (Long) parent.getItemAtPosition(position);
-                Log.d("Participant id selected", String.valueOf(participantId));
+                //Log.d("Participant id selected", String.valueOf(participantId));
                 Intent participant = new Intent(getActivity().getApplicationContext(),ParticipantActivity.class);
                 participant.putExtra("participant_id", participantId);
                 startActivity(participant);

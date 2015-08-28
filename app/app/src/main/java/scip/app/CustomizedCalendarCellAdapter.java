@@ -49,18 +49,18 @@ public class CustomizedCalendarCellAdapter extends CaldroidGridAdapter {
         activity = (Activity) context;
         if(couple!=null) {
             if(couple.get(0).isFemale()) {
-                Log.d("in couple", "female is first");
+                //Log.d("in couple", "female is first");
                 female = couple.get(0);
                 male = couple.get(1);
             }
             else {
-                Log.d("in couple", "female is second");
+                //Log.d("in couple", "female is second");
                 male = couple.get(0);
                 female = couple.get(1);
             }
         }
         else {
-            Log.d("couple frag", "couple is null");
+            //Log.d("couple frag", "couple is null");
         }
 
         if(participant!=null) {
@@ -73,7 +73,7 @@ public class CustomizedCalendarCellAdapter extends CaldroidGridAdapter {
             }
         }
         else {
-            Log.d("couple frag", "participant is null");
+            //Log.d("couple frag", "participant is null");
         }
     }
 

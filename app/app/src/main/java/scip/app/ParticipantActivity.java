@@ -55,21 +55,21 @@ public class ParticipantActivity extends ActionBarActivity
         participant = db.getParticipant(participant_id);
         db.closeDB();
 
-        if(participant!=null) {
-            Log.d("Participant id not in Couple", String.valueOf(participant.getParticipantId()));
-            if (participant.isFemale()) {
-                int length = participant.getSurveyResults().size();
-                Log.d("# of SurveyResults", String.valueOf(length));
-            }
-
-            if (participant.isIndex()) {
-                int length = participant.getViralLoads().size();
-                Log.d("# of ViralLoads", String.valueOf(length));
-            } else {
-                int length = participant.getMemscaps().size();
-                Log.d("# of MemsCaps", String.valueOf(length));
-            }
-        }
+//        if(participant!=null) {
+//            Log.d("Participant id not in Couple", String.valueOf(participant.getParticipantId()));
+//            if (participant.isFemale()) {
+//                int length = participant.getSurveyResults().size();
+//                Log.d("# of SurveyResults", String.valueOf(length));
+//            }
+//
+//            if (participant.isIndex()) {
+//                int length = participant.getViralLoads().size();
+//                Log.d("# of ViralLoads", String.valueOf(length));
+//            } else {
+//                int length = participant.getMemscaps().size();
+//                Log.d("# of MemsCaps", String.valueOf(length));
+//            }
+//        }
 
         mNavigationDrawerFragment = (NavigationDrawerFragment)
                 getSupportFragmentManager().findFragmentById(R.id.navigation_drawer);
