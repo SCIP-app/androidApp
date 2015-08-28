@@ -55,7 +55,7 @@
         </activity>
         <activity
             android:name=".ParticipantActivity"
-            android:label="Participant View" >
+            android:label="View Single Participant Data" >
         </activity>
     </application>
 

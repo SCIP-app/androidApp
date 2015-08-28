@@ -93,7 +93,7 @@ public class DataImportActivity extends ActionBarActivity {
         importLocalData.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                importLocalData(true);
+                importLocalData(false);
             }
         });
         importMSurveyData.setOnClickListener(new View.OnClickListener() {
@@ -287,7 +287,7 @@ public class DataImportActivity extends ActionBarActivity {
                 r.close();
 
                 HttpGet request = new HttpGet(url.toString());
-                Log.d("request", url.toString());
+                //Log.d("request", url.toString());
                 request.addHeader("TOKEN", key);
                 ResponseHandler<String> handler = new BasicResponseHandler();
                 try {

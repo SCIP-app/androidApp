@@ -101,7 +101,7 @@ public class Participant {
         this.participant_id = participant_id;
         if(isFemale == 1) {
             this.isFemale = true;
-            Log.d("PC", "Is Female");
+            //Log.d("PC", "Is Female");
         }
         else
             this.isFemale = false;
