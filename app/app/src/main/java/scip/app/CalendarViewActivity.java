@@ -77,6 +77,13 @@ public class CalendarViewActivity extends ActionBarActivity {
         monthMap.put(11,"Nov");
         monthMap.put(12,"Dec");
         final SimpleDateFormat formatter = new SimpleDateFormat("dd MMM yyyy");
+        CheckBox prepCheck = (CheckBox) findViewById(R.id.PrepCheck);
+        CheckBox tempCheck = (CheckBox) findViewById(R.id.TempCheck);
+        CheckBox cervicalCheck = (CheckBox) findViewById(R.id.CervicalCheck);
+        CheckBox sexCheck = (CheckBox) findViewById(R.id.SexCheck);
+        CheckBox opkCheck = (CheckBox) findViewById(R.id.OPKCheck);
+        CheckBox sfluidCheck = (CheckBox) findViewById(R.id.CervicalCheck);
+
         couple_id = getIntent().getLongExtra("couple_id", 0);
         participant_id = getIntent().getLongExtra("participant_id", 0);
         DatabaseHelper db = new DatabaseHelper(getApplicationContext());
@@ -111,6 +118,12 @@ public class CalendarViewActivity extends ActionBarActivity {
                 female = participant;
             } else {
                 male = participant;
+                if(male!=null && !male.isIndex()) {
+                    sexCheck.setVisibility(View.INVISIBLE);
+                    tempCheck.setVisibility(View.INVISIBLE);
+                    cervicalCheck.setVisibility(View.INVISIBLE);
+                    opkCheck.setVisibility(View.INVISIBLE);
+                }
             }
         }
         else {
@@ -176,7 +189,7 @@ public class CalendarViewActivity extends ActionBarActivity {
         t.replace(R.id.calendar1, caldroidFragment);
         t.commit();
 
-        final CheckBox sexCheck = (CheckBox)findViewById(R.id.SexCheck);
+
         sexCheck.setOnClickListener(new OnClickListener() {
                                          @Override
                                          public void onClick(View v) {
@@ -188,7 +201,7 @@ public class CalendarViewActivity extends ActionBarActivity {
 
 
 
-        final CheckBox prepCheck = (CheckBox)findViewById(R.id.PrepCheck);
+
         prepCheck.setOnClickListener(new OnClickListener() {
                                          @Override
                                          public void onClick(View v) {
@@ -199,7 +212,7 @@ public class CalendarViewActivity extends ActionBarActivity {
 
 
 
-        final CheckBox sfluidCheck = (CheckBox)findViewById(R.id.CervicalCheck);
+
         sfluidCheck.setOnClickListener(new OnClickListener() {
                                            @Override
                                            public void onClick(View v) {
@@ -209,7 +222,6 @@ public class CalendarViewActivity extends ActionBarActivity {
         );
 
 
-        final CheckBox opkCheck = (CheckBox)findViewById(R.id.OPKCheck);
         opkCheck.setOnClickListener(new OnClickListener() {
                                         @Override
                                         public void onClick(View v) {
