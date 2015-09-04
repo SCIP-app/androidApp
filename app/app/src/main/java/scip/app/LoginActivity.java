@@ -103,7 +103,7 @@ public class LoginActivity extends ActionBarActivity {
             // There was an error; don't attempt login and focus the first
             // form field with an error.
             focusView.requestFocus();
-        } else if (currentUser.equals("clinicteam")) {
+        } else if (currentUser.equals("clinicteam") || currentUser.equals("clinictestlogin")) {
             Intent intent = new Intent(this, SessionSelectionActivity.class);
             startActivity(intent);
         }
