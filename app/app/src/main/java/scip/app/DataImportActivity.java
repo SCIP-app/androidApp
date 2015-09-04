@@ -58,6 +58,7 @@ import scip.app.models.MemsCap;
 import scip.app.models.Participant;
 import scip.app.models.SurveyResult;
 import scip.app.models.ViralLoad;
+import scip.app.AnalyticsApplication;
 import java.util.concurrent.TimeUnit;
 import scip.app.models.DateUtil;
 import android.app.Application;
