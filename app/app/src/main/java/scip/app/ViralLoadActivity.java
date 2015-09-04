@@ -154,14 +154,14 @@ public class ViralLoadActivity extends AppCompatActivity implements OnSeekBarCha
         mChart.setPinchZoom(true);
 
         // create a dataset and give it a type
-        ScatterDataSet set1 = new ScatterDataSet(yVals1, "Viral load >1000");
+        ScatterDataSet set1 = new ScatterDataSet(yVals1, "Viral load > 400");
         set1.setScatterShape(ScatterShape.CIRCLE);
         set1.setColor(getResources().getColor(R.color.material_orange_800));
         set1.setScatterShapeSize(40f);
 
         ScatterDataSet set2 = new ScatterDataSet(yVals2, "Viral load < 400");
         set2.setScatterShape(ScatterShape.CIRCLE);
-        set2.setColor(getResources().getColor(R.color.material_green_800));
+        set2.setColor(getResources().getColor(R.color.material_green_500));
         set2.setScatterShapeSize(40f);
 
 
