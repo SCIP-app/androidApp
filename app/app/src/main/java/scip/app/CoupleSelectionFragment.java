@@ -96,13 +96,13 @@ public  class CoupleSelectionFragment extends Fragment {
             }
         });
 
-        clear = (Button) view.findViewById(R.id.clear_couple);
-        clear.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                filterText.setText("");
-            }
-        });
+//      clear = (Button) view.findViewById(R.id.clear_couple);
+//        clear.setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View view) {
+//                filterText.setText("");
+//            }
+//       });
 
         m_listview.setAdapter(adapter);
 

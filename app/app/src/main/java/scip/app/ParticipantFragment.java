@@ -27,7 +27,8 @@ import scip.app.models.ViralLoad;
 public class ParticipantFragment extends Fragment {
     TextView peakFertilityText_1;
     TextView peakFertilityText_2;
-    TextView nextCycleText ;
+    TextView nextCycleText;
+    TextView ptidView;
     ImageButton calendarButton;
     ImageButton artButton;
     TextView calendarText;
@@ -52,6 +53,7 @@ public class ParticipantFragment extends Fragment {
         peakFertilityText_1 = (TextView) view.findViewById(R.id.Participant_peak_fertility_1);
         peakFertilityText_2 = (TextView) view.findViewById(R.id.Participant_peak_fertility_2);
         nextCycleText = (TextView) view.findViewById(R.id.Participant_Next_Cycle);
+        ptidView = (TextView) view.findViewById(R.id.ptidView);
         calendarButton = (ImageButton) view.findViewById(R.id.Participant_Calendar_Button);
         calendarText = (TextView) view.findViewById(R.id.caltext);
         artText = (TextView) view.findViewById(R.id.artLabel);
@@ -98,6 +100,9 @@ public class ParticipantFragment extends Fragment {
         @Override
         protected void onPostExecute(Participant participant) {
             db.closeDB();
+            long participant_id = ((ParticipantActivity)getActivity()).getParticipant_id();
+            String ptid = Long.toString(participant_id);
+            ptidView.setText(ptid);
 
             if(participant!=null) {
                 if (participant.isFemale()) {
@@ -107,6 +112,7 @@ public class ParticipantFragment extends Fragment {
                         peakFertilityText_1.setVisibility(View.VISIBLE);
                         peakFertilityText_2.setVisibility(View.VISIBLE);
                         nextCycleText.setVisibility(View.VISIBLE);
+
 
                         if (nextPeakFertilityValues != null && nextPeakFertilityValues.size() == 8) {
                             String fertilityRange_1 = formatter.format(nextPeakFertilityValues.get(0)) + " - " + formatter.format(nextPeakFertilityValues.get(3));

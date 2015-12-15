@@ -88,13 +88,13 @@ public  class ParticipantSelectionFragment extends Fragment {
                 }
             });
 
-            Button clear = (Button) view.findViewById(R.id.clear_participant);
-            clear.setOnClickListener(new OnClickListener() {
-                @Override
-                public void onClick(View view) {
-                    filterText.setText("");
-                }
-            });
+//            Button clear = (Button) view.findViewById(R.id.clear_participant);
+//            clear.setOnClickListener(new OnClickListener() {
+//                @Override
+//                public void onClick(View view) {
+//                    filterText.setText("");
+//                }
+//            });
 
             m_listview.setAdapter(adapter);
 
