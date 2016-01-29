@@ -89,9 +89,11 @@ public class DataImportActivity extends ActionBarActivity {
         progressBar.setVisibility(View.INVISIBLE);
         welcomeMessage = (TextView)findViewById(R.id.WelcomeMessageTextView);
         welcomeMessage.append(user);
+        // getting tracker & setting User ID field (which isn't actually a solution after all, but I've left it here)
         AnalyticsApplication application = (AnalyticsApplication) getApplication();
         mTracker = application.getDefaultTracker();
         mTracker.set("&uid", user);
+        // build and send event
         mTracker.send(new HitBuilders.EventBuilder()
                 .setCategory("User ID")
                 .setAction("Data login")
