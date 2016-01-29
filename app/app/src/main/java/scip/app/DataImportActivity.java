@@ -1,10 +1,12 @@
 package scip.app;
 
+import android.app.Activity;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Environment;
+import android.os.UserHandle;
 import android.support.v7.app.ActionBarActivity;
 import android.os.Bundle;
 import android.util.Log;
@@ -36,6 +38,7 @@ import org.json.JSONObject;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.OutputStream;
+import java.lang.reflect.Field;
 import java.net.URI;
 import java.util.Enumeration;
 import java.util.GregorianCalendar;
@@ -64,6 +67,7 @@ import scip.app.models.DateUtil;
 import android.app.Application;
 import com.google.android.gms.analytics.GoogleAnalytics;
 import com.google.android.gms.analytics.HitBuilders;
+import com.google.android.gms.analytics.HitBuilders.EventBuilder;
 import com.google.android.gms.analytics.Logger;
 import com.google.android.gms.analytics.Tracker;
 
@@ -73,7 +77,7 @@ public class DataImportActivity extends ActionBarActivity {
     ProgressBar progressBar;
     TextView welcomeMessage;
     String user;
-    Tracker mTracker;
+    public Tracker mTracker;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -87,6 +91,12 @@ public class DataImportActivity extends ActionBarActivity {
         welcomeMessage.append(user);
         AnalyticsApplication application = (AnalyticsApplication) getApplication();
         mTracker = application.getDefaultTracker();
+        mTracker.set("&uid", user);
+        mTracker.send(new HitBuilders.EventBuilder()
+                .setCategory("User ID")
+                .setAction("Data login")
+                .setLabel(user)
+                .build());
         final Button importLocalData = (Button)findViewById(R.id.ImportLocalDataButon);
         final Button importMSurveyData = (Button) findViewById(R.id.ImportMSurveyDataButton);
         final Button importDatabaseBackup = (Button) findViewById(R.id.ImportDatabaseBackupButton);
@@ -116,6 +126,9 @@ public class DataImportActivity extends ActionBarActivity {
             }
         });
     }
+
+
+
 //    private void calculatePeakFertility() {
 //        AsyncTask<Void, String, Void> pf = new CalculatePeakFertility().execute();
 //    }
@@ -165,7 +178,7 @@ public class DataImportActivity extends ActionBarActivity {
         AsyncTask<Boolean, String, Void> thread = new RetrieveLocalData().execute(useLocal);
     }
 
-    class RetrieveLocalData extends AsyncTask<Boolean, String, Void> {
+        class RetrieveLocalData extends AsyncTask<Boolean, String, Void> {
 
         private String TAG;
 
@@ -188,17 +201,18 @@ public class DataImportActivity extends ActionBarActivity {
                 if(resultsProcessed.containsKey("surveyresults"))
                     publishProgress(resultsProcessed.get("surveyresults") + " survey result records added");
 
+                return null;
+
             } catch (Exception e) {
                 publishProgress("Error Processing Files");
-            }
+                       }
 
-            mTracker.send(new HitBuilders.EventBuilder()
-                    .setCategory("Data Uploaded")
-                    .setAction("Upload successful")
-                    .setLabel(user)
-                    .setValue(1)
-                    .build());
+           // mTracker.send(new EventBuilder()
+           //         .setCategory(user)
+           //         .setAction(user)
+           //         .build());
             return null;
+
         }
 
         @Override
