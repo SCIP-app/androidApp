@@ -7,7 +7,7 @@
         android:layout_width="165dp"
         android:layout_height="32dp"
         android:textAppearance="?android:attr/textAppearanceMedium"
-        android:text="Next Peak Fertility : "
+        android:text="Next Peak Fertility: "
         android:id="@+id/PeriodCycleLabel"
         android:layout_gravity="bottom|left|top"
         android:layout_marginLeft="440dp"
@@ -17,21 +17,11 @@
         android:layout_width="167dp"
         android:layout_height="wrap_content"
         android:textAppearance="?android:attr/textAppearanceMedium"
-        android:text="              Next Cycle : "
+        android:text="              Next Cycle: "
         android:id="@+id/NextCycleLabel"
         android:layout_marginLeft="440dp"
         android:layout_marginTop="600dp"
         android:textAlignment="gravity" />
-
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:textAppearance="?android:attr/textAppearanceMedium"
-        android:id="@+id/Peak_Fertility_1"
-        android:layout_gravity="left|top"
-        android:layout_marginTop="545dp"
-        android:layout_marginLeft="610dp"
-        android:text="Data not available" />
 
     <TextView
         android:layout_width="wrap_content"
@@ -57,7 +47,7 @@
         android:layout_width="450dp"
         android:layout_height="450dp"
         android:id="@+id/calendarButton"
-        android:layout_marginLeft="160dp"
+        android:layout_marginLeft="180dp"
         android:layout_marginTop="64dp"
         android:background="@color/material_blue_500"
         android:paddingLeft="50dp"
@@ -89,9 +79,9 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:textAppearance="?android:attr/textAppearanceLarge"
-        android:text="Calendar View"
+        android:text="Calendar"
         android:id="@+id/textView3"
-        android:layout_marginLeft="280dp"
+        android:layout_marginLeft="340dp"
         android:textSize="32dp"
         android:layout_marginTop="460dp"
         android:textColor="#ffffffff" />
@@ -100,12 +90,41 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:textAppearance="?android:attr/textAppearanceLarge"
-        android:text="ART View"
+        android:text="Viral load"
         android:id="@+id/textView5"
         android:layout_marginTop="460dp"
         android:textColor="#ffffff"
         android:textSize="32dp"
-        android:layout_marginLeft="820dp" />
+        android:layout_marginLeft="800dp" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Couple ID:"
+        android:id="@+id/idView"
+        android:layout_marginLeft="540dp"
+        android:layout_marginTop="15dp"
+        android:textAppearance="?android:attr/textAppearanceMedium" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Couple ID here"
+        android:id="@+id/coupleIdView"
+        android:layout_gravity="top"
+        android:layout_marginTop="15dp"
+        android:layout_marginLeft="640dp"
+        android:textAppearance="?android:attr/textAppearanceMedium" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textAppearance="?android:attr/textAppearanceMedium"
+        android:id="@+id/Peak_Fertility_1"
+        android:layout_gravity="left|top"
+        android:layout_marginTop="545dp"
+        android:layout_marginLeft="610dp"
+        android:text="Data not available" />
 
 </FrameLayout>
 

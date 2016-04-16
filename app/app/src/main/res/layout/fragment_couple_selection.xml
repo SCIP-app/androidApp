@@ -12,10 +12,10 @@
         android:layout_height="wrap_content"
         android:id="@+id/coupleIDSearch"
         android:text="Search by Couple ID"
-        android:layout_marginLeft="100dp"
-        android:layout_marginStart="132dp"
+        android:layout_alignStart="@+id/couple_list"
         android:layout_alignParentTop="true"
-        android:layout_alignStart="@+id/couple_list" />
+        android:layout_alignParentRight="false"
+        android:layout_centerHorizontal="true" />
 
     <ListView
         android:layout_width="600dp"
@@ -25,15 +25,5 @@
         android:layout_below="@+id/coupleIDSearch"
         android:layout_centerHorizontal="true"
         android:layout_marginTop="30dp" />
-
-    <Button
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Clear"
-        android:id="@+id/clear_couple"
-        android:layout_marginRight="50dp"
-        android:layout_alignParentTop="true"
-        android:layout_toEndOf="@+id/coupleIDSearch"
-        android:layout_marginLeft="40dp" />
 
 </RelativeLayout>

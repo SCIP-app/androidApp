@@ -12,4 +12,5 @@
 
     <!-- Enable dry run mode. Default is false -->
     <bool name="ga_dryRun">false</bool>
+
 </resources>

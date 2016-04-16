@@ -25,7 +25,8 @@ import scip.app.models.ViralLoad;
 public class LandingFragment extends Fragment {
     TextView peakFertilityText_1;
     TextView peakFertilityText_2;
-    TextView nextCycleText ;
+    TextView nextCycleText;
+    TextView coupleIdView;
     ImageButton calendarButton;
     ImageButton artButton;
     DatabaseHelper db;
@@ -50,7 +51,9 @@ public class LandingFragment extends Fragment {
         nextCycleText = (TextView) view.findViewById(R.id.Next_Cycle);
         calendarButton = (ImageButton) view.findViewById(R.id.calendarButton);
         artButton = (ImageButton) view.findViewById(R.id.artButton);
+        coupleIdView = (TextView) view.findViewById(R.id.coupleIdView);
         db = new DatabaseHelper(getActivity().getApplicationContext());
+
 
 
 
@@ -80,6 +83,8 @@ public class LandingFragment extends Fragment {
         final SimpleDateFormat formatter = new SimpleDateFormat("dd MMM yyyy");
 
         long coupleId = ((DashboardActivity)getActivity()).getCouple_id();
+        String coupleIdText = Long.toString(coupleId);
+        coupleIdView.setText(coupleIdText);
         new GetData().execute(coupleId);
 
         return view;

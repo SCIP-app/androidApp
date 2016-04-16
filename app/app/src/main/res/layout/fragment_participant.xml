@@ -7,7 +7,7 @@
         android:layout_width="165dp"
         android:layout_height="32dp"
         android:textAppearance="?android:attr/textAppearanceMedium"
-        android:text="Next Peak Fertility : "
+        android:text="Next Peak Fertility: "
         android:id="@+id/ParticipantPeriodCycleLabel"
         android:layout_gravity="bottom|left|top"
         android:layout_marginLeft="440dp"
@@ -18,7 +18,7 @@
         android:layout_width="167dp"
         android:layout_height="wrap_content"
         android:textAppearance="?android:attr/textAppearanceMedium"
-        android:text="              Next Cycle : "
+        android:text="              Next Cycle: "
         android:id="@+id/ParticipantNextCycleLabel"
         android:layout_marginLeft="440dp"
         android:layout_marginTop="600dp"
@@ -74,14 +74,15 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:textAppearance="?android:attr/textAppearanceLarge"
-        android:text="ART View"
+        android:text="ART"
         android:id="@+id/artLabel"
         android:layout_marginTop="440dp"
         android:textColor="#ffffff"
         android:textSize="32dp"
         android:layout_marginLeft="0dp"
         android:visibility="invisible"
-        android:layout_gravity="center_horizontal" />
+        android:layout_gravity="center_horizontal"
+        android:paddingLeft="45dp" />
 
     <ImageButton
         android:layout_width="450dp"
@@ -102,13 +103,35 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:textAppearance="?android:attr/textAppearanceLarge"
-        android:text="Calendar View"
+        android:text="Calendar"
         android:id="@+id/caltext"
         android:layout_gravity="center_horizontal"
         android:layout_marginTop="440dp"
         android:textColor="#ffffff"
         android:textSize="32dp"
-        android:visibility="invisible" />
+        android:visibility="invisible"
+        android:paddingLeft="40dp" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="ID: "
+        android:id="@+id/idView"
+        android:layout_gravity="top"
+        android:layout_marginTop="15dp"
+        android:layout_marginLeft="580dp"
+        android:autoText="false"
+        android:textAppearance="?android:attr/textAppearanceMedium" />
+
+    <TextView
+        android:layout_width="89dp"
+        android:layout_height="wrap_content"
+        android:text="PTID here"
+        android:id="@+id/ptidView"
+        android:layout_gravity="top"
+        android:layout_marginTop="15dp"
+        android:layout_marginLeft="610dp"
+        android:textAppearance="?android:attr/textAppearanceMedium" />
 
 </FrameLayout>
 
