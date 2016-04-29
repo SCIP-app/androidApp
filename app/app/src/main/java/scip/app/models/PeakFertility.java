@@ -145,9 +145,10 @@ public class PeakFertility {
         calculateAverageCycleLength();
         calculateAverageLuteralPhaseLength();
 
-        nextMensesStart = DateUtil.addDays(menses.get(menses.size()-1), (int)averageCycleLength+1);
-        nextOvulationStart = DateUtil.addDays(nextMensesStart, -1*(int)averageLuteralPhaseLength);
-
+        if (menses != null && menses.size() > 0) {
+            nextMensesStart = DateUtil.addDays(menses.get(menses.size() - 1), (int) averageCycleLength + 1);
+            nextOvulationStart = DateUtil.addDays(nextMensesStart, -1 * (int) averageLuteralPhaseLength);
+        }
         //Log.i("Next Menses", nextMensesStart.toString());
         //Log.i("Next Ovulation", nextOvulationStart.toString());
 
