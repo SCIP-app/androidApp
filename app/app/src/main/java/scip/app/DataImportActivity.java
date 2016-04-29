@@ -404,7 +404,7 @@ public class DataImportActivity extends ActionBarActivity {
                     JSONObject entry = data.getJSONObject(i);
                     Long participantId = entry.getLong("participantID");
                     Boolean isFemale = false;
-                    if (entry.getString("gender").equals("female"))
+                    if (entry.getString("gender").toLowerCase().equals("female"))
                         isFemale = true;
                     if(db.createParticipant(new Participant(participantId, isFemale)))
                         count++;
