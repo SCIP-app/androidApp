@@ -292,7 +292,7 @@ public class DataImportActivity extends ActionBarActivity {
 
             // See if we've checked msurvey before. If not, look for 3 days worth of information
             SharedPreferences settings = getPreferences(0);
-            date = settings.getString("lastReadMsurvey", df.format(new Date(System.currentTimeMillis()-48*60*60*1000)));
+            date = settings.getString("lastReadMsurvey", null);
         }
 
         protected String fetchData(Uri url) {
@@ -420,13 +420,17 @@ public class DataImportActivity extends ActionBarActivity {
         }
 
         protected String doInBackground(Void... voids) {
-            Uri survey_url = new Uri.Builder()
+
+            Uri.Builder builder = new Uri.Builder()
                     .scheme("https")
                     .authority("apps.msurvey.co.ke")
                     .path("surveyapi/scip/data/")
-                    .appendQueryParameter("format", "json")
-                    .appendQueryParameter("start", date)
-                    .build();
+                    .appendQueryParameter("format", "json");
+
+            if (date != null)
+                builder = builder.appendQueryParameter("start", date);
+
+            Uri survey_url = builder.build();
 
             Uri participant_url = new Uri.Builder()
                     .scheme("https")
