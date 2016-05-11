@@ -357,10 +357,10 @@ public class DataImportActivity extends ActionBarActivity {
                     Boolean usedCondom = false;
                     if (entry.getString("used_condom").equals("Yes"))
                         usedCondom = true;
-                    String timeStarted = entry.getString("time_started");
+                    String lastUpdate = entry.getString("last_update");
                     String wentToMarket = entry.getString("went_to_market");
-                    timeStarted = timeStarted.replace("Z", "+00:00");
-                    Date date = df.parse(timeStarted);
+                    lastUpdate = lastUpdate.replace("Z", "+00:00");
+                    Date date = df.parse(lastUpdate);
                     Boolean isOvulating = false;
                     if (entry.getString("ovulation_prediction").equals("Positive"))
                         isOvulating = true;
