@@ -57,15 +57,16 @@ public class CSVImporter {
         DatabaseHelper db = new DatabaseHelper(context);
         for(String[] entry : viralLoadList) {
 //            Log.d("Participant Id", entry[0]);
-//            Log.d("Visit Id", entry[1]);
-//            Log.d("Date", entry[2]);
-//            Log.d("Load", entry[3]);
+//            Log.d("Event name", entry[1]);
+//            Log.d("Visit Id", entry[2]);
+//            Log.d("Date", entry[3]);
+//            Log.d("Load", entry[4]);
             try {
                 long participant_id = Long.parseLong(entry[0]);
-                int vist_id = Integer.parseInt(entry[1]);
-                int load = Integer.parseInt(entry[3]);
+                int vist_id = Integer.parseInt(entry[2]);
+                int load = Integer.parseInt(entry[4]);
                 //db.createParticipant(new Participant(participant_id, false));
-                if(db.createViralLoad(new ViralLoad(participant_id, load, entry[2], vist_id)))
+                if(db.createViralLoad(new ViralLoad(participant_id, load, entry[3], vist_id)))
                     count++;
             }
             catch (Exception e) {
