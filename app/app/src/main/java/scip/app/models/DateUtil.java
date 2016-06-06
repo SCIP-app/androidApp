@@ -27,7 +27,11 @@ public class DateUtil {
     }
 
     public static Date getDateFromString(String date) {
-        SimpleDateFormat formatter = new SimpleDateFormat("dd/MM/yyyy");
+        return getDateFromString(date, "dd/MM/yyyy");
+    }
+
+    public static Date getDateFromString(String date, String format) {
+        SimpleDateFormat formatter = new SimpleDateFormat(format);
         try {
             return formatter.parse(date);
         } catch (ParseException e) {

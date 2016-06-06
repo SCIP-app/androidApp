@@ -51,7 +51,7 @@ public class MemsCap {
 
     public MemsCap(long participant_id, String date, long mems_id) {
         this.participant_id = participant_id;
-        this.date = DateUtil.getDateFromString(date);
+        this.date = DateUtil.getDateFromString(date, "MM/dd/yyyy");
         this.mems_id = mems_id;
     }
 
