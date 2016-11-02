@@ -5,19 +5,14 @@ import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
-import android.util.Log;
 
-import java.text.DateFormat;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.LinkedHashSet;
 import java.util.List;
 
 import scip.app.models.DateUtil;
 import scip.app.models.MemsCap;
 import scip.app.models.Participant;
-import scip.app.models.PeakFertility;
 import scip.app.models.SurveyResult;
 import scip.app.models.ViralLoad;
 
@@ -588,7 +583,7 @@ public class DatabaseHelper extends SQLiteOpenHelper{
 
             ContentValues values = new ContentValues();
             values.put(KEY_PARTICIPANT_ID, memsCap.getParticipant_id());
-            values.put(KEY_DATE, DateUtil.getStringFromDate(memsCap.getDate()));
+            values.put(KEY_DATE, DateUtil.getStringFromMMddyyy(memsCap.getDate()));
             values.put(KEY_MEMS_ID, memsCap.getMems_id());
 
             // insert row

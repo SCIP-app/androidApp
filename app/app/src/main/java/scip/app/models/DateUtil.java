@@ -6,6 +6,7 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.GregorianCalendar;
 import java.util.concurrent.TimeUnit;
 
 /**
@@ -23,11 +24,15 @@ public class DateUtil {
 
     public static long getDateDiff(Date date1, Date date2, TimeUnit timeUnit) {
         long diffInMillies = date2.getTime() - date1.getTime();
-        return timeUnit.convert(diffInMillies,TimeUnit.MILLISECONDS);
+        return timeUnit.convert(diffInMillies, TimeUnit.MILLISECONDS);
     }
 
     public static Date getDateFromString(String date) {
-        return getDateFromString(date, "dd/MM/yyyy");
+        if (getDateFromString(date, "dd-MM-yyyy") == null)
+            return getDateFromString(date, "dd/MM/yyyy");
+        else
+            return getDateFromString(date, "dd-MM-yyyy");
+
     }
 
     public static Date getDateFromString(String date, String format) {
@@ -40,7 +45,20 @@ public class DateUtil {
     }
 
     public static String getStringFromDate(Date date){
+        java.util.Calendar cal = GregorianCalendar.getInstance();
+        cal.setTime( date );
+        if (cal.YEAR == 0)
+            cal.add( GregorianCalendar.YEAR, 2000 );
         DateFormat df = new SimpleDateFormat("dd/MM/yyyy");
-        return df.format(date);
+        return df.format(cal.getTime() );
+    }
+
+    public static String getStringFromMMddyyy(Date date){
+        java.util.Calendar cal = GregorianCalendar.getInstance();
+        cal.setTime( date );
+        if (cal.YEAR == 0)
+            cal.add( GregorianCalendar.YEAR, 2000 );
+        DateFormat df = new SimpleDateFormat("MM/dd/yyyy");
+        return df.format(cal.getTime() );
     }
 }

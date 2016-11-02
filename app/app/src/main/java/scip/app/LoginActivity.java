@@ -1,16 +1,11 @@
 package scip.app;
 
 
-import android.app.Activity;
-import android.content.Context;
 import android.content.Intent;
-
 import android.content.SharedPreferences;
-import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v7.app.ActionBarActivity;
 import android.text.TextUtils;
-import android.util.Log;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.AutoCompleteTextView;
@@ -121,7 +116,8 @@ public class LoginActivity extends ActionBarActivity {
             // process the logins file
             //Log.d("Login", "Reading passwords");
             SharedPreferences.Editor editor = settings.edit();
-            BufferedReader reader = new BufferedReader(new InputStreamReader(getApplicationContext().getResources().openRawResource(R.raw.users)));
+            // BufferedReader reader = new BufferedReader(new InputStreamReader(getApplicationContext().getResources().openRawResource(R.raw.users)));
+            BufferedReader reader = new BufferedReader(new InputStreamReader(getApplicationContext().getResources().openRawResource(R.raw.memscap)));
             try {
                 String user;
                 while ((user = reader.readLine()) != null) {

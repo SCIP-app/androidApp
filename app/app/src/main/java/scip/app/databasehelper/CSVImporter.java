@@ -2,15 +2,10 @@ package scip.app.databasehelper;
 
 import android.content.Context;
 import android.os.Environment;
-import android.util.Log;
-import android.widget.Toast;
 
 import java.io.File;
-import java.io.InputStream;
-import java.util.Dictionary;
 import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 import scip.app.R;
 import scip.app.models.MemsCap;
@@ -56,6 +51,7 @@ public class CSVImporter {
         Integer count = 0;
         DatabaseHelper db = new DatabaseHelper(context);
         for(String[] entry : viralLoadList) {
+            if(entry.length < 5) continue;
 //            Log.d("Participant Id", entry[0]);
 //            Log.d("Event name", entry[1]);
 //            Log.d("Visit Id", entry[2]);
@@ -63,14 +59,17 @@ public class CSVImporter {
 //            Log.d("Load", entry[4]);
             try {
                 long participant_id = Long.parseLong(entry[0]);
-                int vist_id = Integer.parseInt(entry[2]);
+                String var1 = entry[1];
+                int  var2 = Integer.parseInt(entry[2]);
+                String vDate = entry[3];
                 int load = Integer.parseInt(entry[4]);
+
                 //db.createParticipant(new Participant(participant_id, false));
-                if(db.createViralLoad(new ViralLoad(participant_id, load, entry[3], vist_id)))
+                if(db.createViralLoad(new ViralLoad(participant_id, load, vDate, 0)))
                     count++;
             }
             catch (Exception e) {
-
+                //Log.e(":readViralLoadDataEx", e.toString());
             }
         }
         db.closeDB();
@@ -149,11 +148,9 @@ public class CSVImporter {
 
         if(isExternalStorageWritable()) {
             File[] externalDirs = context.getExternalFilesDirs(null);
-            Log.d("External Dirs length", String.valueOf(externalDirs.length));
 
             // If the SD card exists, it will be located the second directory in the list of available directories
             for(File f : externalDirs[1].listFiles()) {
-                //Log.d("File ", f.getName());
                 if(f.getName().contains("memscap") && !f.getName().contains("backup")) {
                     CSVFile csvFile = new CSVFile(f);
                     List<String[]> memsList = csvFile.read();
@@ -189,7 +186,6 @@ public class CSVImporter {
 
             // If the SD card exists, it will be located the second directory in the list of available directories
             for(File f : externalDirs[1].listFiles()) {
-                //Log.d("File ", f.getName());
                 // only read in backup files
                 if(f.getName().contains("backup")) {
                     if (f.getName().contains("memscap")) {

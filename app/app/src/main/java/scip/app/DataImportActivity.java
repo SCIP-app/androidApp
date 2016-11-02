@@ -1,15 +1,11 @@
 package scip.app;
 
-import android.app.Activity;
-import android.content.Context;
 import android.content.SharedPreferences;
 import android.net.Uri;
 import android.os.AsyncTask;
-import android.os.Environment;
-import android.os.UserHandle;
-import android.support.v7.app.ActionBarActivity;
 import android.os.Bundle;
-import android.util.Log;
+import android.os.Environment;
+import android.support.v7.app.ActionBarActivity;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -18,58 +14,38 @@ import android.widget.EditText;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
-import org.apache.http.NameValuePair;
+import com.google.android.gms.analytics.HitBuilders;
+import com.google.android.gms.analytics.Tracker;
+
 import org.apache.http.client.ClientProtocolException;
 import org.apache.http.client.HttpClient;
 import org.apache.http.client.ResponseHandler;
-import org.apache.http.client.entity.UrlEncodedFormEntity;
 import org.apache.http.client.methods.HttpGet;
-import org.apache.http.client.methods.HttpRequestBase;
 import org.apache.http.impl.client.BasicResponseHandler;
 import org.apache.http.impl.client.DefaultHttpClient;
-import org.apache.http.message.BasicNameValuePair;
-import org.apache.http.params.BasicHttpParams;
-import org.apache.http.params.HttpParams;
-import org.apache.http.protocol.HTTP;
 import org.json.JSONArray;
-import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileOutputStream;
-import java.io.OutputStream;
-import java.lang.reflect.Field;
-import java.net.URI;
-import java.util.Enumeration;
-import java.util.GregorianCalendar;
-import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.io.OutputStream;
 import java.text.DateFormat;
-import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.TimeZone;
-import java.util.ArrayList;
-import java.util.Calendar;
-import java.util.Collections;
+
 import scip.app.databasehelper.CSVImporter;
 import scip.app.databasehelper.DatabaseHelper;
+import scip.app.models.DateUtil;
 import scip.app.models.MemsCap;
 import scip.app.models.Participant;
 import scip.app.models.SurveyResult;
 import scip.app.models.ViralLoad;
-import scip.app.AnalyticsApplication;
-import java.util.concurrent.TimeUnit;
-import scip.app.models.DateUtil;
-import android.app.Application;
-import com.google.android.gms.analytics.GoogleAnalytics;
-import com.google.android.gms.analytics.HitBuilders;
-import com.google.android.gms.analytics.HitBuilders.EventBuilder;
-import com.google.android.gms.analytics.Logger;
-import com.google.android.gms.analytics.Tracker;
 
 
 public class DataImportActivity extends ActionBarActivity {
@@ -189,10 +165,13 @@ public class DataImportActivity extends ActionBarActivity {
             CSVImporter csvImporter = new CSVImporter(getApplicationContext());
             HashMap resultsProcessed = null;
             try {
-                if (useLocal[0])
+                //if (useLocal[0]) {
+                if (true) {
                     resultsProcessed = csvImporter.openLocalFiles();
-                else
+                }
+                else {
                     resultsProcessed = csvImporter.openExternalFiles();
+                }
 
                 if(resultsProcessed.containsKey("participant"))
                     publishProgress(resultsProcessed.get("participant") + " participant records added");
@@ -299,7 +278,8 @@ public class DataImportActivity extends ActionBarActivity {
             try {
                 String result = "BLANK";
                 HttpClient httpclient = new DefaultHttpClient();
-                BufferedReader r = new BufferedReader(new InputStreamReader(getResources().openRawResource(R.raw.msurvey_key)));
+                //BufferedReader r = new BufferedReader(new InputStreamReader(getResources().openRawResource(R.raw.msurvey_key)));
+                BufferedReader r = new BufferedReader(new InputStreamReader(getResources().openRawResource(R.raw.memscap)));
                 String key = r.readLine();
                 r.close();
 
@@ -451,7 +431,7 @@ public class DataImportActivity extends ActionBarActivity {
         }
 
         protected void onPostExecute(String result) {
-            publishProgress("Parsing complete.");
+            //publishProgress("Parsing complete.");
             progressBar.setVisibility(View.INVISIBLE);
             //Log.i("response", result);
 

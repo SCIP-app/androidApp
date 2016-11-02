@@ -1,14 +1,12 @@
 package scip.app;
 
 import android.app.Activity;
-import android.util.Log;
-import android.widget.CheckBox;
 import android.content.Context;
-import android.content.res.Resources;
 import android.graphics.Color;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.CheckBox;
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -16,7 +14,6 @@ import com.roomorama.caldroid.CaldroidGridAdapter;
 
 import java.util.Calendar;
 import java.util.Date;
-
 import java.util.HashMap;
 import java.util.List;
 
@@ -135,7 +132,7 @@ public class CustomizedCalendarCellAdapter extends CaldroidGridAdapter {
                 participant = male;
         }
 
-        if(female!=null) {
+        else if(female!=null) {
                 participant = female;
         }
         Calendar calendar = Calendar.getInstance();
@@ -146,7 +143,6 @@ public class CustomizedCalendarCellAdapter extends CaldroidGridAdapter {
                 for (MemsCap memsCap : memsCaps) {
                     Date memsCapDate = memsCap.getDate();
                     calendar.setTime(memsCapDate);
-
                     if ((calendar.get(Calendar.MONTH) == (dateTime.getMonth() - 1)) && (calendar.get(Calendar.YEAR) == dateTime.getYear()) && (calendar.get(Calendar.DAY_OF_MONTH) == dateTime.getDay())) {
                         prep.setVisibility(View.VISIBLE);
                     }

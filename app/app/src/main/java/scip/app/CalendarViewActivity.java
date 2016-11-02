@@ -7,23 +7,17 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
-
-import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.ActionBarActivity;
-import android.support.v7.app.AppCompatActivity;
-import android.text.Layout;
-import android.util.Log;
+import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
-import android.view.ViewGroup;
-import android.widget.CompoundButton;
-import android.widget.CheckBox;
 import android.view.View.OnClickListener;
+import android.view.ViewGroup;
+import android.widget.CheckBox;
 import android.widget.ImageView;
 import android.widget.PopupWindow;
 import android.widget.TextView;
-import android.util.AttributeSet;
 
 import com.roomorama.caldroid.CaldroidFragment;
 import com.roomorama.caldroid.CaldroidListener;
@@ -33,9 +27,6 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
-
-import android.content.Context;
-import android.view.Gravity;
 
 import scip.app.databasehelper.DatabaseHelper;
 import scip.app.models.MemsCap;
@@ -147,7 +138,6 @@ public class CalendarViewActivity extends ActionBarActivity {
             }
         }
 
-
         if (female!=null && female.getPeakFertility() != null) {
             List<Date> fertilityWindow = female.getPeakFertility().getPeakFertilityWindow();
             if (fertilityWindow != null && fertilityWindow.size() == 8) {
@@ -161,7 +151,6 @@ public class CalendarViewActivity extends ActionBarActivity {
                 averageCycle.setText(averageCycleValue);
             }
         }
-
 
         caldroidFragment = new CalendarCustomAdapterFragment();
 
@@ -199,9 +188,6 @@ public class CalendarViewActivity extends ActionBarActivity {
 
         );
 
-
-
-
         prepCheck.setOnClickListener(new OnClickListener() {
                                          @Override
                                          public void onClick(View v) {
@@ -210,9 +196,6 @@ public class CalendarViewActivity extends ActionBarActivity {
                                      }
         );
 
-
-
-
         sfluidCheck.setOnClickListener(new OnClickListener() {
                                            @Override
                                            public void onClick(View v) {
@@ -220,7 +203,6 @@ public class CalendarViewActivity extends ActionBarActivity {
                                            }
                                        }
         );
-
 
         opkCheck.setOnClickListener(new OnClickListener() {
                                         @Override
@@ -240,12 +222,7 @@ public class CalendarViewActivity extends ActionBarActivity {
                                       }
         );
 
-
-
-
-
         // Attach to the activity
-
 
         // Setup listener
         final CaldroidListener listener = new CaldroidListener() {
