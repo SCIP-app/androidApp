@@ -116,8 +116,7 @@ public class LoginActivity extends ActionBarActivity {
             // process the logins file
             //Log.d("Login", "Reading passwords");
             SharedPreferences.Editor editor = settings.edit();
-            // BufferedReader reader = new BufferedReader(new InputStreamReader(getApplicationContext().getResources().openRawResource(R.raw.users)));
-            BufferedReader reader = new BufferedReader(new InputStreamReader(getApplicationContext().getResources().openRawResource(R.raw.memscap)));
+            BufferedReader reader = new BufferedReader(new InputStreamReader(getApplicationContext().getResources().openRawResource(R.raw.users)));
             try {
                 String user;
                 while ((user = reader.readLine()) != null) {
@@ -145,6 +144,4 @@ public class LoginActivity extends ActionBarActivity {
         return false;
 
     }
-
-
 }
